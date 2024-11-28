@@ -1,7 +1,7 @@
-import { useRouter } from 'next/router'
-import Header from '../../../components/Header'
+import Layout from "@/components/Layout";
 import Link from 'next/link';
-import React, { useEffect } from 'react';
+import { useRouter } from 'next/router'
+
 
 const Shop = () => {
 
@@ -9,14 +9,15 @@ const Shop = () => {
   console.log(router.query.category);
 
   return (
-    <>
-      <Header />
+    <Layout>  
       <ShopHeader />
       <ShopContent />
       <Background />
-    </>
+    </Layout>
   );
 };
+
+
 
 const ShopHeader = () => {
 
@@ -106,3 +107,4 @@ const Background = () => {
 
 
 export default Shop;  
+
