@@ -2,7 +2,6 @@ import Layout from "@/components/Layout";
 import Link from 'next/link';
 import { useRouter } from 'next/router'
 
-
 const Shop = () => {
 
   const router = useRouter()
@@ -18,15 +17,16 @@ const Shop = () => {
 };
 
 
-
 const ShopHeader = () => {
 
   return (
-    <header className='w-full h-full bg-orange-800 relative py-4 z-30 pt-32'>
+    <header className='w-full h-full relative py-4 z-30 flex-col flex justify-center items-center'>
       <div className="container mx-auto flex items-center justify-between">
 
-        <div className="flex items-center"> 
-          <span className='text-4xl mx-6 hover:underline hover:cursor-pointer'> &lt; Return</span>
+          <div className="flex items-center"> 
+          <Link href={'/shop/shopHome'}>
+            <span className='text-4xl mx-6 hover:underline hover:cursor-pointer text-amber-200'> &lt; Return</span>
+          </Link>
         </div>
 
         <nav className="flex-1 text-center">  
@@ -39,12 +39,11 @@ const ShopHeader = () => {
         </nav>
 
         <div className="flex items-center">
-          <h2>Cart</h2>
+          <span className='text-4xl mx-6 hover:underline hover:cursor-pointer'> Cart</span>
         </div>
         
       </div>
-      
-      <img src="url('/images/shop/buy/header_separator.png')" />
+      <img className="w-full px-12" src="/images/shop/buy/header_separator.png" />
 
     </header>
   );
@@ -57,8 +56,8 @@ const HeaderLink: React.FC<{page: string}> = ({page}) => {
   const label = page.toUpperCase(); 
 
   const commonStyles = "text-3xl mx-6 font-medium text-white hover:cursor-pointer";
-  const selectedTabStyle = `${commonStyles} underline`;
-  const unselectedTabStyle = `${commonStyles} hover:underline`;
+  const selectedTabStyle = `${commonStyles} underline text-amber-200`;
+  const unselectedTabStyle = `${commonStyles} hover:underline hover:text-amber-200`;
 
   return (
     <Link href={link}>
@@ -69,12 +68,11 @@ const HeaderLink: React.FC<{page: string}> = ({page}) => {
 
 const ShopContent = () => {
   return (
-    <main className='w-full h-full bg-red-300 relative z-30'>    
-
+    <section className='w-full h-full relative z-30'>    
 
       <h1>SHOePe</h1>
 
-    </main>
+    </section>
   );
 }
 
