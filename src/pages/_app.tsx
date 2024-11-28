@@ -17,7 +17,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     expires: "2025-12-31T23:59:59.999Z",
     accessToken: "fake-access-token",
     refreshToken: "fake-refresh-token",
-    email: "jon.pazos@ikasle.aeg.eus",
+    email: "ander.zubizarreta@ikasle.aeg.eus",
   };
 
 
