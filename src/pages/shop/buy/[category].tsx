@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router'
+import Header from '../../../components/Header'
 
 const Shop = () => {
 
@@ -61,21 +62,5 @@ const Background = () => {
 
 }
 
-
-const Header = () => {
-  return (
-    <header className="fixed w-full bg-black text-white shadow-md py-4 z-50">
-      <div className="container mx-auto flex items-center justify-between">
-        <div className="flex items-center"> 
-        </div>
-        <div className="flex items-center">
-          <button className="text-4xl px-3 py-6 ml-2 text-medievalSepia hover:text-darkSepia">
-            Logout
-          </button>
-        </div>
-      </div>
-    </header>
-  );
-}
 
 export default Shop;  
