@@ -12,7 +12,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     user: {
       name: "Ander Zubizarreta",
       email: "ander.zubizarreta@ikasle.aeg.eus",
-      image: "",
+      image: "https://lh3.googleusercontent.com/a-/ALV-UjWiVJ7PVPSGT55q0m_3kCvOjOvsy5x-0ac9j8rn5j1HZlJMzJQ=s65-p-k-rw-no",
     },
     expires: "2025-12-31T23:59:59.999Z",
     accessToken: "fake-access-token",
