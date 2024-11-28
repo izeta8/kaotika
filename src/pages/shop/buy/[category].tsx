@@ -1,23 +1,33 @@
 import Layout from "@/components/Layout";
 import Link from 'next/link';
 import { useRouter } from 'next/router'
+import { FaShoppingCart } from 'react-icons/fa';
+import Cart from "@/components/Cart";
+import { useState } from "react";
 
 const Shop = () => {
 
   const router = useRouter()
-  console.log(router.query.category);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
+
+   const openCart = () => setIsCartOpen(true);
+   const closeCart = () => setIsCartOpen(false);
 
   return (
     <Layout>  
-      <ShopHeader />
+      <ShopHeader onCartClick={openCart}/>
       <ShopContent />
       <Background />
+
+      {/* Cart component */}
+      <Cart isOpen={isCartOpen} onClose={closeCart} />
     </Layout>
   );
 };
 
 
-const ShopHeader = () => {
+const ShopHeader = ({onCartClick}) => {
 
   return (
     <header className='w-full h-full relative py-4 z-30 flex-col flex justify-center items-center'>
@@ -39,7 +49,12 @@ const ShopHeader = () => {
         </nav>
 
         <div className="flex items-center">
-          <span className='text-4xl mx-6 hover:underline hover:cursor-pointer'> Cart</span>
+           <button 
+            onClick={onCartClick} 
+            className="relative bg-amber-500 hover:bg-amber-600 text-black  px-8  py-6  rounded-full transition transform hover:scale-105 focus:outline-none"
+          >
+            <FaShoppingCart size={27} className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+          </button>
         </div>
         
       </div>
