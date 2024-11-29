@@ -9,6 +9,13 @@ router.get('/products/ingredients', async (req, res) => {
     res.status(200).json(ingredients);
   } catch (err) {
     res.status(500).json({ message: 'Error fetching ingredients', error: err });
+  } finally {
+    try {
+      await mongoose.disconnect();
+      console.log('Database connection closed.');
+    } catch (disconnectErr) {
+      console.error('Error disconnecting from the database:', disconnectErr);
+    }
   }
 });
 

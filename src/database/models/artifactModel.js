@@ -1,4 +1,4 @@
-const mongoose = require('../connection');
+import mongoose from '../connection.js';
 
 const { Schema } = mongoose;
 
@@ -44,4 +44,5 @@ const artifactSchema = new Schema({
   ],
 });
 
-module.exports = mongoose.model('Artifact', artifactSchema);
+const Artifact = mongoose.models.Artifact || mongoose.model('Artifact', artifactSchema);
+export default Artifact;

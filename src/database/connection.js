@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
-const config = require('./config');
+import mongoose from 'mongoose';
+import { dbConfig } from './config.js';
 
-mongoose.connect(config.dbURI, config.options)
+mongoose.connect(dbConfig.dbURI, dbConfig.options)
   .then(() => {
     console.log('Connected to MongoDB successfully');
   })
@@ -9,4 +9,5 @@ mongoose.connect(config.dbURI, config.options)
     console.error('Error connecting to MongoDB', err);
   });
 
-module.exports = mongoose;
+export default mongoose;
+

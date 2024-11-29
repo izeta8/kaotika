@@ -1,9 +1,40 @@
 import Layout from "@/components/Layout";
 import Link from 'next/link';
 import Image from "next/image";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 
 const ShopHome = () => {
+
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('/api/shop/products');
+        if (!response.ok) {
+          throw new Error("Failed to fetch products");
+        }
+        const data = await response.json();
+        console.log("Los datos de todo: " + JSON.stringify(data, null, 2));
+        setProducts(data);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          // Handle unexpected error types
+          setError('An unexpected error occurred');
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchProducts();
+  }, []);
+  
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -11,6 +42,13 @@ const ShopHome = () => {
       document.body.style.overflow = '';
     };
   }, []);
+
+  {/* Loading state */}
+  {loading && <p className="text-xl">Loading products...</p>}
+
+  {/* Error state */}
+  {error && <p className="text-xl text-red-500">Error: {error}</p>}
+
 
   return (
     <Layout>

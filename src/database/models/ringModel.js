@@ -1,4 +1,4 @@
-const mongoose = require('../connection');
+import mongoose from '../connection.js';
 
 const { Schema } = mongoose;
 
@@ -36,6 +36,5 @@ const ringSchema = new Schema({
   }
 });
 
-const Ring = mongoose.model('Ring', ringSchema);
-
-module.exports = Ring;
+const Ring = mongoose.models.Ring || mongoose.model('Ring', ringSchema);
+export default Ring;

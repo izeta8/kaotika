@@ -1,4 +1,4 @@
-const mongoose = require('../connection');
+import mongoose from '../connection.js';
 
 const { Schema } = mongoose;
 
@@ -39,4 +39,5 @@ const ingredientSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model('Ingredient', ingredientSchema);
+const Ingredient = mongoose.models.Ingredient || mongoose.model('Ingredient', ingredientSchema);
+export default Ingredient;

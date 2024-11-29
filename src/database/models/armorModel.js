@@ -1,4 +1,4 @@
-const mongoose = require('../connection');
+import mongoose from '../connection.js';
 
 const { Schema } = mongoose;
 
@@ -43,4 +43,5 @@ const armorSchema = new Schema({
   ],
 });
 
-module.exports = mongoose.model('Armor', armorSchema);
+const Armor = mongoose.models.Armor || mongoose.model('Armor', armorSchema);
+export default Armor;
