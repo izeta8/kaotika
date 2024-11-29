@@ -1,9 +1,56 @@
 import Layout from "@/components/Layout";
 import Link from 'next/link';
 import Image from "next/image";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
+import Loading from "@/components/Loading";
 
 const ShopHome = () => {
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const products: string[] = ['armors', 'artifacts', 'boots', 'helmets', 'ingredients', 'rings', 'shields', 'weapons'];
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+
+      // Check if products are already stored in localStorage
+      const storedProducts = products.every(product => {
+        const storedData = localStorage.getItem(product);
+        return storedData !== null;
+      });
+  
+      if (storedProducts) {
+        console.log("localStorage of the Shop has data");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        console.log("fetching Shop products");
+        const response = await fetch('/api/shop/products');
+        if (!response.ok) {
+          throw new Error("Failed to fetch products");
+        }
+        const data = await response.json();
+        const keys = Object.keys(data);
+        keys.forEach(key => {
+          localStorage.setItem(key, JSON.stringify(data[key]));
+        });
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError('An unexpected error occurred');
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+    
+  }, []);
+  
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -11,6 +58,13 @@ const ShopHome = () => {
       document.body.style.overflow = '';
     };
   }, []);
+
+  // Show loading spinner while loading
+  if (loading) return <Loading />;
+
+  {/* Error state */}
+  {error && <p className="text-xl text-red-500">Error: {error}</p>}
+
 
   return (
     <Layout>

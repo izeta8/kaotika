@@ -1,8 +1,8 @@
-const mongoose = require('../connection');
+import mongoose from '../connection';
 
 const { Schema } = mongoose;
 
-const ingredientSchema = new Schema({
+const armorSchema = new Schema({
   _id: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
@@ -17,8 +17,7 @@ const ingredientSchema = new Schema({
   },
   type: {
     type: String,
-    enum: ['ingredient'],
-    required: true,
+    default: "armor",
   },
   image: {
     type: String,
@@ -28,15 +27,21 @@ const ingredientSchema = new Schema({
     type: Number,
     required: true,
   },
-  rarity: {
-    type: String,
-    enum: ['common', 'uncommon', 'rare', 'epic', 'legendary'],
+  defense: {
+    type: Number,
     required: true,
   },
-  effects: {
-    type: [String],
+  modifiers: {
+    type: Object,
     required: false,
   },
+  profiles: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Profile',
+    },
+  ],
 });
 
-module.exports = mongoose.model('Ingredient', ingredientSchema);
+const Armor = mongoose.models.Armor || mongoose.model('Armor', armorSchema);
+export default Armor;

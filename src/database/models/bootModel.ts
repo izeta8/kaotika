@@ -1,4 +1,4 @@
-const mongoose = require('../connection');
+import mongoose from '../connection';
 
 const { Schema } = mongoose;
 
@@ -42,4 +42,5 @@ const bootSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model('Boot', bootSchema);
+const Boot = mongoose.models.Boot || mongoose.model('Boot', bootSchema);
+export default Boot;

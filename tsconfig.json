@@ -22,6 +22,6 @@
       "use-sound": ["./node_modules/use-sound/"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/database/models/armorModel.js", "src/database/models/artifactModel.js", "src/database/models/bootModel.js", "src/database/models/helmetModel.js", "src/database/models/ingredientModel.js", "src/database/models/ringModel.js", "src/database/models/shieldModel.js", "src/database/models/weaponModel.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/database/models/armorModel.ts", "src/database/models/artifactModel.ts", "src/database/models/bootModel.ts", "src/database/models/helmetModel.ts", "src/database/models/ingredientModel.ts", "src/database/models/ringModel.ts", "src/database/models/shieldModel.ts", "src/database/models/weaponModel.ts"],
   "exclude": ["node_modules"]
 }
