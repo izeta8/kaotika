@@ -52,7 +52,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose, ingredients, equipment }) 
 
   return (
     <div className="absolute right-4 top-20 w-[40rem] bg-gray-800 text-white z-50 border border-yellow-600 rounded-lg shadow-2xl">
-      <div className="bg-neutral-800 w-full max-h-[85vh] overflow-auto p-10 rounded-lg relative">
+      <div className="bg-neutral-800 w-full max-h-[90vh] overflow-auto p-10 rounded-lg relative">
         {/* Close button */}
         <button
           onClick={onClose}
@@ -62,7 +62,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose, ingredients, equipment }) 
         </button>
 
         {/* Title */}
-        <h2 className="text-5xl font-bold mb-10 text-center">Your Cart</h2>
+        <h2 className="text-5xl font-bold mb-8 text-center">Your Cart</h2>
 
         {/* Items */}
         {ingredientList.length === 0 && equipmentList.length === 0 ? (
@@ -72,8 +72,8 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose, ingredients, equipment }) 
             {/* Magic Stuff */}
             {ingredientList.length > 0 && (
               <div>
-                <h3 className="text-4xl font-bold mb-8">Magic Stuff</h3>
-                <div className="max-h-[30vh] overflow-y-auto space-y-6 pr-2">
+                <h3 className="text-4xl font-bold mb-4">Magic Stuff</h3>
+                <div className="max-h-[18vh] overflow-y-auto scrollbar scrollbar-thumb-medievalGold scrollbar-track-medievalGray">
                   <ul className="space-y-6">
                     {ingredientList.map((ingredient) => (
                       <li
@@ -120,8 +120,8 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose, ingredients, equipment }) 
             {/* Equipment */}
             {equipmentList.length > 0 && (
               <div>
-                <h3 className="text-4xl font-bold mb-8">Equipment</h3>
-                <div className="max-h-[30vh] overflow-y-auto space-y-6 pr-2">
+                <h3 className="text-4xl font-bold mb-4">Equipment</h3>
+                <div className="max-h-[16vh] overflow-y-auto scrollbar scrollbar-thumb-medievalGold scrollbar-track-medievalGray">
                   <ul className="space-y-6">
                     {equipmentList.map((item) => (
                       <li
