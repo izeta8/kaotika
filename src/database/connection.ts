@@ -3,7 +3,7 @@ import { dbConfig } from './config';
 
 export const createDatabaseConnection = async (): Promise<Connection | null> => {
   try {
-    const connection = await mongoose.createConnection(dbConfig.dbURI, dbConfig.options);
+    const connection = await mongoose.createConnection(dbConfig.dbURI, {});
     console.log('Created a new MongoDB connection');
     return connection;
   } catch (error) {
