@@ -1,21 +1,26 @@
-import mongoose from 'mongoose';
+import mongoose, { Connection } from 'mongoose';
 import { dbConfig } from './config';
 
-// TypeScript requires the `dbConfig` to have the correct types for `dbURI` and `options`.
-interface DbConfig {
-  dbURI: string;
-  options: mongoose.ConnectOptions;
-}
+export const createDatabaseConnection = async (): Promise<Connection | null> => {
+  try {
+    const connection = await mongoose.createConnection(dbConfig.dbURI, dbConfig.options);
+    console.log('Created a new MongoDB connection');
+    return connection;
+  } catch (error) {
+    console.error('Error creating MongoDB connection:', error);
+    return null; // Return null if the connection fails
+  }
+};
 
-const config: DbConfig = dbConfig;
-
-mongoose.connect(config.dbURI, config.options)
-  .then(() => {
-    console.log('Connected to MongoDB successfully');
-  })
-  .catch(err => {
-    console.error('Error connecting to MongoDB', err);
-  });
-
-export default mongoose;
-
+export const closeDatabaseConnection = async (connection: Connection): Promise<void> => {
+  try {
+    if (connection.readyState !== 0) {
+      await connection.close();
+      console.log('Closed isolated MongoDB connection');
+    } else {
+      console.log('Connection was already closed');
+    }
+  } catch (error) {
+    console.error('Error closing MongoDB connection:', error);
+  }
+};

@@ -1,13 +1,20 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { fetchAllProducts } from './productsService';
+import mongoose from 'mongoose';
+import { createDatabaseConnection, closeDatabaseConnection } from '@/database/connection';
+
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void> {
+  let connection: mongoose.Connection | null = null
   try {
-    const allProducts = await fetchAllProducts();
+    connection = await createDatabaseConnection();
+    const allProducts = await fetchAllProducts(connection);
     res.status(200).json(allProducts);
   } catch (error: any) {
     res.status(500).json({ message: 'Error fetching products', error: error.message });
+  } finally {
+    if (connection) {
+      await closeDatabaseConnection(connection);
+    }
   }
 }
-
-//////////////DISCONNECT mongoose////////////////

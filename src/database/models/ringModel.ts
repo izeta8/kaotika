@@ -1,4 +1,4 @@
-import mongoose from '../connection';
+import mongoose from 'mongoose';
 
 const { Schema } = mongoose;
 
