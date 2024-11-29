@@ -9,7 +9,54 @@ const Shop = () => {
 
   const router = useRouter()
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [ingredietsInCart,setIngredientsInCart] = useState([]);
+  const [equipmentInCart,setEquipmentInCart] = useState([]);
 
+  const fakeIngredients = [
+    {
+      id: 1,
+      name: "Vitalis Root",
+      quantity: 3,
+      price: 70,
+    },
+    {
+      id: 2,
+      name: "Fire Blossom",
+      quantity: 2,
+      price: 120,
+    },
+    {
+      id: 3,
+      name: "Fire Blossom",
+      quantity: 2,
+      price: 120,
+    },
+    {
+      id: 4,
+      name: "Fire Blossom",
+      quantity: 2,
+      price: 120,
+    },
+  ];
+  
+  const fakeEquipment = [
+    {
+      id: 1,
+      name: "Dragonbones Plate",
+      price: 32000,
+    },
+    {
+      id: 2,
+      name: "Shadowfang Blade",
+      price: 15000,
+    },
+    {
+      id: 3,
+      name: "Armor",
+      price: 12000,
+    },
+  ];
+  
 
    const openCart = () => setIsCartOpen(true);
    const closeCart = () => setIsCartOpen(false);
@@ -21,7 +68,7 @@ const Shop = () => {
       <Background />
 
       {/* Cart component */}
-      <Cart isOpen={isCartOpen} onClose={closeCart} />
+      <Cart isOpen={isCartOpen} onClose={closeCart} ingredients={fakeIngredients} equipment={fakeEquipment}/>
     </Layout>
   );
 };
