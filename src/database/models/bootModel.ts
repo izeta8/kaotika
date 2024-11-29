@@ -1,8 +1,8 @@
-import mongoose from '../connection.js';
+import mongoose from '../connection';
 
 const { Schema } = mongoose;
 
-const artifactSchema = new Schema({
+const bootSchema = new Schema({
   _id: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
@@ -17,7 +17,7 @@ const artifactSchema = new Schema({
   },
   type: {
     type: String,
-    enum: ['artifact'],
+    enum: ['boot'],
     required: true,
   },
   image: {
@@ -25,6 +25,10 @@ const artifactSchema = new Schema({
     required: true,
   },
   value: {
+    type: Number,
+    required: true,
+  },
+  defense: {
     type: Number,
     required: true,
   },
@@ -36,13 +40,7 @@ const artifactSchema = new Schema({
     type: Number,
     required: true,
   },
-  profiles: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Profile',
-    },
-  ],
 });
 
-const Artifact = mongoose.models.Artifact || mongoose.model('Artifact', artifactSchema);
-export default Artifact;
+const Boot = mongoose.models.Boot || mongoose.model('Boot', bootSchema);
+export default Boot;

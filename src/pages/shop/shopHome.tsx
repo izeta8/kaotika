@@ -5,34 +5,49 @@ import { useState, useEffect } from "react";
 
 const ShopHome = () => {
 
-  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const products: string[] = ['armors', 'artifacts', 'boots', 'helmets', 'ingredients', 'rings', 'shields', 'weapons'];
 
   useEffect(() => {
     const fetchProducts = async () => {
+
+      // Check if products are already stored in localStorage
+      const storedProducts = products.every(product => {
+        const storedData = localStorage.getItem(product);
+        return storedData !== null;
+      });
+  
+      if (storedProducts) {
+        console.log("localStorage of the Shop has data");
+        setLoading(false);
+        return;
+      }
+
       try {
+        console.log("fetching Shop products");
         const response = await fetch('/api/shop/products');
         if (!response.ok) {
           throw new Error("Failed to fetch products");
         }
         const data = await response.json();
-        console.log("Los datos de todo: " + JSON.stringify(data, null, 2));
-        setProducts(data);
+        const keys = Object.keys(data);
+        keys.forEach(key => {
+          localStorage.setItem(key, JSON.stringify(data[key]));
+        });
       } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err.message);
         } else {
-          // Handle unexpected error types
           setError('An unexpected error occurred');
         }
       } finally {
         setLoading(false);
       }
     };
-  
+
     fetchProducts();
+    
   }, []);
   
 
