@@ -41,9 +41,14 @@ export const fetchAllProducts = async (connection: mongoose.Connection) => {
       shields,
       weapons,
     };
-  } catch (error) {
-    console.error('Error fetching products:', error);
-    throw new Error(`Error fetching products: ${error.message}`);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('Error fetching products:', error);
+      throw new Error(`Error fetching products: ${error.message}`);
+    } else {
+      console.error('Unexpected error type:', error);
+      throw new Error('An unexpected error occurred while fetching products');
+    }
   }
 };
 

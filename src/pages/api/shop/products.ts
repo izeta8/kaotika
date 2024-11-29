@@ -8,6 +8,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   let connection: mongoose.Connection | null = null
   try {
     connection = await createDatabaseConnection();
+    if (!connection) {
+      throw new Error('Database connection failed');
+    }
     const allProducts = await fetchAllProducts(connection);
     res.status(200).json(allProducts);
   } catch (error: any) {
