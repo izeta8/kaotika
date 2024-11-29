@@ -2,6 +2,7 @@ import Layout from "@/components/Layout";
 import Link from 'next/link';
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import Loading from "@/components/Loading";
 
 const ShopHome = () => {
 
@@ -58,8 +59,8 @@ const ShopHome = () => {
     };
   }, []);
 
-  {/* Loading state */}
-  {loading && <p className="text-xl">Loading products...</p>}
+  // Show loading spinner while loading
+  if (loading) return <Loading />;
 
   {/* Error state */}
   {error && <p className="text-xl text-red-500">Error: {error}</p>}
