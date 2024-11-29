@@ -31,8 +31,25 @@ const config: Config = {
       borderColor: {
         sepia: '#cda882'
       },
+      scrollbar: {
+        width: "10px",
+        track: {
+          backgroundColor: "#2F4F4F", // Color del fondo del scroll
+        },
+        thumb: {
+          backgroundColor: "#DAA520", // Color del thumb del scroll
+          borderRadius: "5px",
+          hover: {
+            backgroundColor: "#FFD700", // Hover del thumb
+          },
+        },
+      },
     },
   },
-  plugins: [nextui()],
+  plugins: [
+    nextui(),
+    require('tailwind-scrollbar')({ nocompatible: true }) 
+  ],
 };
+
 export default config;
