@@ -1,13 +1,21 @@
+import { Player } from "@/_common/interfaces/Player";
 import Layout from "@/components/Layout";
+import PlayerInventorySellShop from "@/components/shop/PlayerInventorySellShop";
+import { GRID_NUMBER } from "@/constants/constants";
 import Link from 'next/link';
+import player from "./FakeTestPlayer";
+
 
 const Sell = () => {
+
+
   return (
-  
+
     <Layout>
-      <div className="flex flex-col text-medievalSepia bg-cover bg-no-repeat bg-center h-full" style={{ backgroundImage: 'url(/images/shop/background_sell_shop.jpg)'}}>
-     
-       <h1 className="text-5xl font-bold mb-8">SELL</h1>
+      <div className="flex flex-col text-medievalSepia bg-cover bg-no-repeat bg-center min-h-screen" style={{ backgroundImage: 'url(/images/shop/background_sell_shop.jpg)' }}>
+
+    <PlayerInventorySellShop playerData={player}/>
+
         {/* Botón de Return */}
         <Link
           href="/shop/shopHome"
@@ -15,10 +23,10 @@ const Sell = () => {
         >
           Return to Home
         </Link>
-        </div>
-  </Layout>
-  
-  
+      </div>
+    </Layout>
+
+
   );
 };
 
