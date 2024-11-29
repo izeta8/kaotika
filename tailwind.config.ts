@@ -25,7 +25,8 @@ const config: Config = {
         medievalGray: '#2F4F4F',
         medievalSepia: '#cda882',
         darkSepia: '#87634A',
-        blackSepia: '#513B2C'
+        blackSepia: '#513B2C',
+        grey: '#292524',
       },
       borderColor: {
         sepia: '#cda882'

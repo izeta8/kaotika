@@ -3,27 +3,84 @@ import Link from 'next/link';
 import { useRouter } from 'next/router'
 import armors from '../../../data/armors.json'
 import React from "react";
+import { FaShoppingCart } from 'react-icons/fa';
+import Cart from "@/components/Cart";
+import { useState } from "react";
 
 const Shop = () => {
 
   const router = useRouter()
-  console.log(router.query.category);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [ingredietsInCart,setIngredientsInCart] = useState([]);
+  const [equipmentInCart,setEquipmentInCart] = useState([]);
+
+  const fakeIngredients = [
+    {
+      id: 1,
+      name: "Vitalis Root",
+      quantity: 3,
+      price: 70,
+    },
+    {
+      id: 2,
+      name: "Fire Blossom",
+      quantity: 2,
+      price: 120,
+    },
+    {
+      id: 3,
+      name: "Fire Blossom",
+      quantity: 2,
+      price: 120,
+    },
+    {
+      id: 4,
+      name: "Fire Blossom",
+      quantity: 2,
+      price: 120,
+    },
+  ];
+  
+  const fakeEquipment = [
+    {
+      id: 1,
+      name: "Dragonbones Plate",
+      price: 32000,
+    },
+    {
+      id: 2,
+      name: "Shadowfang Blade",
+      price: 15000,
+    },
+    {
+      id: 3,
+      name: "Armor",
+      price: 12000,
+    },
+  ];
+  
+
+   const openCart = () => setIsCartOpen(true);
+   const closeCart = () => setIsCartOpen(false);
 
   return (  
     <div  // I place this 'div' so the background covers the full height
       className="relative min-h-screen flex flex-col bg-[#191A1D] bg-repeat-center"  
     >
       <Layout>
-        <ShopHeader />
+        <ShopHeader onCartClick={openCart}/>
         <ShopContent />  
         <Background />
+        
+        {/* Cart component */}
+        <Cart isOpen={isCartOpen} onClose={closeCart} ingredients={fakeIngredients} equipment={fakeEquipment}/>
       </Layout> 
     </div>
   );
 };
 
 
-const ShopHeader = () => {
+const ShopHeader = ({onCartClick}) => {
 
   return (
     <header className='w-full h-full relative py-4 z-30 flex-col flex justify-center items-center'>
@@ -45,7 +102,12 @@ const ShopHeader = () => {
         </nav>
 
         <div className="flex items-center">
-          <span className='text-4xl mx-6 hover:underline hover:cursor-pointer'> Cart</span>
+           <button 
+            onClick={onCartClick} 
+            className="relative bg-amber-500 hover:bg-amber-600 text-black  px-8  py-6  rounded-full transition transform hover:scale-105 focus:outline-none"
+          >
+            <FaShoppingCart size={27} className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+          </button>
         </div>
         
       </div>
