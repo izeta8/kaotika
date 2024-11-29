@@ -2,12 +2,11 @@ import Layout from "@/components/Layout";
 import Link from 'next/link';
 import { useRouter } from 'next/router'
 
-
 const Shop = () => {
 
   const router = useRouter()
   console.log(router.query.category);
-  
+
   return (
     <Layout>  
       <ShopHeader />
@@ -18,25 +17,62 @@ const Shop = () => {
 };
 
 
-
 const ShopHeader = () => {
+
   return (
-    <Link
-    href="/shop/shopHome"
-    className='w-full h-full bg-orange-800 relative py-4 z-30 pt-32'
-  >
-    Return to Home
-  </Link>
+    <header className='w-full h-full relative py-4 z-30 flex-col flex justify-center items-center'>
+      <div className="container mx-auto flex items-center justify-between">
+
+          <div className="flex items-center"> 
+          <Link href={'/shop/shopHome'}>
+            <span className='text-4xl mx-6 hover:underline hover:cursor-pointer text-amber-200'> &lt; Return</span>
+          </Link>
+        </div>
+
+        <nav className="flex-1 text-center">  
+          <HeaderLink page="helmets" />   
+          <HeaderLink page="weapons" />   
+          <HeaderLink page="armors" />   
+          <HeaderLink page="shields" />   
+          <HeaderLink page="boots" />   
+          <HeaderLink page="rings" />   
+        </nav>
+
+        <div className="flex items-center">
+          <span className='text-4xl mx-6 hover:underline hover:cursor-pointer'> Cart</span>
+        </div>
+        
+      </div>
+      <img className="w-full px-12" src="/images/shop/buy/header_separator.png" />
+
+    </header>
   );
+}
+
+const HeaderLink: React.FC<{page: string}> = ({page}) => {
+  
+  const router = useRouter();
+  const link = `/shop/buy/${page}`;
+  const label = page.toUpperCase(); 
+
+  const commonStyles = "text-3xl mx-6 font-medium text-white hover:cursor-pointer";
+  const selectedTabStyle = `${commonStyles} underline text-amber-200`;
+  const unselectedTabStyle = `${commonStyles} hover:underline hover:text-amber-200`;
+
+  return (
+    <Link href={link}>
+      <span className={router.query.category == page ? selectedTabStyle : unselectedTabStyle}>{label}</span>
+    </Link>
+  )
 }
 
 const ShopContent = () => {
   return (
-    <main className='w-full h-full bg-red-300 relative z-30'>    
+    <section className='w-full h-full relative z-30'>    
 
       <h1>SHOePe</h1>
 
-    </main>
+    </section>
   );
 }
 
@@ -49,8 +85,8 @@ const Background = () => {
         style={{
           backgroundColor: '#191A1D',
           backgroundImage: "url('/images/shop/background_pattern.png')",
-          backgroundRepeat: "repeat", // or "repeat", etc.
-          backgroundPosition: "center", // or other positions
+          backgroundRepeat: "repeat",
+          backgroundPosition: "center",
           WebkitBackgroundSize: '8%',
         }}
         />
