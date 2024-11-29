@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import armors from '../../../data/armors.json'
 import React from "react";
 import { FaShoppingCart } from 'react-icons/fa';
-import Cart from "@/components/Cart";
+import Cart from "@/components/shop/Cart";
 import { useState } from "react";
 
 const Shop = () => {
