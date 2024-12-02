@@ -50,56 +50,11 @@ const Shop = () => {
     }
   }, [router.query.category]);
 
-  const fakeIngredients = [
-    {
-      id: 1,
-      name: "Vitalis Root",
-      quantity: 3,
-      price: 70,
-    },
-    {
-      id: 2,
-      name: "Fire Blossom",
-      quantity: 2,
-      price: 120,
-    },
-    {
-      id: 3,
-      name: "Fire Blossom",
-      quantity: 2,
-      price: 120,
-    },
-    {
-      id: 4,
-      name: "Fire Blossom",
-      quantity: 2,
-      price: 120,
-    },
-  ];
-  
-  const fakeEquipment = [
-    {
-      id: 1,
-      name: "Dragonbones Plate",
-      price: 32000,
-    },
-    {
-      id: 2,
-      name: "Shadowfang Blade",
-      price: 15000,
-    },
-    {
-      id: 3,
-      name: "Armor",
-      price: 12000,
-    },
-  ];
-  
 
-   const openCart = () => setIsCartOpen(true);
-   const closeCart = () => setIsCartOpen(false);
+  const openCart = () => setIsCartOpen(true);
+  const closeCart = () => setIsCartOpen(false);
 
-   useEffect(() => {
+  useEffect(() => {
     if (isCartOpen) {
       document.body.classList.add("overflow-hidden");
     } else {
