@@ -208,8 +208,6 @@ const ShopContent = ({categoryData}) => {
   const routeName: string = router.query.category as string;
 
   if (!equipmentCategories.includes(routeName) && !magicStuffCategories.includes(routeName)) {
-    console.log("Entra aqui");
-    console.log(routeName)
     return  (
       <section className='w-full h-full relative z-30 flex justify-center items-center'>    
           <h2 className="text-5xl text-medievalSepia">Category does not exist: 
