@@ -103,7 +103,7 @@ const EquipmentShop = () => {
 const MagicalStuffShop = () => {
   return (
     <Link
-      href="/shop/buy/magical-stuff"
+      href="/shop/buy/ingredients"
       className="flex items-center justify-center text-white rounded-lg transition transform hover:scale-105 px-4 py-2"
     >
       <Image
