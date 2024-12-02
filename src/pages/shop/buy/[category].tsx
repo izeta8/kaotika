@@ -1,7 +1,6 @@
 import Layout from "@/components/Layout";
 import Link from 'next/link';
 import { useRouter } from 'next/router'
-import armors from '../../../data/armors.json'
 import React from "react";
 import { FaShoppingCart } from 'react-icons/fa';
 import Cart from "@/components/shop/Cart";
@@ -24,7 +23,7 @@ const Shop = () => {
 
   useEffect(() => { //get the specific data of each category from localStorage
     // Get pageName from router
-    const pageName: string = (router.query.category as string) || 'armors';
+    const pageName: string = (router.query.category as string);
     console.log("name of the page: " + pageName);
     
     const storedData = localStorage.getItem(pageName);
@@ -205,11 +204,10 @@ const HeaderLink: React.FC<{page: string}> = ({page}) => {
 
 const ShopContent = ({categoryData}) => {
 
-
   const router = useRouter()
   const routeName: string = router.query.category as string;
 
-  if (!equipmentCategories.includes(routeName) && !magicStuffCategories.includes(routeName)) {
+  if (routeName && !equipmentCategories.includes(routeName) && !magicStuffCategories.includes(routeName)) {
     return  (
       <section className='w-full h-full relative z-30 flex justify-center items-center'>    
           <h2 className="text-5xl text-medievalSepia">Category does not exist: 
@@ -230,7 +228,10 @@ const ShopContent = ({categoryData}) => {
 
 const ItemsList = ({categoryData}) => {
 
-  if (categoryData.length === 0) {
+  const router = useRouter()
+  const routeName: string = router.query.category as string;
+
+  if (routeName && categoryData.length === 0) {
     return <h2 className="text-4xl m-10 text-medievalSepia">There are no available items in this category</h2>;
   }
 
@@ -264,9 +265,13 @@ const Card = ({itemData}) => {
                               `w-1/2 grid-cols-1` :
                               `w-full grid-cols-2`;
 
+
+  const equipmentTextGradient = "bg-gradient-to-b from-[#FFD0A0] via-[#EED1B4] to-[#B2AF9E]"; 
+  const magicalStuffTextGradient = "bg-gradient-to-b from-[#212532] via-[#9CB5EA] to-[#3A3C45]"; 
+
                                                   
   return (
-    <div className="bg-slate-900 w-72 p-6 flex flex-col justify-center items-center relative z-10" 
+    <div className="bg-slate-900 w-72 p-6 flex flex-col justify-center items-center relative z-10 select-none" 
       style={{
         height: 420,
         backgroundImage: backgroundPath,
@@ -293,7 +298,7 @@ const Card = ({itemData}) => {
 
         {/* IMAGE  */}
         <img  
-          className="h-44 drop-shadow-2xl"
+          className={`h-44 drop-shadow-2xl ${isMagicalStuffShop() ? 'rounded-full border-3 border-[#1e1f23]' : null}`}
           src={image_url}  
           draggable={false}
           onError={(e) => {
@@ -305,7 +310,7 @@ const Card = ({itemData}) => {
 
         {/* ITEM NAME */}
         <p 
-          className={`${nameFontSize} font-medium bg-gradient-to-b from-[#FFD0A0] via-[#EED1B4] to-[#B2AF9E] bg-clip-text text-transparent text-center bg-red-900`}
+          className={`${nameFontSize} font-medium bg-clip-text text-transparent select-text text-center ${isMagicalStuffShop() ? magicalStuffTextGradient : equipmentTextGradient}`}
         >
           {name}
         </p>
