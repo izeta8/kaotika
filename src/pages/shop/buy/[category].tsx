@@ -5,7 +5,7 @@ import armors from '../../../data/armors.json'
 import React from "react";
 import { FaShoppingCart } from 'react-icons/fa';
 import Cart from "@/components/shop/Cart";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 
 const Shop = () => {
 
@@ -62,6 +62,17 @@ const Shop = () => {
 
    const openCart = () => setIsCartOpen(true);
    const closeCart = () => setIsCartOpen(false);
+
+   useEffect(() => {
+    if (isCartOpen) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+    return () => {
+      document.body.classList.remove("overflow-hidden");
+    };
+  }, [isCartOpen]);
 
   return (  
     <div
