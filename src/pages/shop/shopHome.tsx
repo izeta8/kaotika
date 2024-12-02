@@ -81,7 +81,7 @@ const ShopHome = () => {
 const EquipmentShop = () => {
   return (
     <Link
-      href="/shop/buy/equipment"
+      href="/shop/buy/armors"
       className="flex items-center justify-center text-white rounded-lg transition transform hover:scale-105 px-4 py-2"
     >
       <Image
@@ -99,7 +99,7 @@ const EquipmentShop = () => {
 const MagicalStuffShop = () => {
   return (
     <Link
-      href="/shop/buy/magical-stuff"
+      href="/shop/buy/ingredients"
       className="flex items-center justify-center text-white rounded-lg transition transform hover:scale-105 px-4 py-2"
     >
       <Image
