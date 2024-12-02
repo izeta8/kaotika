@@ -14,52 +14,6 @@ const Shop = () => {
   const [ingredietsInCart,setIngredientsInCart] = useState([]);
   const [equipmentInCart,setEquipmentInCart] = useState([]);
 
-  const fakeIngredients = [
-    {
-      id: 1,
-      name: "Vitalis Root",
-      quantity: 3,
-      price: 70,
-    },
-    {
-      id: 2,
-      name: "Fire Blossom",
-      quantity: 2,
-      price: 120,
-    },
-    {
-      id: 3,
-      name: "Fire Blossom",
-      quantity: 2,
-      price: 120,
-    },
-    {
-      id: 4,
-      name: "Fire Blossom",
-      quantity: 2,
-      price: 120,
-    },
-  ];
-  
-  const fakeEquipment = [
-    {
-      id: 1,
-      name: "Dragonbones Plate",
-      price: 32000,
-    },
-    {
-      id: 2,
-      name: "Shadowfang Blade",
-      price: 15000,
-    },
-    {
-      id: 3,
-      name: "Armor",
-      price: 12000,
-    },
-  ];
-  
-
    const openCart = () => setIsCartOpen(true);
    const closeCart = () => setIsCartOpen(false);
 
@@ -74,13 +28,40 @@ const Shop = () => {
     };
   }, [isCartOpen]);
 
+  const addToCart = (item) => {
+    setEquipmentInCart((prev) => {
+      const existingItem = prev.find((equipment) => equipment.id === item._id.$oid);
+  
+      if (existingItem) {
+        // Incrementa la cantidad si el artículo ya está en el carrito
+        return prev.map((equipment) =>
+          equipment.id === item._id.$oid
+            ? { ...equipment, quantity: equipment.quantity + 1 }
+            : equipment
+        );
+      } else {
+        // Añade el artículo al carrito
+        return [
+          ...prev,
+          {
+            id: item._id.$oid,
+            name: item.name,
+            price: item.value,
+            quantity: 1,
+          },
+        ];
+      }
+    });
+  };
+
+
   return (  
     <div
       className="relative min-h-screen flex flex-col bg-[#191A1D] bg-repeat-center"
     >
       <Layout>
         <ShopHeader onCartClick={openCart}/>
-        <ShopContent />  
+        <ShopContent addToCart={addToCart} /> 
         <Background />
 
         {isCartOpen && (
@@ -94,8 +75,8 @@ const Shop = () => {
             <Cart
               isOpen={isCartOpen}
               onClose={closeCart}
-              ingredients={fakeIngredients}
-              equipment={fakeEquipment}
+              ingredients={ingredietsInCart}
+              equipment={equipmentInCart}
               className="relative z-50 pointer-events-auto"
             />
           </div>
@@ -165,29 +146,29 @@ const HeaderLink: React.FC<{page: string}> = ({page}) => {
   )
 }
 
-const ShopContent = () => {
+const ShopContent = ({addToCart}) => {
   return (
     <section className='w-full h-full relative z-30 flex justify-center items-center'>    
 
       {/* FILTER AND SORT BY */}
-      <ItemsList />
+      <ItemsList addToCart={addToCart} />
 
     </section>
   );
 }
 
-const ItemsList = () => {
+const ItemsList = ({addToCart}) => {
   return (
     <div className="w-11/12 my-10 grid grid-cols-5 gap-8 place-items-center"> 
       {armors.map((item, index) => {
-         return <Card key={index} itemData={item} />
+         return <Card key={index} itemData={item} addToCart={addToCart} />;
         })
       }
     </div>
   )
 }
 
-const Card = ({itemData}) => {
+const Card = ({itemData,addToCart}) => {
 
   if (!itemData) {return}
 
@@ -229,7 +210,7 @@ const Card = ({itemData}) => {
 
         <div className="w-full flex flex-row gap-4">
           <CardButton onClick={() => {console.log("HANDLE BUY")}} label="BUY"/> 
-          <CardButton onClick={() => {console.log("HANDLE ADD TO CART")}} label="ADD TO CART"/> 
+          <CardButton onClick={() => addToCart(itemData)} label="ADD TO CART" />
         </div>
 
 
