@@ -1,38 +1,56 @@
-import Armor from '../../../database/models/armorModel';
-import Artifact from '../../../database/models/artifactModel';
-import Boot from '../../../database/models/bootModel';
-import Helmet from '../../../database/models/helmetModel';
-import Ingredient from '../../../database/models/ingredientModel';
-import Ring from '../../../database/models/ringModel';  // Make sure you import Ring
-import Shield from '../../../database/models/shieldModel';  // Make sure you import Shield
-import Weapon from '../../../database/models/weaponModel';  // Make sure you import Weapon
+import mongoose from 'mongoose';
+import  Ring  from '../../../database/models/ringModel';
+import  Armor  from '../../../database/models/armorModel';
+import  Artifact  from '../../../database/models/artifactModel';
+import  Boot  from '../../../database/models/bootModel';
+import  Helmet  from '../../../database/models/helmetModel';
+import  Ingredient  from '../../../database/models/ingredientModel';
+import  Shield  from '../../../database/models/shieldModel';
+import  Weapon  from '../../../database/models/weaponModel';
 
-export const fetchAllProducts = async () => {
+export const fetchAllProducts = async (connection: mongoose.Connection) => {
   try {
-    const rings = await Ring.find();
-    const shields = await Shield.find();
-    const weapons = await Weapon.find();
-    const armors = await Armor.find();
-    const artifacts = await Artifact.find();
-    const boots = await Boot.find();
-    const helmets = await Helmet.find();
-    const ingredients = await Ingredient.find();
+    
+    // Ensure that models are registered with the passed connection
+    const RingModel = connection.model('Ring', Ring.schema)
+    const ArmorModel = connection.model('Armor', Armor.schema);
+    const ArtifactModel = connection.model('Artifact', Artifact.schema);
+    const BootModel = connection.model('Boot', Boot.schema);
+    const HelmetModel = connection.model('Helmet', Helmet.schema);
+    const IngredientModel = connection.model('Ingredient', Ingredient.schema);
+    const ShieldModel = connection.model('Shield', Shield.schema);
+    const WeaponModel = connection.model('Weapon', Weapon.schema);
 
-    // Return an object with keys for each product type and their arrays
+    // Fetch data from the models
+    const rings = await RingModel.find().exec();
+    const armors = await ArmorModel.find().exec();
+    const artifacts = await ArtifactModel.find().exec();
+    const boots = await BootModel.find().exec();
+    const helmets = await HelmetModel.find().exec();
+    const ingredients = await IngredientModel.find().exec();
+    const shields = await ShieldModel.find().exec();
+    const weapons = await WeaponModel.find().exec();
+
     return {
       rings,
-      shields,
-      weapons,
       armors,
       artifacts,
       boots,
       helmets,
       ingredients,
+      shields,
+      weapons,
     };
-  } catch (err) {
-    console.error('Error fetching products:', err);
-    throw new Error('Error fetching products');
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('Error fetching products:', error);
+      throw new Error(`Error fetching products: ${error.message}`);
+    } else {
+      console.error('Unexpected error type:', error);
+      throw new Error('An unexpected error occurred while fetching products');
+    }
   }
 };
+
 
 
