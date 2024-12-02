@@ -1,6 +1,6 @@
 import Layout from "@/components/Layout";
 import Link from 'next/link';
-import router, { useRouter } from 'next/router'
+import { useRouter } from 'next/router'
 import armors from '../../../data/armors.json'
 import React from "react";
 import { FaShoppingCart } from 'react-icons/fa';
@@ -13,6 +13,8 @@ const equipmentCategories = ["helmets", "weapons", "armors", "shields", "boots",
 const magicStuffCategories = ["ingredients", "containers"];
 
 const Shop = () => {
+
+  const router = useRouter()
 
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [ingredietsInCart,setIngredientsInCart] = useState([]);
