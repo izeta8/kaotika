@@ -34,22 +34,31 @@ const config: Config = {
       scrollbar: {
         width: "10px",
         track: {
-          backgroundColor: "#2F4F4F", // Color del fondo del scroll
+          backgroundColor: "#2F4F4F",
         },
         thumb: {
-          backgroundColor: "#DAA520", // Color del thumb del scroll
+          backgroundColor: "#DAA520",
           borderRadius: "5px",
           hover: {
-            backgroundColor: "#FFD700", // Hover del thumb
+            backgroundColor: "#FFD700",
+          },
+        },
+        keyframes: {
+          slideInFromRight: {
+            '0%': { transform: 'translateX(100%)', opacity: '0' },
+            '100%': { transform: 'translateX(0)', opacity: '1' },
+          },
+        },
+          animation: {
+            slideInFromRight: 'slideInFromRight 0.5s ease-out',
           },
         },
       },
     },
-  },
-  plugins: [
-    nextui(),
-    require('tailwind-scrollbar')({ nocompatible: true }) 
-  ],
-};
+    plugins: [
+      nextui(),
+      require('tailwind-scrollbar')({ nocompatible: true })
+    ],
+  };
 
-export default config;
+  export default config;
