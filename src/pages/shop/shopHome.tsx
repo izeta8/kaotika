@@ -80,12 +80,9 @@ const ShopHome = () => {
 };
 
 const EquipmentShop = () => {
-  const router = useRouter();
-  const currentCategory = router.query.category || 'armors';
-  const href = `/shop/buy/${currentCategory}`;
   return (
     <Link
-      href={href}
+      href="/shop/buy/armors"
       className="flex items-center justify-center text-white rounded-lg transition transform hover:scale-105 px-4 py-2"
     >
       <Image

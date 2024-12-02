@@ -25,27 +25,29 @@ const Shop = () => {
     // Get pageName from router
     const pageName: string = (router.query.category as string);
     console.log("name of the page: " + pageName);
-    
-    const storedData = localStorage.getItem(pageName);
 
-    if (storedData) {
-      try {
-        const parsedData = JSON.parse(storedData); // Parse the JSON string
-        if (Array.isArray(parsedData)) {
-          setCategoryData(parsedData); // Set the parsed array to state
-        } else {
-          console.warn("Data in localStorage is not an array:", parsedData);
-          setCategoryData([]); // Reset state if data is not an array
+    if (pageName) { //gets value after component gets mounted
+      const storedData = localStorage.getItem(pageName);
+
+      if (storedData) {
+        try {
+          const parsedData = JSON.parse(storedData); // Parse the JSON string
+          if (Array.isArray(parsedData)) {
+            setCategoryData(parsedData); // Set the parsed array to state
+          } else {
+            console.warn("Data in localStorage is not an array:", parsedData);
+            setCategoryData([]); // Reset state if data is not an array
+          }
+        } catch (error) {
+          console.error("Failed to parse localStorage data:", error);
+          setCategoryData([]); // Reset state in case of parse error
         }
-      } catch (error) {
-        console.error("Failed to parse localStorage data:", error);
-        setCategoryData([]); // Reset state in case of parse error
-      }
-    } else {
-      console.log("No data found in localStorage for key:", pageName);
-      setCategoryData([]); // Set to null if no data is found
-    }
+        } else {
+        console.log("No data found in localStorage for key:", pageName);
+        setCategoryData([]); // Set to null if no data is found
+        }
 
+    }
   }, [router.query.category]);
 
   const fakeIngredients = [
