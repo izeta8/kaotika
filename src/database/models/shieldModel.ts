@@ -1,4 +1,4 @@
-const mongoose = require('../connection');
+import mongoose from 'mongoose';
 
 const { Schema } = mongoose;
 
@@ -38,6 +38,5 @@ const shieldSchema = new Schema({
   }
 });
 
-const Shield = mongoose.model('Shield', shieldSchema);
-
-module.exports = Shield;
+const Shield = mongoose.models.Shield || mongoose.model('Shield', shieldSchema);
+export default Shield;

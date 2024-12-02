@@ -1,8 +1,8 @@
-const mongoose = require('../connection');
+import mongoose from 'mongoose';
 
 const { Schema } = mongoose;
 
-const helmetSchema = new Schema({
+const bootSchema = new Schema({
   _id: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
@@ -17,7 +17,7 @@ const helmetSchema = new Schema({
   },
   type: {
     type: String,
-    enum: ['helmet'],
+    enum: ['boot'],
     required: true,
   },
   image: {
@@ -42,4 +42,5 @@ const helmetSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model('Helmet', helmetSchema);
+const Boot = mongoose.models.Boot || mongoose.model('Boot', bootSchema);
+export default Boot;
