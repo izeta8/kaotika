@@ -7,8 +7,6 @@ interface promps {
 
 const SellShopObjectDetails: React.FC<promps> = () => {
 
-    
-
   const item = {
         "modifiers": {
             "intelligence": 2,
@@ -30,12 +28,10 @@ const SellShopObjectDetails: React.FC<promps> = () => {
         "isUnique": false
     }
 
-    
-
     return (
 
         <div>
-            <div className="flex flex-row text-medievalSepia bg-cover bg-no-repeat bg-center w-2" style={{ backgroundImage: 'url(/images/shop/ShopItemDetails.png)', width: '740px', height: '500px' }}>
+            <div className="flex flex-row text-medievalSepia bg-cover bg-no-repeat bg-center w-2" style={{ backgroundImage: 'url(/images/shop/shop_item_details.png)', width: '740px', height: '500px' }}>
                 <div className="flex-col w-1/2">
                     <h2 className="text-3xl pt-10 px-4 mb-4 text-center">{item.name}</h2>
 
