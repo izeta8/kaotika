@@ -220,10 +220,20 @@ const Card = ({itemData}) => {
 
   const nameFontSize = name.length > 15 ? 'text-3xl font-' : 'text-4xl';
 
+  const backgroundPath = isMagicalStuffShop() ? 
+                          "url('/images/shop/buy/magic_stuff_card_background.png')" : 
+                          "url('/images/shop/buy/equipment_card_background.png')";
+
+
+  const goldLevelContainerStyle =  isMagicalStuffShop() ? 
+                                     `w-1/2 grid-cols-1` :
+                                     `w-full grid-cols-2`;
+
+                                                  
   return (
     <div className="bg-slate-900 w-72 p-6 flex flex-col justify-center items-center relative z-10" 
       style={{
-        backgroundImage: "url('/images/shop/buy/equipment_card_background.png')",
+        backgroundImage: backgroundPath,
         backgroundRepeat: "no-repeat",
         WebkitBackgroundSize: 'contain',
         backgroundSize: '100%'
@@ -232,28 +242,38 @@ const Card = ({itemData}) => {
        
       <div className="flex flex-col justify-center items-center gap-3 z-30"> 
 
-        <div className="w-full grid grid-cols-2 gap-3 place-items-center">
-          <ItemDataLabel data={value} image={"/images/icons/gold.png"} /> 
-          <ItemDataLabel data={min_lvl} image={"/images/icons/level.png"} /> 
+        {/* GOLD & MIN. LEVEL */}
+        <div className={`grid gap-3 place-items-center ${goldLevelContainerStyle}`}>
+          <ItemDataLabel data={value} image={"/images/icons/gold.png"} />
+
+          {/* If the shop is Magical Stuff, we do not want to show the min level */}
+          {isEquipmentShop() ? 
+            <ItemDataLabel data={min_lvl} image={"/images/icons/level.png"} /> 
+            :
+            null 
+          }
+
         </div>
 
+        {/* IMAGE  */}
         <img  
           className="h-44 drop-shadow-2xl"
           src={image_url}  
           draggable={false}
         />
 
+        {/* ITEM NAME */}
         <p 
           className={`${nameFontSize} font-medium bg-gradient-to-b from-[#FFD0A0] via-[#EED1B4] to-[#B2AF9E] bg-clip-text text-transparent text-center bg-red-900`}
         >
           {name}
         </p>
 
+        {/* BUY BUTTONS */}
         <div className="w-full flex flex-row gap-4">
           <CardButton onClick={() => {console.log("HANDLE BUY")}} label="BUY"/> 
           <CardButton onClick={() => {console.log("HANDLE ADD TO CART")}} label="ADD TO CART"/> 
         </div>
-
 
       </div>
        
