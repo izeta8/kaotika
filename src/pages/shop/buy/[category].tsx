@@ -13,10 +13,9 @@ const magicStuffCategories = ["ingredients", "containers"];
 
 const Shop = () => {
 
-  const router = useRouter()
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [ingredietsInCart,setIngredientsInCart] = useState([]);
-  const [equipmentInCart,setEquipmentInCart] = useState([]);
+  const [equipmentInCart,setEquipmentInCart] = useState([]);  
 
   const fakeIngredients = [
     {
@@ -172,6 +171,23 @@ const HeaderLink: React.FC<{page: string}> = ({page}) => {
 }
 
 const ShopContent = () => {
+
+
+  const router = useRouter()
+  const routeName: string = router.query.category as string;
+
+  if (!equipmentCategories.includes(routeName) && !magicStuffCategories.includes(routeName)) {
+    console.log("Entra aqui");
+    console.log(routeName)
+    return  (
+      <section className='w-full h-full relative z-30 flex justify-center items-center'>    
+          <h2 className="text-5xl text-medievalSepia">Category does not exist: 
+            <span className="text-red-400"> {routeName}</span>
+          </h2>    
+      </section>
+    )
+  }
+
   return (
     <section className='w-full h-full relative z-30 flex justify-center items-center'>    
 
