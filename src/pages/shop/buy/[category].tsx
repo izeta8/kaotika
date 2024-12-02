@@ -5,7 +5,7 @@ import armors from '../../../data/armors.json'
 import React from "react";
 import { FaShoppingCart } from 'react-icons/fa';
 import Cart from "@/components/shop/Cart";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 
 // Shops item categories
 const equipmentCategories = ["helmets", "weapons", "armors", "shields", "boots", "rings"];
@@ -67,17 +67,43 @@ const Shop = () => {
    const openCart = () => setIsCartOpen(true);
    const closeCart = () => setIsCartOpen(false);
 
+   useEffect(() => {
+    if (isCartOpen) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+    return () => {
+      document.body.classList.remove("overflow-hidden");
+    };
+  }, [isCartOpen]);
+
   return (  
-    <div  // I place this 'div' so the background covers the full height
-      className="relative min-h-screen flex flex-col bg-[#191A1D] bg-repeat-center"  
+    <div
+      className="relative min-h-screen flex flex-col bg-[#191A1D] bg-repeat-center"
     >
       <Layout>
         <ShopHeader onCartClick={openCart}/>
         <ShopContent />  
         <Background />
-        
-        {/* Cart component */}
-        <Cart isOpen={isCartOpen} onClose={closeCart} ingredients={fakeIngredients} equipment={fakeEquipment}/>
+
+        {isCartOpen && (
+          <div className="fixed inset-0 z-50">
+            <div
+              className="absolute inset-0 bg-black/60 pointer-events-auto"
+              onClick={closeCart} // Close modal when clicking outside
+            ></div>
+
+            {/* Cart Modal */}
+            <Cart
+              isOpen={isCartOpen}
+              onClose={closeCart}
+              ingredients={fakeIngredients}
+              equipment={fakeEquipment}
+              className="relative z-50 pointer-events-auto"
+            />
+          </div>
+        )}
       </Layout> 
     </div>
   );
