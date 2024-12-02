@@ -4,6 +4,8 @@ import PlayerInventorySellShop from "@/components/shop/PlayerInventorySellShop";
 import { GRID_NUMBER } from "@/constants/constants";
 import Link from 'next/link';
 import player from "./FakeTestPlayer";
+import SellShopObjectDetails from "@/components/shop/SellShopObjectDetails";
+import { useState } from "react";
 
 
 const Sell = () => {
@@ -15,6 +17,7 @@ const Sell = () => {
       <div className="flex flex-col text-medievalSepia bg-cover bg-no-repeat bg-center min-h-screen" style={{ backgroundImage: 'url(/images/shop/background_sell_shop.jpg)' }}>
 
     <PlayerInventorySellShop playerData={player}/>
+    <SellShopObjectDetails/>
 
         {/* Botón de Return */}
         <Link
