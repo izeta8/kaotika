@@ -5,7 +5,7 @@ import armors from '../../../data/armors.json'
 import React from "react";
 import { FaShoppingCart } from 'react-icons/fa';
 import Cart from "@/components/shop/Cart";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 const Shop = () => {
 
@@ -13,6 +13,35 @@ const Shop = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [ingredietsInCart,setIngredientsInCart] = useState([]);
   const [equipmentInCart,setEquipmentInCart] = useState([]);
+  const [categoryData, setCategoryData] = useState<Array<object>>([]);
+
+
+  useEffect(() => { //get the specific data of each category from localStorage
+    // Get pageName from router
+    const pageName: string = (router.query.category as string) || 'armors';
+    console.log("name of the page: " + pageName);
+    
+    const storedData = localStorage.getItem(pageName);
+
+    if (storedData) {
+      try {
+        const parsedData = JSON.parse(storedData); // Parse the JSON string
+        if (Array.isArray(parsedData)) {
+          setCategoryData(parsedData); // Set the parsed array to state
+        } else {
+          console.warn("Data in localStorage is not an array:", parsedData);
+          setCategoryData([]); // Reset state if data is not an array
+        }
+      } catch (error) {
+        console.error("Failed to parse localStorage data:", error);
+        setCategoryData([]); // Reset state in case of parse error
+      }
+    } else {
+      console.log("No data found in localStorage for key:", pageName);
+      setCategoryData([]); // Set to null if no data is found
+    }
+
+  }, [router.query.category]);
 
   const fakeIngredients = [
     {
@@ -69,7 +98,7 @@ const Shop = () => {
     >
       <Layout>
         <ShopHeader onCartClick={openCart}/>
-        <ShopContent />  
+        <ShopContent categoryData = {categoryData}/>  
         <Background />
         
         {/* Cart component */}
@@ -139,21 +168,21 @@ const HeaderLink: React.FC<{page: string}> = ({page}) => {
   )
 }
 
-const ShopContent = () => {
+const ShopContent = ({categoryData}) => {
   return (
     <section className='w-full h-full relative z-30 flex justify-center items-center'>    
 
       {/* FILTER AND SORT BY */}
-      <ItemsList />
+      <ItemsList categoryData = {categoryData}/>
 
     </section>
   );
 }
 
-const ItemsList = () => {
+const ItemsList = ({categoryData}) => {
   return (
     <div className="w-11/12 my-10 grid grid-cols-5 gap-8 place-items-center"> 
-      {armors.map((item, index) => {
+      {categoryData.map((item, index) => {
          return <Card key={index} itemData={item} />
         })
       }

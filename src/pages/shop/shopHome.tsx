@@ -1,6 +1,7 @@
 import Layout from "@/components/Layout";
 import Link from 'next/link';
 import Image from "next/image";
+import { useRouter } from 'next/router';
 import { useState, useEffect } from "react";
 import Loading from "@/components/Loading";
 
@@ -32,7 +33,7 @@ const ShopHome = () => {
           throw new Error("Failed to fetch products");
         }
         const data = await response.json();
-        const keys = Object.keys(data);
+        const keys = Object.keys(data); //get the main names of the objects
         keys.forEach(key => {
           localStorage.setItem(key, JSON.stringify(data[key]));
         });
@@ -79,9 +80,12 @@ const ShopHome = () => {
 };
 
 const EquipmentShop = () => {
+  const router = useRouter();
+  const currentCategory = router.query.category || 'armors';
+  const href = `/shop/buy/${currentCategory}`;
   return (
     <Link
-      href="/shop/buy/equipment"
+      href={href}
       className="flex items-center justify-center text-white rounded-lg transition transform hover:scale-105 px-4 py-2"
     >
       <Image
