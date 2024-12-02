@@ -229,6 +229,11 @@ const ShopContent = ({categoryData}) => {
 }
 
 const ItemsList = ({categoryData}) => {
+
+  if (categoryData.length === 0) {
+    return <h2 className="text-4xl m-10 text-medievalSepia">There are no available items in this category</h2>;
+  }
+
   return (
     <div className="w-11/12 my-10 grid grid-cols-5 gap-8 place-items-center"> 
       {categoryData.map((item, index) => {
@@ -244,25 +249,26 @@ const Card = ({itemData}) => {
   if (!itemData) {return}
 
   const {_id, name, description, type, value, modifiers, min_lvl, image, base_percentage, defense} = itemData;
-  const image_url = `https://kaotika.vercel.app/${image}`;
+  const image_url = `https://kaotika.vercel.app${image}`;
 
   if (!name) {return}
 
-  const nameFontSize = name.length > 15 ? 'text-3xl font-' : 'text-4xl';
+  const nameFontSize = name.length > 15 ? 'text-3xl' : 'text-4xl';
 
   const backgroundPath = isMagicalStuffShop() ? 
                           "url('/images/shop/buy/magic_stuff_card_background.png')" : 
                           "url('/images/shop/buy/equipment_card_background.png')";
 
 
-  const goldLevelContainerStyle =  isMagicalStuffShop() ? 
-                                     `w-1/2 grid-cols-1` :
-                                     `w-full grid-cols-2`;
+  const goldLevelGridStyle =  (!value || !min_lvl) ? 
+                              `w-1/2 grid-cols-1` :
+                              `w-full grid-cols-2`;
 
                                                   
   return (
     <div className="bg-slate-900 w-72 p-6 flex flex-col justify-center items-center relative z-10" 
       style={{
+        height: 420,
         backgroundImage: backgroundPath,
         backgroundRepeat: "no-repeat",
         WebkitBackgroundSize: 'contain',
@@ -273,15 +279,15 @@ const Card = ({itemData}) => {
       <div className="flex flex-col justify-center items-center gap-3 z-30"> 
 
         {/* GOLD & MIN. LEVEL */}
-        <div className={`grid gap-3 place-items-center ${goldLevelContainerStyle}`}>
-          <ItemDataLabel data={value} image={"/images/icons/gold.png"} />
+        <div className={`grid gap-3 place-items-center ${goldLevelGridStyle}`}>
 
-          {/* If the shop is Magical Stuff, we do not want to show the min level */}
-          {isEquipmentShop() ? 
-            <ItemDataLabel data={min_lvl} image={"/images/icons/level.png"} /> 
-            :
-            null 
-          }
+          {value && (
+            <ItemDataLabel data={value} image={"/images/icons/gold.png"} title='Value' />
+          )}
+
+          {min_lvl && (
+            <ItemDataLabel data={min_lvl} image={"/images/icons/level.png"} title='Min. lvl' /> 
+          )}
 
         </div>
 
@@ -290,6 +296,11 @@ const Card = ({itemData}) => {
           className="h-44 drop-shadow-2xl"
           src={image_url}  
           draggable={false}
+          onError={(e) => {
+            e.currentTarget.onerror = null; // Prevent infinite loop if fallback also fails
+            e.currentTarget.src = "/images/shop/buy/interrogation_sign.png"; // Replace with your fallback image URL
+            e.currentTarget.title="Image not found"
+          }}
         />
 
         {/* ITEM NAME */}
@@ -335,7 +346,7 @@ const CardButton: React.FC<{onClick: Function, label: string}> = ({onClick, labe
 
 }
  
-const ItemDataLabel: React.FC<{image: string, data: number}> = ({ image, data }) => {
+const ItemDataLabel: React.FC<{image: string, data: number, title: string}> = ({ image, data, title }) => {
 
   if (!data) return null;
 
@@ -343,7 +354,10 @@ const ItemDataLabel: React.FC<{image: string, data: number}> = ({ image, data })
 
   return (
     
-    <div className="w-5/6 border rounded border-medievalSepia p-2 bg-black/45 gap-2 flex">
+    <div 
+      className="w-5/6 border rounded border-medievalSepia p-2 bg-black/45 gap-2 flex"
+      title={title}
+    >
       {image && (
         <img
           className="rounded-full w-6 flex-shrink-0"
@@ -352,7 +366,7 @@ const ItemDataLabel: React.FC<{image: string, data: number}> = ({ image, data })
           draggable={false}
         />
       )}
-      <p className={`flex-grow ${fontSize} leading-4 text-center text-white/90`}>
+      <p className={`flex-grow ${fontSize} leading-4 text-center text-white/90 select-none`}>
         {data}
       </p>
     </div>
