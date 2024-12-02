@@ -1,12 +1,57 @@
 import Layout from "@/components/Layout";
 import Link from 'next/link';
 import { useRouter } from 'next/router'
-import armors from '../../../data/armors.json'
 import React from "react";
 import { FaShoppingCart } from 'react-icons/fa';
 import Cart from "@/components/shop/Cart";
 import { useState,useEffect } from "react";
 import ShopPlayerInfo from "@/components/shop/ShopPlayerInfo";
+
+const fakeIngredients = [
+  {
+    id: 1,
+    name: "Vitalis Root",
+    quantity: 3,
+    price: 70,
+  },
+  {
+    id: 2,
+    name: "Fire Blossom",
+    quantity: 2,
+    price: 120,
+  },
+  {
+    id: 3,
+    name: "Fire Blossom",
+    quantity: 2,
+    price: 120,
+  },
+  {
+    id: 4,
+    name: "Fire Blossom",
+    quantity: 2,
+    price: 120,
+  },
+];
+
+const fakeEquipment = [
+  {
+    id: 1,
+    name: "Dragonbones Plate",
+    price: 32000,
+  },
+  {
+    id: 2,
+    name: "Shadowfang Blade",
+    price: 15000,
+  },
+  {
+    id: 3,
+    name: "Armor",
+    price: 12000,
+  },
+];
+
 
 // Shops item categories
 const equipmentCategories = ["helmets", "weapons", "armors", "shields", "boots", "rings"];
@@ -21,84 +66,52 @@ const Shop = () => {
   const [equipmentInCart,setEquipmentInCart] = useState([]);
   const [categoryData, setCategoryData] = useState<Array<object>>([]);
 
+  // ---- SHOP ITEMS ----  //
+
+  const [helmets, setHelmets] = useState();
+  const [weapons, setWeapons] = useState();
+  const [armors, setArmors] = useState();
+  const [shields, setShields] = useState();
+  const [boots, setBoots] = useState();
+  const [rings, setRings] = useState();
+  
+  const [ingredients, setIngredients] = useState();
+  const [containers, setContainers] = useState();
+
+  // ---------------------- //
+  // ---- USE EFFECTS ----  //
+  // ---------------------- //
 
   useEffect(() => { //get the specific data of each category from localStorage
     // Get pageName from router
-    const pageName: string = (router.query.category as string) || 'armors';
+    const pageName: string = (router.query.category as string);
     console.log("name of the page: " + pageName);
-    
-    const storedData = localStorage.getItem(pageName);
 
-    if (storedData) {
-      try {
-        const parsedData = JSON.parse(storedData); // Parse the JSON string
-        if (Array.isArray(parsedData)) {
-          setCategoryData(parsedData); // Set the parsed array to state
-        } else {
-          console.warn("Data in localStorage is not an array:", parsedData);
-          setCategoryData([]); // Reset state if data is not an array
+    if (pageName) { //gets value after component gets mounted
+      const storedData = localStorage.getItem(pageName);
+
+      if (storedData) {
+        try {
+          const parsedData = JSON.parse(storedData); // Parse the JSON string
+          if (Array.isArray(parsedData)) {
+            setCategoryData(parsedData); // Set the parsed array to state
+          } else {
+            console.warn("Data in localStorage is not an array:", parsedData);
+            setCategoryData([]); // Reset state if data is not an array
+          }
+        } catch (error) {
+          console.error("Failed to parse localStorage data:", error);
+          setCategoryData([]); // Reset state in case of parse error
         }
-      } catch (error) {
-        console.error("Failed to parse localStorage data:", error);
-        setCategoryData([]); // Reset state in case of parse error
-      }
-    } else {
-      console.log("No data found in localStorage for key:", pageName);
-      setCategoryData([]); // Set to null if no data is found
-    }
+        } else {
+        console.log("No data found in localStorage for key:", pageName);
+        setCategoryData([]); // Set to null if no data is found
+        }
 
+    }
   }, [router.query.category]);
 
-  const fakeIngredients = [
-    {
-      id: 1,
-      name: "Vitalis Root",
-      quantity: 3,
-      price: 70,
-    },
-    {
-      id: 2,
-      name: "Fire Blossom",
-      quantity: 2,
-      price: 120,
-    },
-    {
-      id: 3,
-      name: "Fire Blossom",
-      quantity: 2,
-      price: 120,
-    },
-    {
-      id: 4,
-      name: "Fire Blossom",
-      quantity: 2,
-      price: 120,
-    },
-  ];
-  
-  const fakeEquipment = [
-    {
-      id: 1,
-      name: "Dragonbones Plate",
-      price: 32000,
-    },
-    {
-      id: 2,
-      name: "Shadowfang Blade",
-      price: 15000,
-    },
-    {
-      id: 3,
-      name: "Armor",
-      price: 12000,
-    },
-  ];
-  
-
-   const openCart = () => setIsCartOpen(true);
-   const closeCart = () => setIsCartOpen(false);
-
-   useEffect(() => {
+  useEffect(() => {
     if (isCartOpen) {
       document.body.classList.add("overflow-hidden");
     } else {
@@ -108,6 +121,13 @@ const Shop = () => {
       document.body.classList.remove("overflow-hidden");
     };
   }, [isCartOpen]);
+
+  // ---- UTILITY ----  //
+
+  const openCart = () => setIsCartOpen(true);
+  const closeCart = () => setIsCartOpen(false);
+
+  // ---- RENDER ----  //
 
   return (  
     <div
@@ -205,11 +225,10 @@ const HeaderLink: React.FC<{page: string}> = ({page}) => {
 
 const ShopContent = ({categoryData}) => {
 
-
   const router = useRouter()
   const routeName: string = router.query.category as string;
 
-  if (!equipmentCategories.includes(routeName) && !magicStuffCategories.includes(routeName)) {
+  if (routeName && !equipmentCategories.includes(routeName) && !magicStuffCategories.includes(routeName)) {
     return  (
       <section className='w-full h-full relative z-30 flex justify-center items-center'>    
           <h2 className="text-5xl text-medievalSepia">Category does not exist: 
@@ -229,6 +248,14 @@ const ShopContent = ({categoryData}) => {
 }
 
 const ItemsList = ({categoryData}) => {
+
+  const router = useRouter()
+  const routeName: string = router.query.category as string;
+
+  if (routeName && categoryData.length === 0) {
+    return <h2 className="text-4xl m-10 text-medievalSepia">There are no available items in this category</h2>;
+  }
+
   return (
     <div className="w-11/12 my-10 grid grid-cols-5 gap-8 place-items-center"> 
       {categoryData.map((item, index) => {
@@ -244,25 +271,30 @@ const Card = ({itemData}) => {
   if (!itemData) {return}
 
   const {_id, name, description, type, value, modifiers, min_lvl, image, base_percentage, defense} = itemData;
-  const image_url = `https://kaotika.vercel.app/${image}`;
+  const image_url = `https://kaotika.vercel.app${image}`;
 
   if (!name) {return}
 
-  const nameFontSize = name.length > 15 ? 'text-3xl font-' : 'text-4xl';
+  const nameFontSize = name.length > 15 ? 'text-3xl' : 'text-4xl';
 
   const backgroundPath = isMagicalStuffShop() ? 
                           "url('/images/shop/buy/magic_stuff_card_background.png')" : 
                           "url('/images/shop/buy/equipment_card_background.png')";
 
 
-  const goldLevelContainerStyle =  isMagicalStuffShop() ? 
-                                     `w-1/2 grid-cols-1` :
-                                     `w-full grid-cols-2`;
+  const goldLevelGridStyle =  (!value || !min_lvl) ? 
+                              `w-1/2 grid-cols-1` :
+                              `w-full grid-cols-2`;
+
+
+  const equipmentTextGradient = "bg-gradient-to-b from-[#FFD0A0] via-[#EED1B4] to-[#B2AF9E]"; 
+  const magicalStuffTextGradient = "bg-gradient-to-b from-[#212532] via-[#9CB5EA] to-[#3A3C45]"; 
 
                                                   
   return (
-    <div className="bg-slate-900 w-72 p-6 flex flex-col justify-center items-center relative z-10" 
+    <div className="bg-slate-900 w-72 p-6 flex flex-col justify-center items-center relative z-10 select-none" 
       style={{
+        height: 420,
         backgroundImage: backgroundPath,
         backgroundRepeat: "no-repeat",
         WebkitBackgroundSize: 'contain',
@@ -273,28 +305,33 @@ const Card = ({itemData}) => {
       <div className="flex flex-col justify-center items-center gap-3 z-30"> 
 
         {/* GOLD & MIN. LEVEL */}
-        <div className={`grid gap-3 place-items-center ${goldLevelContainerStyle}`}>
-          <ItemDataLabel data={value} image={"/images/icons/gold.png"} />
+        <div className={`grid gap-3 place-items-center ${goldLevelGridStyle}`}>
 
-          {/* If the shop is Magical Stuff, we do not want to show the min level */}
-          {isEquipmentShop() ? 
-            <ItemDataLabel data={min_lvl} image={"/images/icons/level.png"} /> 
-            :
-            null 
-          }
+          {value && (
+            <ItemDataLabel data={value} image={"/images/icons/gold.png"} title='Value' />
+          )}
+
+          {min_lvl && (
+            <ItemDataLabel data={min_lvl} image={"/images/icons/level.png"} title='Min. lvl' /> 
+          )}
 
         </div>
 
         {/* IMAGE  */}
         <img  
-          className="h-44 drop-shadow-2xl"
+          className={`h-44 drop-shadow-2xl ${isMagicalStuffShop() ? 'rounded-full border-3 border-[#1e1f23]' : null}`}
           src={image_url}  
           draggable={false}
+          onError={(e) => {
+            e.currentTarget.onerror = null; // Prevent infinite loop if fallback also fails
+            e.currentTarget.src = "/images/shop/buy/interrogation_sign.png"; // Replace with your fallback image URL
+            e.currentTarget.title="Image not found"
+          }}
         />
 
         {/* ITEM NAME */}
         <p 
-          className={`${nameFontSize} font-medium bg-gradient-to-b from-[#FFD0A0] via-[#EED1B4] to-[#B2AF9E] bg-clip-text text-transparent text-center bg-red-900`}
+          className={`${nameFontSize} font-medium bg-clip-text text-transparent select-text text-center ${isMagicalStuffShop() ? magicalStuffTextGradient : equipmentTextGradient}`}
         >
           {name}
         </p>
@@ -335,7 +372,7 @@ const CardButton: React.FC<{onClick: Function, label: string}> = ({onClick, labe
 
 }
  
-const ItemDataLabel: React.FC<{image: string, data: number}> = ({ image, data }) => {
+const ItemDataLabel: React.FC<{image: string, data: number, title: string}> = ({ image, data, title }) => {
 
   if (!data) return null;
 
@@ -343,7 +380,10 @@ const ItemDataLabel: React.FC<{image: string, data: number}> = ({ image, data })
 
   return (
     
-    <div className="w-5/6 border rounded border-medievalSepia p-2 bg-black/45 gap-2 flex">
+    <div 
+      className="w-5/6 border rounded border-medievalSepia p-2 bg-black/45 gap-2 flex"
+      title={title}
+    >
       {image && (
         <img
           className="rounded-full w-6 flex-shrink-0"
@@ -352,7 +392,7 @@ const ItemDataLabel: React.FC<{image: string, data: number}> = ({ image, data })
           draggable={false}
         />
       )}
-      <p className={`flex-grow ${fontSize} leading-4 text-center text-white/90`}>
+      <p className={`flex-grow ${fontSize} leading-4 text-center text-white/90 select-none`}>
         {data}
       </p>
     </div>
