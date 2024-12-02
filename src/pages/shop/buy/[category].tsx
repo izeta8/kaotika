@@ -6,6 +6,7 @@ import React from "react";
 import { FaShoppingCart } from 'react-icons/fa';
 import Cart from "@/components/shop/Cart";
 import { useState,useEffect } from "react";
+import ShopPlayerInfo from "@/components/shop/ShopPlayerInfo";
 
 // Shops item categories
 const equipmentCategories = ["helmets", "weapons", "armors", "shields", "boots", "rings"];
@@ -83,6 +84,7 @@ const Shop = () => {
     >
       <Layout>
         <ShopHeader onCartClick={openCart}/>
+        <ShopPlayerInfo />
         <ShopContent />  
         <Background />
 
