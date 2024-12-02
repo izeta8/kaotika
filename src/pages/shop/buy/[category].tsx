@@ -7,6 +7,52 @@ import Cart from "@/components/shop/Cart";
 import { useState,useEffect } from "react";
 import ShopPlayerInfo from "@/components/shop/ShopPlayerInfo";
 
+const fakeIngredients = [
+  {
+    id: 1,
+    name: "Vitalis Root",
+    quantity: 3,
+    price: 70,
+  },
+  {
+    id: 2,
+    name: "Fire Blossom",
+    quantity: 2,
+    price: 120,
+  },
+  {
+    id: 3,
+    name: "Fire Blossom",
+    quantity: 2,
+    price: 120,
+  },
+  {
+    id: 4,
+    name: "Fire Blossom",
+    quantity: 2,
+    price: 120,
+  },
+];
+
+const fakeEquipment = [
+  {
+    id: 1,
+    name: "Dragonbones Plate",
+    price: 32000,
+  },
+  {
+    id: 2,
+    name: "Shadowfang Blade",
+    price: 15000,
+  },
+  {
+    id: 3,
+    name: "Armor",
+    price: 12000,
+  },
+];
+
+
 // Shops item categories
 const equipmentCategories = ["helmets", "weapons", "armors", "shields", "boots", "rings"];
 const magicStuffCategories = ["ingredients", "containers"];
@@ -20,6 +66,21 @@ const Shop = () => {
   const [equipmentInCart,setEquipmentInCart] = useState([]);
   const [categoryData, setCategoryData] = useState<Array<object>>([]);
 
+  // ---- SHOP ITEMS ----  //
+
+  const [helmets, setHelmets] = useState();
+  const [weapons, setWeapons] = useState();
+  const [armors, setArmors] = useState();
+  const [shields, setShields] = useState();
+  const [boots, setBoots] = useState();
+  const [rings, setRings] = useState();
+  
+  const [ingredients, setIngredients] = useState();
+  const [containers, setContainers] = useState();
+
+  // ---------------------- //
+  // ---- USE EFFECTS ----  //
+  // ---------------------- //
 
   useEffect(() => { //get the specific data of each category from localStorage
     // Get pageName from router
@@ -50,10 +111,6 @@ const Shop = () => {
     }
   }, [router.query.category]);
 
-
-  const openCart = () => setIsCartOpen(true);
-  const closeCart = () => setIsCartOpen(false);
-
   useEffect(() => {
     if (isCartOpen) {
       document.body.classList.add("overflow-hidden");
@@ -64,6 +121,13 @@ const Shop = () => {
       document.body.classList.remove("overflow-hidden");
     };
   }, [isCartOpen]);
+
+  // ---- UTILITY ----  //
+
+  const openCart = () => setIsCartOpen(true);
+  const closeCart = () => setIsCartOpen(false);
+
+  // ---- RENDER ----  //
 
   return (  
     <div
