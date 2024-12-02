@@ -5,14 +5,49 @@ import armors from '../../../data/armors.json'
 import React from "react";
 import { FaShoppingCart } from 'react-icons/fa';
 import Cart from "@/components/shop/Cart";
-import { useState } from "react";
+import { useState,useEffect } from "react";
+import ShopPlayerInfo from "@/components/shop/ShopPlayerInfo";
+
+// Shops item categories
+const equipmentCategories = ["helmets", "weapons", "armors", "shields", "boots", "rings"];
+const magicStuffCategories = ["ingredients", "containers"];
 
 const Shop = () => {
 
   const router = useRouter()
+
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [ingredietsInCart,setIngredientsInCart] = useState([]);
   const [equipmentInCart,setEquipmentInCart] = useState([]);
+  const [categoryData, setCategoryData] = useState<Array<object>>([]);
+
+
+  useEffect(() => { //get the specific data of each category from localStorage
+    // Get pageName from router
+    const pageName: string = (router.query.category as string) || 'armors';
+    console.log("name of the page: " + pageName);
+    
+    const storedData = localStorage.getItem(pageName);
+
+    if (storedData) {
+      try {
+        const parsedData = JSON.parse(storedData); // Parse the JSON string
+        if (Array.isArray(parsedData)) {
+          setCategoryData(parsedData); // Set the parsed array to state
+        } else {
+          console.warn("Data in localStorage is not an array:", parsedData);
+          setCategoryData([]); // Reset state if data is not an array
+        }
+      } catch (error) {
+        console.error("Failed to parse localStorage data:", error);
+        setCategoryData([]); // Reset state in case of parse error
+      }
+    } else {
+      console.log("No data found in localStorage for key:", pageName);
+      setCategoryData([]); // Set to null if no data is found
+    }
+
+  }, [router.query.category]);
 
   const fakeIngredients = [
     {
@@ -63,24 +98,50 @@ const Shop = () => {
    const openCart = () => setIsCartOpen(true);
    const closeCart = () => setIsCartOpen(false);
 
+   useEffect(() => {
+    if (isCartOpen) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+    return () => {
+      document.body.classList.remove("overflow-hidden");
+    };
+  }, [isCartOpen]);
+
   return (  
-    <div  // I place this 'div' so the background covers the full height
-      className="relative min-h-screen flex flex-col bg-[#191A1D] bg-repeat-center"  
+    <div
+      className="relative min-h-screen flex flex-col bg-[#191A1D] bg-repeat-center"
     >
       <Layout>
         <ShopHeader onCartClick={openCart}/>
-        <ShopContent />  
+        <ShopPlayerInfo />
+        <ShopContent categoryData = {categoryData}/>  
         <Background />
-        
-        {/* Cart component */}
-        <Cart isOpen={isCartOpen} onClose={closeCart} ingredients={fakeIngredients} equipment={fakeEquipment}/>
+
+        {isCartOpen && (
+          <div className="fixed inset-0 z-50">
+            <div
+              className="absolute inset-0 bg-black/60 pointer-events-auto"
+              onClick={closeCart} // Close modal when clicking outside
+            ></div>
+
+            {/* Cart Modal */}
+            <Cart
+              isOpen={isCartOpen}
+              onClose={closeCart}
+              ingredients={fakeIngredients}
+              equipment={fakeEquipment}
+              className="relative z-50 pointer-events-auto"
+            />
+          </div>
+        )}
       </Layout> 
     </div>
   );
 };
 
-
-const ShopHeader = ({onCartClick}) => {
+const ShopHeader:React.FC<{onCartClick: Function}> = ({onCartClick}) => {
 
   return (
     <header className='w-full h-full relative py-4 z-30 flex-col flex justify-center items-center'>
@@ -93,12 +154,15 @@ const ShopHeader = ({onCartClick}) => {
         </div>
 
         <nav className="flex-1 text-center">  
-          <HeaderLink page="helmets" />   
-          <HeaderLink page="weapons" />   
-          <HeaderLink page="armors" />   
-          <HeaderLink page="shields" />   
-          <HeaderLink page="boots" />   
-          <HeaderLink page="rings" />   
+          {
+          isEquipmentShop() ? 
+            equipmentCategories.map(category => <HeaderLink key={category} page={category} /> )
+          :
+          isMagicalStuffShop() ? 
+            magicStuffCategories.map(category => <HeaderLink key={category} page={category} /> )
+          :
+            null
+          }
         </nav>
 
         <div className="flex items-center">
@@ -139,21 +203,35 @@ const HeaderLink: React.FC<{page: string}> = ({page}) => {
   )
 }
 
-const ShopContent = () => {
+const ShopContent = ({categoryData}) => {
+
+
+  const router = useRouter()
+  const routeName: string = router.query.category as string;
+
+  if (!equipmentCategories.includes(routeName) && !magicStuffCategories.includes(routeName)) {
+    return  (
+      <section className='w-full h-full relative z-30 flex justify-center items-center'>    
+          <h2 className="text-5xl text-medievalSepia">Category does not exist: 
+            <span className="text-red-400"> {routeName}</span>
+          </h2>    
+      </section>
+    )
+  }
   return (
     <section className='w-full h-full relative z-30 flex justify-center items-center'>    
 
       {/* FILTER AND SORT BY */}
-      <ItemsList />
+      <ItemsList categoryData = {categoryData}/>
 
     </section>
   );
 }
 
-const ItemsList = () => {
+const ItemsList = ({categoryData}) => {
   return (
     <div className="w-11/12 my-10 grid grid-cols-5 gap-8 place-items-center"> 
-      {armors.map((item, index) => {
+      {categoryData.map((item, index) => {
          return <Card key={index} itemData={item} />
         })
       }
@@ -172,10 +250,20 @@ const Card = ({itemData}) => {
 
   const nameFontSize = name.length > 15 ? 'text-3xl font-' : 'text-4xl';
 
+  const backgroundPath = isMagicalStuffShop() ? 
+                          "url('/images/shop/buy/magic_stuff_card_background.png')" : 
+                          "url('/images/shop/buy/equipment_card_background.png')";
+
+
+  const goldLevelContainerStyle =  isMagicalStuffShop() ? 
+                                     `w-1/2 grid-cols-1` :
+                                     `w-full grid-cols-2`;
+
+                                                  
   return (
     <div className="bg-slate-900 w-72 p-6 flex flex-col justify-center items-center relative z-10" 
       style={{
-        backgroundImage: "url('/images/shop/buy/equipment_card_background.png')",
+        backgroundImage: backgroundPath,
         backgroundRepeat: "no-repeat",
         WebkitBackgroundSize: 'contain',
         backgroundSize: '100%'
@@ -184,28 +272,38 @@ const Card = ({itemData}) => {
        
       <div className="flex flex-col justify-center items-center gap-3 z-30"> 
 
-        <div className="w-full grid grid-cols-2 gap-3 place-items-center">
-          <ItemDataLabel data={value} image={"/images/icons/gold.png"} /> 
-          <ItemDataLabel data={min_lvl} image={"/images/icons/level.png"} /> 
+        {/* GOLD & MIN. LEVEL */}
+        <div className={`grid gap-3 place-items-center ${goldLevelContainerStyle}`}>
+          <ItemDataLabel data={value} image={"/images/icons/gold.png"} />
+
+          {/* If the shop is Magical Stuff, we do not want to show the min level */}
+          {isEquipmentShop() ? 
+            <ItemDataLabel data={min_lvl} image={"/images/icons/level.png"} /> 
+            :
+            null 
+          }
+
         </div>
 
+        {/* IMAGE  */}
         <img  
           className="h-44 drop-shadow-2xl"
           src={image_url}  
           draggable={false}
         />
 
+        {/* ITEM NAME */}
         <p 
           className={`${nameFontSize} font-medium bg-gradient-to-b from-[#FFD0A0] via-[#EED1B4] to-[#B2AF9E] bg-clip-text text-transparent text-center bg-red-900`}
         >
           {name}
         </p>
 
+        {/* BUY BUTTONS */}
         <div className="w-full flex flex-row gap-4">
           <CardButton onClick={() => {console.log("HANDLE BUY")}} label="BUY"/> 
           <CardButton onClick={() => {console.log("HANDLE ADD TO CART")}} label="ADD TO CART"/> 
         </div>
-
 
       </div>
        
@@ -288,6 +386,22 @@ const Background = () => {
 
 }
  
+// --------------------//
+// ----- UTILITY ----- //
+// ------------------- //
+
+const isEquipmentShop = (): boolean => {
+  const router = useRouter();
+  const routeName: string = router.query.category as string;
+  return equipmentCategories.includes(routeName);
+}
+
+const isMagicalStuffShop = (): boolean => {
+  const router = useRouter();
+  const routeName: string = router.query.category as string;
+  return magicStuffCategories.includes(routeName);
+}
+
 
 export default Shop;  
 
