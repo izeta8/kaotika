@@ -3,8 +3,6 @@ import { AppProps } from 'next/app';
 import "../styles/globals.css";
 import {NextUIProvider} from "@nextui-org/react";
 import Head from "next/head";
-import { useState, useEffect } from "react";
-
 
 function MyApp({ Component, pageProps }: AppProps) {
 
