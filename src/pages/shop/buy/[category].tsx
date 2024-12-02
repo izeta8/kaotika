@@ -7,6 +7,10 @@ import { FaShoppingCart } from 'react-icons/fa';
 import Cart from "@/components/shop/Cart";
 import { useState } from "react";
 
+// Shops item categories
+const equipmentCategories = ["helmets", "weapons", "armors", "shields", "boots", "rings"];
+const magicStuffCategories = ["ingredients", "containers"];
+
 const Shop = () => {
 
   const router = useRouter()
@@ -79,8 +83,7 @@ const Shop = () => {
   );
 };
 
-
-const ShopHeader = ({onCartClick}) => {
+const ShopHeader:React.FC<{onCartClick: Function}> = ({onCartClick}) => {
 
   return (
     <header className='w-full h-full relative py-4 z-30 flex-col flex justify-center items-center'>
@@ -93,12 +96,15 @@ const ShopHeader = ({onCartClick}) => {
         </div>
 
         <nav className="flex-1 text-center">  
-          <HeaderLink page="helmets" />   
-          <HeaderLink page="weapons" />   
-          <HeaderLink page="armors" />   
-          <HeaderLink page="shields" />   
-          <HeaderLink page="boots" />   
-          <HeaderLink page="rings" />   
+          {
+          isEquipmentShop() ? 
+            equipmentCategories.map(category => <HeaderLink key={category} page={category} /> )
+          :
+          isMagicalStuffShop() ? 
+            magicStuffCategories.map(category => <HeaderLink key={category} page={category} /> )
+          :
+            null
+          }
         </nav>
 
         <div className="flex items-center">
@@ -288,6 +294,22 @@ const Background = () => {
 
 }
  
+// --------------------//
+// ----- UTILITY ----- //
+// ------------------- //
+
+const isEquipmentShop = (): boolean => {
+  const router = useRouter();
+  const routeName: string = router.query.category as string;
+  return equipmentCategories.includes(routeName);
+}
+
+const isMagicalStuffShop = (): boolean => {
+  const router = useRouter();
+  const routeName: string = router.query.category as string;
+  return magicStuffCategories.includes(routeName);
+}
+
 
 export default Shop;  
 
