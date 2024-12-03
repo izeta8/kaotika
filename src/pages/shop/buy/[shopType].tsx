@@ -103,9 +103,9 @@ const Shop = () => {
   const [ingredients, setIngredients] = useState<Array<ItemData>>([]);
   const [containers, setContainers] = useState<Array<ItemData>>([]);
   
-  // ---- SHOP MAPPING VARIABLES ----  //
+  // ---- SHOP CATEGORIES VARIABLES FOR MAPPING  ----  //
 
-  const shopCategories = {
+  const shopCategories: Record<string, ItemData[]> = {
     helmets,
     weapons,
     armors,
