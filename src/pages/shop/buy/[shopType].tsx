@@ -89,6 +89,7 @@ const Shop = () => {
   const [equipmentInCart,setEquipmentInCart] = useState([]);
   const [categoryData, setCategoryData] = useState<Array<ItemData>>([]);
   const [playerData, setPlayerData] = useState<object | null>(null);
+  const [modalConfirm, setModalConfirm] = useState(false);
 
   const [currentCategory, setCurrentCategory] = useState<string>('');
 
@@ -241,6 +242,15 @@ const Shop = () => {
     }
   }
 
+  const handleConfirmBuy = () => {
+    console.log("item purchased"); 
+    setModalConfirm(false); 
+  };
+
+  const handleCancel = () => {
+    setModalConfirm(false);
+  };
+
   // ---- RENDER ----  //
 
   return (  
@@ -250,8 +260,10 @@ const Shop = () => {
       <Layout>
         <ShopHeader currentCategory={currentCategory} setCurrentCategory={setCurrentCategory} onCartClick={openCart}/>
         <ShopPlayerInfo />
-        <ShopContent currentCategory={currentCategory} categoryData={categoryData}/>  
+        <ShopContent currentCategory={currentCategory} categoryData={categoryData} setModalConfirm={setModalConfirm}/>  
         <Background />
+
+        {/********** Modals ***********/}
 
         {isCartOpen && (
           <div className="fixed inset-0 z-50">
@@ -269,6 +281,29 @@ const Shop = () => {
             />
           </div>
         )}
+
+        {modalConfirm && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 shadow-lg w-1/3">
+              <h2 className="text-lg font-semibold">Are you sure you want to buy it?</h2>
+              <div className="mt-4 flex justify-end gap-4">
+                <button
+                  className="bg-gray-300 text-gray-800 px-4 py-2 rounded"
+                  onClick={handleCancel}
+                >
+                  No
+                </button>
+                <button
+                  className="bg-blue-500 text-white px-4 py-2 rounded"
+                  onClick={handleConfirmBuy}
+                >
+                  Yes
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+        
       </Layout> 
     </div>
   );
@@ -337,19 +372,19 @@ const HeaderLink: React.FC<{category: string, currentCategory: string, setCurren
   )
 }
 
-const ShopContent: React.FC<{categoryData: Array<ItemData>, currentCategory: string}> = ({categoryData, currentCategory}) => {
+const ShopContent: React.FC<{categoryData: Array<ItemData>, currentCategory: string}> = ({categoryData, currentCategory, setModalConfirm}) => {
 
   return (
     <section className='w-full h-full relative z-30 flex justify-center items-center'>    
   
       {/* FILTER AND SORT BY */}
-      <ItemsList currentCategory={currentCategory} categoryData = {categoryData}/>
+      <ItemsList currentCategory={currentCategory} categoryData = {categoryData} setModalConfirm={setModalConfirm}/>
 
     </section>
   );
 }
 
-const ItemsList: React.FC<{categoryData: Array<ItemData>, currentCategory: string}> = ({categoryData, currentCategory}) => {
+const ItemsList: React.FC<{categoryData: Array<ItemData>, currentCategory: string}> = ({categoryData, currentCategory, setModalConfirm}) => {
 
   if (categoryData.length === 0) {
     return <h2 className="text-4xl m-10 text-medievalSepia">There are no available items in this category</h2>;
@@ -358,15 +393,27 @@ const ItemsList: React.FC<{categoryData: Array<ItemData>, currentCategory: strin
   return (
     <div className="w-11/12 my-10 grid grid-cols-5 gap-8 place-items-center"> 
       {categoryData.map((item: ItemData, index: number) => {
-         return <Card key={index} itemData={item} currentCategory={currentCategory} />
+         return <Card key={index} itemData={item} currentCategory={currentCategory} setModalConfirm={setModalConfirm} />
         })
       }
     </div>
   )
 }
 
-const Card: React.FC<{itemData: ItemData, currentCategory: string}> = ({itemData, currentCategory}) => {
+const Card: React.FC<{itemData: ItemData, currentCategory: string}> = ({itemData, currentCategory, setModalConfirm}) => {
 
+  const handleBuyClick = () => {
+    setModalConfirm(true); 
+  };
+
+  // const handleConfirmBuy = () => {
+  //   console.log("item purchased"); 
+  //   setModalConfirm(false); 
+  // };
+
+  // const handleCancel = () => {
+  //   setModalConfirm(false);
+  // };
   const router = useRouter();
 
   if (!itemData) {return}
@@ -439,7 +486,7 @@ const Card: React.FC<{itemData: ItemData, currentCategory: string}> = ({itemData
 
         {/* BUY BUTTONS */}
         <div className="w-full flex flex-row gap-4">
-          <CardButton onClick={() => {console.log("HANDLE BUY")}} label="BUY"/> 
+          <CardButton onClick={handleBuyClick} label="BUY"/> 
           <CardButton onClick={() => {console.log("HANDLE ADD TO CART")}} label="ADD TO CART"/> 
         </div>
 
