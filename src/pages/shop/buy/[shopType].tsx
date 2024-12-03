@@ -25,7 +25,7 @@ const Shop = () => {
   const router = useRouter()
 
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [itemsInCart, setItemsInCart] = useState<CartItem[]>([]);
+  //const [itemsInCart, setItemsInCart] = useState<CartItem[]>([]);
   const [categoryData, setCategoryData] = useState<Array<ItemData>>([]);
 
   const [currentCategory, setCurrentCategory] = useState<string>('');
@@ -118,9 +118,6 @@ const Shop = () => {
 
   // ---- UTILITY ----  //
 
-  const openCart = () => setIsCartOpen(true);
-  const closeCart = () => setIsCartOpen(false);
-
   const loadLocalStorageIntoStates = (categoryObject): void => { 
 
     // Desestructurize the loop's current state name and setter.
@@ -151,23 +148,30 @@ const Shop = () => {
       setter([]);
     }
   }
-  
+
+  //Cart funcions
+
+  const [itemsInCart, setItemsInCart] = useState<CartItem[]>(() => {
+    if (typeof window !== 'undefined') { // Verificar que estamos en el lado del cliente
+      const storedCart = localStorage.getItem('cart');
+      if (storedCart) {
+        try {
+          const parsedCart: CartItem[] = JSON.parse(storedCart);
+          return parsedCart;
+        } catch (error) {
+          console.error("Error al cargar el carrito desde localStorage:", error);
+        }
+      }
+    }
+    return [];
+  });
+
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(itemsInCart));
   }, [itemsInCart]);
-  
-  useEffect(() => {
-    const storedCart = localStorage.getItem('cart');
-    if (storedCart) {
-      try {
-        const parsedCart: CartItem[] = JSON.parse(storedCart);
-        setItemsInCart(parsedCart);
-      } catch (error) {
-        console.error("Error al cargar el carrito desde localStorage:", error);
-        setItemsInCart([]);
-      }
-    }
-  }, []);
+
+  const openCart = () => setIsCartOpen(true);
+  const closeCart = () => setIsCartOpen(false);
 
   const addToCart = (item: ItemData) => {
     if (isEquipmentShop(router)) {

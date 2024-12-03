@@ -31,8 +31,6 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose, cartItems, clearCart, incr
   };
 
   if (!isOpen) return null;
-
-  console.log(cartItems);
   
   // Calculate total
   const total = cartItems.reduce((acc, item) => acc + (item.value || 0) * item.quantity, 0);
@@ -57,6 +55,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose, cartItems, clearCart, incr
           <div className="max-h-[50vh] overflow-y-auto scrollbar scrollbar-thumb-medievalGold scrollbar-track-medievalGray">
             <div className="space-y-4">
               {cartItems.map(item => (
+                
                 <div key={item._id} className="flex justify-between items-center border-b border-gray-700 pb-4">
               <div className="flex items-center space-x-4">
                   <img
