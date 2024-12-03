@@ -7,86 +7,25 @@ import { FaShoppingCart } from 'react-icons/fa';
 import Cart from "@/components/shop/Cart";
 import { useState,useEffect } from "react";
 import ShopPlayerInfo from "@/components/shop/ShopPlayerInfo";
-
-interface ItemData {
-  _id: string;
-  name: string;
-  description: string;
-  image: string;
-  type: string;
-  value?: number;
-  modifiers?: any;
-  min_lvl?: number;
-  effects?: Array<string>;
-  profiles?: Array<string>;
-  base_percentage?: number;
-  defense?: number;
-  isUnique?: boolean;
-  isActive?: boolean;
-  die_faces?: number;
-  die_modifier?: number;
-  die_num?: number;
-}
+import { ItemData } from "@/_common/interfaces/ItemData";
 
 type ShopCategoryKeys = "helmets" | "weapons" | "armors" | "shields" | "boots" | "rings" | "ingredients" | "containers";
-
-const fakeIngredients = [
-  {
-    id: 1,
-    name: "Vitalis Root",
-    quantity: 3,
-    price: 70,
-  },
-  {
-    id: 2,
-    name: "Fire Blossom",
-    quantity: 2,
-    price: 120,
-  },
-  {
-    id: 3,
-    name: "Fire Blossom",
-    quantity: 2,
-    price: 120,
-  },
-  {
-    id: 4,
-    name: "Fire Blossom",
-    quantity: 2,
-    price: 120,
-  },
-];
-
-const fakeEquipment = [
-  {
-    id: 1,
-    name: "Dragonbones Plate",
-    price: 32000,
-  },
-  {
-    id: 2,
-    name: "Shadowfang Blade",
-    price: 15000,
-  },
-  {
-    id: 3,
-    name: "Armor",
-    price: 12000,
-  },
-];
 
 
 // Shops item categories
 const equipmentCategories = ["helmets", "weapons", "armors", "shields", "boots", "rings"];
 const magicalStuffCategories = ["ingredients", "containers"];
 
+interface CartItem extends ItemData {
+  quantity: number;
+}
+
 const Shop = () => {
 
   const router = useRouter()
 
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [ingredietsInCart,setIngredientsInCart] = useState([]);
-  const [equipmentInCart,setEquipmentInCart] = useState([]);
+  const [itemsInCart, setItemsInCart] = useState<CartItem[]>([]);
   const [categoryData, setCategoryData] = useState<Array<ItemData>>([]);
 
   const [currentCategory, setCurrentCategory] = useState<string>('');
@@ -212,6 +151,36 @@ const Shop = () => {
       setter([]);
     }
   }
+  const addToCart = (item: ItemData) => {
+    if (isEquipmentShop(router)) {
+      // En la tienda de equipo, solo se puede comprar un elemento igual
+      setItemsInCart(prevItems => {
+        if (prevItems.find(cartItem => cartItem._id === item._id)) {
+          // El item ya está en el carrito, no hacer nada
+          return prevItems;
+        } else {
+          // Añadir el item al carrito con cantidad 1
+          return [...prevItems, { ...item, quantity: 1 }];
+        }
+      });
+    } else if (isMagicalStuffShop(router)) {
+      // En la tienda de artículos mágicos, se pueden añadir múltiples cantidades
+      setItemsInCart(prevItems => {
+        const itemInCart = prevItems.find(cartItem => cartItem._id === item._id);
+        if (itemInCart) {
+          // Incrementar la cantidad del item en el carrito
+          return prevItems.map(cartItem =>
+            cartItem._id === item._id
+              ? { ...cartItem, quantity: cartItem.quantity + 1 }
+              : cartItem
+          );
+        } else {
+          // Añadir el item al carrito con cantidad 1
+          return [...prevItems, { ...item, quantity: 1 }];
+        }
+      });
+    }
+  };
 
   // ---- RENDER ----  //
 
@@ -222,7 +191,7 @@ const Shop = () => {
       <Layout>
         <ShopHeader currentCategory={currentCategory} setCurrentCategory={setCurrentCategory} onCartClick={openCart}/>
         <ShopPlayerInfo />
-        <ShopContent currentCategory={currentCategory} categoryData={categoryData}/>  
+        <ShopContent currentCategory={currentCategory} categoryData={categoryData} addToCart={addToCart}/>  
         <Background />
 
         {isCartOpen && (
@@ -236,8 +205,7 @@ const Shop = () => {
             <Cart
               isOpen={isCartOpen}
               onClose={closeCart}
-              ingredients={fakeIngredients}
-              equipment={fakeEquipment}
+              cartItems={itemsInCart}
             />
           </div>
         )}
@@ -309,35 +277,32 @@ const HeaderLink: React.FC<{category: string, currentCategory: string, setCurren
   )
 }
 
-const ShopContent: React.FC<{categoryData: Array<ItemData>, currentCategory: string}> = ({categoryData, currentCategory}) => {
-
+const ShopContent: React.FC<{ categoryData: Array<ItemData>; currentCategory: string; addToCart: (item: ItemData) => void }> = ({ categoryData, currentCategory, addToCart }) => {
   return (
-    <section className='w-full h-full relative z-30 flex justify-center items-center'>    
-  
+    <section className='w-full h-full relative z-30 flex justify-center items-center'>
       {/* FILTER AND SORT BY */}
-      <ItemsList currentCategory={currentCategory} categoryData = {categoryData}/>
-
+      <ItemsList currentCategory={currentCategory} categoryData={categoryData} addToCart={addToCart} />
     </section>
   );
-}
+};
 
-const ItemsList: React.FC<{categoryData: Array<ItemData>, currentCategory: string}> = ({categoryData, currentCategory}) => {
 
+const ItemsList: React.FC<{ categoryData: Array<ItemData>; currentCategory: string; addToCart: (item: ItemData) => void }> = ({ categoryData, currentCategory, addToCart }) => {
   if (categoryData.length === 0) {
     return <h2 className="text-4xl m-10 text-medievalSepia">There are no available items in this category</h2>;
   }
 
   return (
-    <div className="w-11/12 my-10 grid grid-cols-5 gap-8 place-items-center"> 
-      {categoryData.map((item: ItemData, index: number) => {
-         return <Card key={index} itemData={item} currentCategory={currentCategory} />
-        })
-      }
+    <div className="w-11/12 my-10 grid grid-cols-5 gap-8 place-items-center">
+      {categoryData.map((item: ItemData, index: number) => (
+        <Card key={index} itemData={item} currentCategory={currentCategory} addToCart={addToCart} />
+      ))}
     </div>
-  )
-}
+  );
+};
 
-const Card: React.FC<{itemData: ItemData, currentCategory: string}> = ({itemData, currentCategory}) => {
+
+const Card: React.FC<{ itemData: ItemData; currentCategory: string; addToCart: (item: ItemData) => void }> = ({ itemData, currentCategory, addToCart }) => {
 
   const router = useRouter();
 
@@ -412,7 +377,7 @@ const Card: React.FC<{itemData: ItemData, currentCategory: string}> = ({itemData
         {/* BUY BUTTONS */}
         <div className="w-full flex flex-row gap-4">
           <CardButton onClick={() => {console.log("HANDLE BUY")}} label="BUY"/> 
-          <CardButton onClick={() => {console.log("HANDLE ADD TO CART")}} label="ADD TO CART"/> 
+          <CardButton onClick={() => addToCart(itemData)} label="ADD TO CART" />
         </div>
 
       </div>
@@ -428,7 +393,7 @@ const Card: React.FC<{itemData: ItemData, currentCategory: string}> = ({itemData
 
 const CardButton: React.FC<{onClick: Function, label: string}> = ({onClick, label}) => {
 
-  if (!label || !onClick) {return}
+  if (!label || !onClick) {return null;}
 
   const fontSize = label.length > 8 ? 'text-md' : 'text-xl'; 
 
