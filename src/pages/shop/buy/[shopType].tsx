@@ -88,6 +88,7 @@ const Shop = () => {
   const [ingredietsInCart,setIngredientsInCart] = useState([]);
   const [equipmentInCart,setEquipmentInCart] = useState([]);
   const [categoryData, setCategoryData] = useState<Array<ItemData>>([]);
+  const [playerData, setPlayerData] = useState<object | null>(null);
 
   const [currentCategory, setCurrentCategory] = useState<string>('');
 
@@ -133,6 +134,10 @@ const Shop = () => {
   // ---------------------- //
   // ---- USE EFFECTS ----  //
   // ---------------------- //
+
+  useEffect(() => {
+    loadPlayerData(setPlayerData);
+  }, []);
 
   useEffect(() => {
 
@@ -181,6 +186,29 @@ const Shop = () => {
 
   const openCart = () => setIsCartOpen(true);
   const closeCart = () => setIsCartOpen(false);
+
+  const loadPlayerData = (setter: (data: object | null) => void): void => {
+    // Get playerData from localStorage
+    const localStorageData = localStorage.getItem('playerData');
+  
+    if (localStorageData) {
+      try {
+        const parsedData = JSON.parse(localStorageData); // Parse the JSON string
+        if (typeof parsedData === 'object' && parsedData !== null) {
+          setter(parsedData); // Set the parsed object data into state
+        } else {
+          console.warn("Data in localStorage is not a valid object:", parsedData);
+          setter(null); // Set to null if the data is not valid
+        }
+      } catch (error) {
+        console.error("Failed to parse localStorage data:", error);
+        setter(null); // Set to null in case of parsing error
+      }
+    } else {
+      console.log("No playerData found in localStorage.");
+      setter(null); // Set to null if no data exists
+    }
+  };  
 
   const loadLocalStorageIntoStates = (categoryObject): void => { 
 

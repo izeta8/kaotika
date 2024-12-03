@@ -13,7 +13,6 @@ const ShopHome = () => {
   const products: string[] = ['armors', 'artifacts', 'boots', 'helmets', 'ingredients', 'rings', 'shields', 'weapons'];
   const { data: session } = useSession();
   const [playerEmail, setPlayerEmail] = useState<string | null>(null);
-  const [playerData, setPlayerData] = useState<object | null>(null);
 
   useEffect(() => {
     if (session?.user?.email) {
@@ -27,7 +26,7 @@ const ShopHome = () => {
       fetch(`/api/shop/player?playerEmail=${playerEmail}`)
         .then(response => response.json())
         .then(data => {
-          setPlayerData(data);
+          localStorage.setItem('playerData', JSON.stringify( data ));
           console.log(data, "is the data fetched");
         })
         .catch(error => {
