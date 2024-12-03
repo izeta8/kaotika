@@ -7,6 +7,7 @@ import SellShopObjectDetails from "@/components/shop/SellShopObjectDetails";
 import SellerDialogueBox from "@/components/shop/SellerDialgueBox";
 import { Button } from "@nextui-org/button";
 import KaotikaButton from "@/components/KaotikaButton";
+import ShopPlayerInfo from "@/components/shop/ShopPlayerInfo";
 
 
 const Sell = () => {
@@ -40,14 +41,15 @@ const Sell = () => {
             <SellerDialogueBox phrase="Welcome to the best trade shop of the continent!!!" />
           </div>
 
-    <div className="flex flex-row items-center">
-          <div className="mt-4 px-6">
+          <div className="flex flex-row items-center">
+            <div className="mt-20 px-6">
               <KaotikaButton text="KEEP IT" />
             </div>
-            <div className="mt-4 px-6">
+            <div className="mt-20 px-6">
               <KaotikaButton text="SELL IT" />
             </div>
-    </div>
+            <ShopPlayerInfo />
+          </div>
 
 
         </div>
