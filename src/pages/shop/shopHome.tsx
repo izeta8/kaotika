@@ -4,12 +4,37 @@ import Image from "next/image";
 import { useRouter } from 'next/router';
 import { useState, useEffect } from "react";
 import Loading from "@/components/Loading";
+import { useSession, signOut } from 'next-auth/react';
 
 const ShopHome = () => {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const products: string[] = ['armors', 'artifacts', 'boots', 'helmets', 'ingredients', 'rings', 'shields', 'weapons'];
+  const { data: session } = useSession();
+  const [playerEmail, setPlayerEmail] = useState<string | null>(null);
+  const [playerData, setPlayerData] = useState<object | null>(null);
+
+  useEffect(() => {
+    if (session?.user?.email) {
+      setPlayerEmail(session.user.email);
+    }
+  }, [session]);
+
+  useEffect(() => {
+    if (playerEmail) {
+      // Fetch data using the playerId
+      fetch(`/api/shop/player?playerEmail=${playerEmail}`)
+        .then(response => response.json())
+        .then(data => {
+          setPlayerData(data);
+          console.log(data, "is the data fetched");
+        })
+        .catch(error => {
+          console.error("Error fetching player:", error);
+        });
+    }
+  }, [playerEmail]);
 
   useEffect(() => {
     const fetchProducts = async () => {
