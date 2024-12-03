@@ -52,7 +52,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose, cartItems, clearCart, incr
         <h2 className="text-5xl font-bold mb-8 text-center">Your Cart</h2>
 
         {cartItems.length === 0 ? (
-          <p className="text-center text-white">There are no items in your cart.</p>
+          <p className="text-center text-3xl text-white">There are no items in your cart.</p>
         ) : (
           <div className="max-h-[50vh] overflow-y-auto scrollbar scrollbar-thumb-medievalGold scrollbar-track-medievalGray">
             <div className="space-y-4">
