@@ -3,76 +3,40 @@ import { FaTimes, FaPlus, FaMinus } from 'react-icons/fa';
 import { useRouter } from 'next/router';
 import { ItemData } from "@/_common/interfaces/ItemData";
 import Layout from "@/components/Layout";
+import { log } from "node:console";
 
 interface CartProps {
   isOpen: boolean;
   onClose: () => void;
-  cartItems: ItemData[];
+  cartItems: CartItem[];
+  clearCart: () => void;
+  increaseItem: (id: string) => void;
+  decreaseItem: (id: string) => void;
+  removeItem: (id: string) => void;
 }
 
 interface CartItem extends ItemData {
   quantity: number;
 }
 
-const Cart: React.FC<CartProps> = ({ isOpen, onClose, cartItems }) => {
+const Cart: React.FC<CartProps> = ({ isOpen, onClose, cartItems, clearCart, increaseItem, decreaseItem, removeItem }) => {
   const router = useRouter();
-  const [localCartItems, setLocalCartItems] = useState<CartItem[]>([]);
-
+  
   const isMagical = isMagicalStuffShop(router);
 
-  useEffect(() => {
-    if (isMagical) {
-      // Inicializa la cantidad para artículos mágicos
-      const initializedCart = cartItems.map(item => ({
-        ...item,
-        quantity: 1,
-      }));
-      setLocalCartItems(initializedCart);
-    } else {
-      // Para tienda de equipo, cada artículo solo puede tener una cantidad
-      const initializedCart = cartItems.map(item => ({
-        ...item,
-        quantity: 1,
-      }));
-      setLocalCartItems(initializedCart);
-    }
-  }, [cartItems, isMagical]);
-
-  const handleIncrease = (id: string) => {
-    setLocalCartItems(prevItems =>
-      prevItems.map(item =>
-        item._id === id
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      )
-    );
-  };
-
-  const handleDecrease = (id: string) => {
-    setLocalCartItems(prevItems =>
-      prevItems.map(item =>
-        item._id === id && item.quantity > 1
-          ? { ...item, quantity: item.quantity - 1 }
-          : item
-      )
-    );
-  };
-
-  const handleRemove = (id: string) => {
-    setLocalCartItems(prevItems => prevItems.filter(item => item._id !== id));
-  };
-
+  
   const handlePurchase = () => {
-    // Aquí puedes manejar la lógica de compra
-    console.log("Comprando los siguientes items:", localCartItems);
-    // Después de la compra, podrías limpiar el carrito
+    clearCart();
     onClose();
   };
 
   if (!isOpen) return null;
 
+  console.log(cartItems);
+  
   // Calculate total
-  const total = 1000;
+  const total = cartItems.reduce((acc, item) => acc + (item.value || 0) * item.quantity, 0);
+
 
   return (
     <div className="absolute right-4 top-20 w-[40rem] bg-gray-800 text-white z-50 border border-yellow-600 rounded-lg shadow-2xl animate-slideInFromRight">
@@ -87,12 +51,12 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose, cartItems }) => {
 
         <h2 className="text-5xl font-bold mb-8 text-center">Your Cart</h2>
 
-        {localCartItems.length === 0 ? (
+        {cartItems.length === 0 ? (
           <p className="text-center text-white">There are no items in your cart.</p>
         ) : (
-          <div className="max-h-[60vh] overflow-y-auto scrollbar scrollbar-thumb-medievalGold scrollbar-track-medievalGray">
+          <div className="max-h-[50vh] overflow-y-auto scrollbar scrollbar-thumb-medievalGold scrollbar-track-medievalGray">
             <div className="space-y-4">
-              {localCartItems.map(item => (
+              {cartItems.map(item => (
                 <div key={item._id} className="flex justify-between items-center border-b border-gray-700 pb-4">
               <div className="flex items-center space-x-4">
                   <img
@@ -115,14 +79,14 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose, cartItems }) => {
 
                           <div className="flex items-center gap-6">
                             <button
-                              onClick={() => handleDecrease(item._id)}
+                              onClick={() => decreaseItem(item._id)}
                               className="px-3 py-2 bg-gray-600 text-white rounded hover:bg-gray-500 text-2xl"
                             >
                               <FaMinus />
                             </button>
                             <span className="text-2xl">{item.quantity}</span>
                             <button
-                              onClick={() => handleIncrease(item._id)}
+                              onClick={() => increaseItem(item._id)}
                               className="px-3 py-2 bg-gray-600 text-white rounded hover:bg-gray-500 text-2xl"
                             >
                               <FaPlus />
@@ -134,14 +98,14 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose, cartItems }) => {
 
                     </div>
                     <div className="flex items-center gap-3">
-                      <span className="text-3xl">{item.value}</span>
+                    <span className="text-3xl">{item.value * item.quantity}</span>  
                       <img
                         src="/images/icons/gold.png"
                         draggable={false}
                         className="w-10 h-10 rounded-full"
                       />
                       <button
-                        onClick={() => handleRemove(item._id)}
+                        onClick={() => removeItem(item._id)}
                         className="text-yellow-600 hover:text-yellow-700"
                       >
                         <FaTimes size={28} />
@@ -174,6 +138,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose, cartItems }) => {
         {/*  Proceed to Checkout */}
         <div className="mt-12 flex justify-center relative">
           <button
+          onClick={() => handlePurchase()}
             className="cursor-pointer transition transform hover:scale-105"
           >
             <span className="absolute top-5 left-1/2 transform -translate-x-1/2 text-4xl font-semibold text-white">

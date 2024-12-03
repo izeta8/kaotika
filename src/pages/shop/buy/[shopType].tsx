@@ -151,36 +151,73 @@ const Shop = () => {
       setter([]);
     }
   }
+  
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(itemsInCart));
+  }, [itemsInCart]);
+  
+  useEffect(() => {
+    const storedCart = localStorage.getItem('cart');
+    if (storedCart) {
+      try {
+        const parsedCart: CartItem[] = JSON.parse(storedCart);
+        setItemsInCart(parsedCart);
+      } catch (error) {
+        console.error("Error al cargar el carrito desde localStorage:", error);
+        setItemsInCart([]);
+      }
+    }
+  }, []);
+
   const addToCart = (item: ItemData) => {
     if (isEquipmentShop(router)) {
-      // En la tienda de equipo, solo se puede comprar un elemento igual
       setItemsInCart(prevItems => {
         if (prevItems.find(cartItem => cartItem._id === item._id)) {
-          // El item ya está en el carrito, no hacer nada
           return prevItems;
         } else {
-          // Añadir el item al carrito con cantidad 1
           return [...prevItems, { ...item, quantity: 1 }];
         }
       });
     } else if (isMagicalStuffShop(router)) {
-      // En la tienda de artículos mágicos, se pueden añadir múltiples cantidades
       setItemsInCart(prevItems => {
         const itemInCart = prevItems.find(cartItem => cartItem._id === item._id);
         if (itemInCart) {
-          // Incrementar la cantidad del item en el carrito
           return prevItems.map(cartItem =>
             cartItem._id === item._id
               ? { ...cartItem, quantity: cartItem.quantity + 1 }
               : cartItem
           );
         } else {
-          // Añadir el item al carrito con cantidad 1
           return [...prevItems, { ...item, quantity: 1 }];
         }
       });
     }
   };
+  const increaseItem = (id: string) => {
+    setItemsInCart(prevItems =>
+      prevItems.map(item =>
+        item._id === id
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
+      )
+    );
+  };
+
+  const decreaseItem = (id: string) => {
+    setItemsInCart(prevItems =>
+      prevItems.map(item =>
+        item._id === id && item.quantity > 1
+          ? { ...item, quantity: item.quantity - 1 }
+          : item
+      )
+    );
+  };
+
+  const removeItem = (id: string) => {
+    setItemsInCart(prevItems => prevItems.filter(item => item._id !== id));
+  };
+
+  const clearCart = () => setItemsInCart([]);
 
   // ---- RENDER ----  //
 
@@ -206,6 +243,10 @@ const Shop = () => {
               isOpen={isCartOpen}
               onClose={closeCart}
               cartItems={itemsInCart}
+              clearCart={clearCart}
+              increaseItem={increaseItem}
+              decreaseItem={decreaseItem}
+              removeItem={removeItem}
             />
           </div>
         )}
