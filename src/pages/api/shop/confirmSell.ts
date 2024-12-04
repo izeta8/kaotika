@@ -6,7 +6,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
-  const { playerEmail, product ,productPrice } = req.body;
+  const { playerEmail, product, productPrice } = req.body;
   let connection = null;
 
   try {
@@ -15,17 +15,14 @@ export default async function handler(req, res) {
     const result = await processProductSell(connection, playerEmail, product, productPrice);
 
     if (!result.success) {
-        // Return success: false status to the client with the error message
-        return res.status(200).json({
-          success: false,
-          message: result.message,
-        });
+      return res.status(200).json({
+        success: false,
+        message: result.message,
+      });
     }
-
-    // Handle successful purchase
     res.status(200).json({
       success: true,
-      message: 'Purchase successful',
+      message: 'Sell successful',
       inventory: result.inventory,
       gold: result.gold,
     });

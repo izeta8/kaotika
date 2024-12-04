@@ -78,27 +78,27 @@ const Sell = () => {
   }, [playerEmail]);
 
   const handleConfirmSell = async (productConfirm) => {
+    if (!productConfirm) return;
+
     try {
-      const result = await sellProduct(playerData.player.email, productConfirm, 1000);
-      console.log(result); // logs the inventory and gold after the Promise resolves
-      ////////////////////////////////////
-      if (result.success) {
-        // Update the playerData 
+      const itemPrice = 1000;
+  
+      const result = await sellProduct(playerData.email, productConfirm, itemPrice);
+      console.log(result); 
+  
+      if (result && result.success) {
         const updatedPlayerData = {
           ...playerData,
-          player: {
-            ...playerData.player,
-            gold: result.gold, // Update gold with the new value
-            inventory: result.inventory, // Update inventory with the new value
-          }
+          gold: result.gold, 
+          inventory: result.inventory, 
         };
-        // Save the updated playerData to localStorage
         localStorage.setItem('playerData', JSON.stringify(updatedPlayerData));
+        setPlayerData(updatedPlayerData);
       }
-      ////////////////////////////////////
+  
       setProductConfirm(null);
     } catch (error) {
-      console.error('Error during purchase:', error);
+      console.error('Error during sell:', error);
     }
   };
 
@@ -109,26 +109,22 @@ const Sell = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ playerEmail, product, itemPrice}),
+        body: JSON.stringify({ playerEmail, product, productPrice: itemPrice }),
       });
-
+  
       const result = await response.json();
-
+  
       if (!response.ok || !result.success) {
-        // Handle the case where the purchase fails due to business logic (e.g., low level or insufficient funds)
         console.log('Sell failed:', result.message);
-        alert(result.message); // Show the error message to the user
+        alert(result.message); 
         return result;
       }
-
-      // Handle the successful purchase case
       console.log('Sell successful:', result);
       alert('Sell successful!');
-      return result
-
+      return result;
     } catch (error) {
-      console.error('Error during product purchase:', error);
-      alert('An error occurred while processing your purchase.');
+      console.error('Error during product sell:', error);
+      alert('An error occurred while processing your sell.');
     }
   };
   const handleSellClick = () => {

@@ -1,53 +1,62 @@
 import { fetchPlayer } from '../shop/playersService';
-import Player from '../../../database/models/playerModel'
+import Player from '../../../database/models/playerModel';
 
 export const processProductSell = async (connection, playerEmail, product, productPrice) => {
   if (!playerEmail || !product || !product.value || !product._id) {
     throw new Error('Player email and complete product details are required');
   }
 
-  // Ensure that models are registered with the passed connection
   const PlayerModel = connection.model('Player', Player.schema);
 
   let player = await fetchPlayer(connection, playerEmail);
-
   player = player.player;
- 
 
-  // Add the value of the product when sell
   player.gold += productPrice;
 
-   // Determine the category based on the product type
-   const category = product.type + 's';
+  const category = product.type + 's';
 
-   // Ensure the category exists in the player's inventory
-   if (!player.inventory[category]) {
-     player.inventory[category] = []; // Initialize the category if it doesn't exist
-   }
+  if (player.inventory[category]) {
+    // Encontrar el producto en la categoría
+    const productIndex = player.inventory[category].findIndex(
+      (item) => item._id.toString() === product._id
+    );
 
-   // Check if the product is already in the specific category
-   const existingProduct = player.inventory[category].find(
-     (item) => item._id.toString() === product._id
-   );
+    if (productIndex > -1) {
+      // Verificar si la cantidad es mayor que 1
+      if (player.inventory[category][productIndex].quantity > 1) {
+        // Decrementar la cantidad
+        player.inventory[category][productIndex].quantity -= 1;
+      } else {
+        // Eliminar el producto si la cantidad es 1
+        player.inventory[category].splice(productIndex, 1);
+      }
 
-   if (existingProduct) {
-     // If the product exists, increment the quantity
-     existingProduct.quantity = (existingProduct.quantity || 1) + 1;
-   } else {
-     // If the product does not exist, add it to the category
-     player.inventory[category].push({
-       ...product, // Add all product details
-       quantity: 1, // Initialize quantity
-     });
-   }
+      // Si la categoría está vacía, eliminarla
+      if (player.inventory[category].length === 0) {
+        delete player.inventory[category];
+      }
+    } else {
+      // Manejar el caso en que el producto no se encuentra en la categoría
+      return {
+        success: false,
+        message: 'El producto no se encuentra en el inventario.',
+      };
+    }
+  } else {
+    // Manejar el caso en que la categoría no existe
+    return {
+      success: false,
+      message: 'La categoría del producto no existe en el inventario.',
+    };
+  }
 
-   const updatedPlayer = await PlayerModel.findOneAndUpdate(
-    { email: playerEmail }, // Find the player by email
-    { $set: { gold: player.gold, inventory: player.inventory } }, // Fields to update using the $set operator
-    { new: true } // Return the updated document
+  const updatedPlayer = await PlayerModel.findOneAndUpdate(
+    { email: playerEmail }, // Encontrar al jugador por email
+    { $set: { gold: player.gold, inventory: player.inventory } }, 
+    { new: true } // Retornar el documento actualizado
   );
 
-  console.log(updatedPlayer.gold);
+  console.log(`Oro actualizado: ${updatedPlayer.gold}`);
 
   return {
     success: true,
