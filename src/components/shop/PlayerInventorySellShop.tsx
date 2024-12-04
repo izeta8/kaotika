@@ -4,9 +4,10 @@ import { log } from "node:console";
 
 interface Props {
     playerData?: Player;
+    setSelectedItemToSell?: () => void;
   }
 
-const PlayerInventorySellShop: React.FC<Props> = ({playerData}) => {
+const PlayerInventorySellShop: React.FC<Props> = ({playerData, setSelectedItemToSell}) => {
        
         return (
         <div className="w-10/12 p-4">
@@ -16,7 +17,7 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData}) => {
                 playerData?.inventory.helmets.map(helmet => {
                   return (
                     <div key={helmet._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{ 'border': '3px ridge #000000' }}>
-                      <img src={helmet.image} alt={helmet.name} className="w-full h-auto" />
+                      <img src={helmet.image} alt={helmet.name} className="w-full h-auto" onClick={() => setSelectedItemToSell(helmet)} />
                     </div>
                   )
                 })
@@ -25,7 +26,7 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData}) => {
                 playerData?.inventory.weapons.map(weapon => {
                   return (
                     <div key={weapon._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{ 'border': '3px ridge #000000' }}>
-                      <img src={weapon.image} alt={weapon.name} className="w-full h-auto" />
+                      <img src={weapon.image} alt={weapon.name} className="w-full h-auto" onClick={() => setSelectedItemToSell(weapon)} />
                     </div>
                   )
                 })
@@ -34,7 +35,7 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData}) => {
                 playerData?.inventory.armors.map(armor => {
                   return (
                     <div key={armor._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{ 'border': '3px ridge #000000' }}>
-                      <img src={armor.image} alt={armor.name} className="w-full h-auto" />
+                      <img src={armor.image} alt={armor.name} className="w-full h-auto" onClick={() => setSelectedItemToSell(armor)} />
                     </div>
                   )
                 })
@@ -43,7 +44,7 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData}) => {
                 playerData?.inventory.shields.map(shield => {
                   return (
                     <div key={shield._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{ 'border': '3px ridge #000000' }}>
-                      <img src={shield.image} alt={shield.name} className="w-full h-auto" />
+                      <img src={shield.image} alt={shield.name} className="w-full h-auto" onClick={() => setSelectedItemToSell(shield)} />
                     </div>
                   )
                 })
@@ -52,7 +53,7 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData}) => {
                 playerData?.inventory.artifacts.map(artifact => {
                   return (
                     <div key={artifact._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{ 'border': '3px ridge #000000' }}>
-                      <img src={artifact.image} alt={artifact.name} className="w-full h-auto" />
+                      <img src={artifact.image} alt={artifact.name} className="w-full h-auto" onClick={() => setSelectedItemToSell(artifact)} />
                     </div>
                   )
                 })
@@ -61,7 +62,7 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData}) => {
                 playerData?.inventory.boots.map(boot => {
                   return (
                     <div key={boot._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{ 'border': '3px ridge #000000' }}>
-                      <img src={boot.image} alt={boot.name} className="w-full h-auto" />
+                      <img src={boot.image} alt={boot.name} className="w-full h-auto" onClick={() => setSelectedItemToSell(boot)} />
                     </div>
                   )
                 })
@@ -70,7 +71,7 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData}) => {
                 playerData?.inventory.rings.map(ring => {
                   return (
                     <div key={ring._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{ 'border': '3px ridge #000000' }}>
-                      <img src={ring.image} alt={ring.name} className="w-full h-auto" />
+                      <img src={ring.image} alt={ring.name} className="w-full h-auto" onClick={() => setSelectedItemToSell(ring)} />
                     </div>
                   )
                 })
