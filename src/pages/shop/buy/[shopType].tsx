@@ -187,7 +187,11 @@ const Shop = () => {
   const handleConfirmBuy = async (productConfirm) => {
     const products = [];
     console.log('productConfirm before push:', JSON.stringify(productConfirm, null, 2));
-    products.push(productConfirm);
+    if (!Array.isArray(productConfirm)) {
+      products.push(productConfirm);
+    } else {
+      products.push(...productConfirm);
+    }
     console.log('products after push:', JSON.stringify(products, null, 2));
     try {
       const result = await purchaseProduct(playerData.player.email, products);

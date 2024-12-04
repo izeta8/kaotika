@@ -12,9 +12,8 @@ export const processProductsPurchase = async (connection, playerEmail, products)
   let player = await fetchPlayer(connection, playerEmail);
 
   player = player.player; // Assuming fetchPlayer returns { player: {...} }
-  products = products[0];
+  console.log("los productos: " + JSON.stringify(products));
 
-  console.log("todos los productos: " + JSON.stringify(products[0]));
   // Calculate the total cost of all products
   const totalCost = products.reduce((sum, product) => {
     if (!product.value || !product._id) {
