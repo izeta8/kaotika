@@ -185,8 +185,12 @@ const Shop = () => {
   }
 
   const handleConfirmBuy = async (productConfirm) => {
+    const products = [];
+    console.log('productConfirm before push:', JSON.stringify(productConfirm, null, 2));
+    products.push(productConfirm);
+    console.log('products after push:', JSON.stringify(products, null, 2));
     try {
-      const result = await purchaseProduct(playerData.player.email, productConfirm);
+      const result = await purchaseProduct(playerData.player.email, products);
       console.log(result); // logs the inventory and gold after the Promise resolves
       ////////////////////////////////////
       if (result.success) {
@@ -213,14 +217,14 @@ const Shop = () => {
     setProductConfirm(null);
   };
 
-  const purchaseProduct = async (playerEmail, product) => {
+  const purchaseProduct = async (playerEmail, products) => {
     try {
       const response = await fetch('/api/shop/confirmPurchase', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ playerEmail, product }),
+        body: JSON.stringify({ playerEmail, products }),
       });
 
       const result = await response.json();
@@ -354,6 +358,7 @@ const Shop = () => {
               increaseItem={increaseItem}
               decreaseItem={decreaseItem}
               removeItem={removeItem}
+              confirmPurchase={handleConfirmBuy}
             />
           </div>
         )}

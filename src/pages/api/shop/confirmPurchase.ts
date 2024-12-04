@@ -1,18 +1,18 @@
 import { createDatabaseConnection, closeDatabaseConnection } from '@/database/connection';
-import { processProductPurchase } from '../shop/confirmPurchaseService';
+import { processProductsPurchase } from '../shop/confirmPurchaseService';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
-  const { playerEmail, product } = req.body;
+  const { playerEmail, products } = req.body;
   let connection = null;
 
   try {
     connection = await createDatabaseConnection();
 
-    const result = await processProductPurchase(connection, playerEmail, product);
+    const result = await processProductsPurchase(connection, playerEmail, products);
 
     if (!result.success) {
         // Return success: false status to the client with the error message
