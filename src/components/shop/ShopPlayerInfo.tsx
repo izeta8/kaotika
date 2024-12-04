@@ -20,7 +20,7 @@ const InfoContainer: React.FC<{children: ReactNode}> = ({children}) => {
 
   return (
     <div
-      className="fixed w-56 h-44 bottom-5 right-5 z-50 flex flex-col gap-4 justify-center items-center"
+      className="fixed w-56 h-44 bottom-5 right-5 z-40 flex flex-col gap-4 justify-center items-center"
       style={{
         backgroundImage: "url('/images/shop/shop_player_info_background.png')",
         backgroundRepeat: "no-repeat",
