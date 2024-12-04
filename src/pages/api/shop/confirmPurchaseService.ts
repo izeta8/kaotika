@@ -13,13 +13,13 @@ export const processProductPurchase = async (connection, playerEmail, product) =
 
   player = player.player; //////////PORQUE PLAYER.PLAYER?????
 
-  // Check if the player's level is sufficient for the product
-  if (player.level < product.min_lvl) {
-    return {
-      success: false,
-      message: 'Player level is too low to purchase this product',
-    };
-  }
+  // // Check if the player's level is sufficient for the product
+  // if (player.level < product.min_lvl) {
+  //   return {
+  //     success: false,
+  //     message: 'Player level is too low to purchase this product',
+  //   };
+  // }
 
   // Check if the player has enough money
   if (player.gold < product.value) {
