@@ -20,8 +20,9 @@ const Sell = () => {
   const { data: session } = useSession();
   const [playerEmail, setPlayerEmail] = useState<string | null>(null);
   const [playerData, setPlayerData] = useState<Player | null>(null);
-
-
+  const [productConfirm, setProductConfirm] = useState<object | null>(null);
+  
+  const armorFake = playerData?.inventory.armors[0];
 
 //####################################################################################################
 //####################################################################################################
@@ -70,6 +71,68 @@ const Sell = () => {
       loadPlayerData();
     }
   }, [playerEmail]);
+
+  const handleConfirmSell = async (productConfirm) => {
+    try {
+      const result = await sellProduct(playerData.player.email, productConfirm);
+      console.log(result); // logs the inventory and gold after the Promise resolves
+      ////////////////////////////////////
+      if (result.success) {
+        // Update the playerData 
+        const updatedPlayerData = {
+          ...playerData,
+          player: {
+            ...playerData.player,
+            gold: result.gold, // Update gold with the new value
+            inventory: result.inventory, // Update inventory with the new value
+          }
+        };
+        // Save the updated playerData to localStorage
+        localStorage.setItem('playerData', JSON.stringify(updatedPlayerData));
+      }
+      ////////////////////////////////////
+      setProductConfirm(null);
+    } catch (error) {
+      console.error('Error during purchase:', error);
+    }
+  };
+
+  const sellProduct = async (playerEmail, product,itemPrice) => {
+    try {
+      const response = await fetch('/api/shop/confirmSell', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ playerEmail, product, itemPrice}),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        // Handle the case where the purchase fails due to business logic (e.g., low level or insufficient funds)
+        console.log('Sell failed:', result.message);
+        alert(result.message); // Show the error message to the user
+        return result;
+      }
+
+      // Handle the successful purchase case
+      console.log('Sell successful:', result);
+      alert('Sell successful!');
+      return result
+
+    } catch (error) {
+      console.error('Error during product purchase:', error);
+      alert('An error occurred while processing your purchase.');
+    }
+  };
+  const handleSellClick = () => {
+    setProductConfirm(armorFake);
+  };
+
+  const handleCancel = () => {
+    setProductConfirm(null);
+  };
 
 //####################################################################################################
 // Return loading spinner if there is charging something
@@ -120,6 +183,28 @@ const Sell = () => {
 
 
         </div>
+
+        {productConfirm && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 shadow-lg w-1/3">
+              <h2 className="text-lg font-semibold">Are you sure you want to buy it?</h2>
+              <div className="mt-4 flex justify-end gap-4">
+                <button
+                  className="bg-gray-300 text-gray-800 px-4 py-2 rounded"
+                  onClick={() => handleCancel()}
+                >
+                  No
+                </button>
+                <button
+                  className="bg-blue-500 text-white px-4 py-2 rounded"
+                  onClick={() => handleConfirmSell(productConfirm)}
+                >
+                  Yes
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
       </div>
     </Layout>
