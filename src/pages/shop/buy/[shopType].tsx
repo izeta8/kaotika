@@ -246,8 +246,8 @@ const Shop = () => {
     try {
       const result = await purchaseProduct(playerData.player.email, productConfirm);
       console.log(result); // logs the inventory and gold after the Promise resolves
-      console.log("Item purchased");
       ////////////////////////////////////
+      if (result.success) {
       // Update the playerData 
       const updatedPlayerData = {
         ...playerData,
@@ -259,6 +259,7 @@ const Shop = () => {
       };
       // Save the updated playerData to localStorage
       localStorage.setItem('playerData', JSON.stringify(updatedPlayerData));
+      }
       ////////////////////////////////////
       setProductConfirm(null);
     } catch (error) {
@@ -286,7 +287,7 @@ const Shop = () => {
         // Handle the case where the purchase fails due to business logic (e.g., low level or insufficient funds)
         console.log('Purchase failed:', result.message);
         alert(result.message); // Show the error message to the user
-        return; // Exit without further processing
+        return result;
       }
   
       // Handle the successful purchase case
