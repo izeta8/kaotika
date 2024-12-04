@@ -3,12 +3,14 @@ import Link from 'next/link';
 import { redirect } from "next/navigation";
 import { useRouter } from 'next/router'
 import React from "react";
+import { useSession, signOut } from 'next-auth/react';
 import { FaShoppingCart } from 'react-icons/fa';
 import Cart from "@/components/shop/Cart";
 import { useState, useEffect } from "react";
 import ShopPlayerInfo from "@/components/shop/ShopPlayerInfo";
 import { ItemData } from "@/_common/interfaces/ItemData";
 import { CartItem } from "@/_common/interfaces/CartItem";
+import Loading from "@/components/Loading";
 
 type ShopCategoryKeys = "helmets" | "weapons" | "armors" | "shields" | "boots" | "rings" | "ingredients" | "containers";
 
@@ -22,11 +24,13 @@ const magicalStuffCategories = ["ingredients", "containers"];
 const Shop = () => {
 
   const router = useRouter()
-
+  const [loading, setLoading] = useState(true);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [categoryData, setCategoryData] = useState<Array<ItemData>>([]);
   const [playerData, setPlayerData] = useState<object | null>(null);
   const [productConfirm, setProductConfirm] = useState<object | null>(null);
+  const { data: session } = useSession();
+  const [playerEmail, setPlayerEmail] = useState<string | null>(null);
 
   const [currentCategory, setCurrentCategory] = useState<string>('');
 
@@ -73,9 +77,36 @@ const Shop = () => {
   // ---- USE EFFECTS ----  //
   // ---------------------- //
 
+  ////////////////////////////////////////////////////////////////////////////////
   useEffect(() => {
-    loadPlayerData(setPlayerData);
-  }, []);
+    if (session?.user?.email) {
+      setLoading(true);
+      setPlayerEmail(session.user.email);
+    }
+  }, [session]);
+
+  useEffect(() => {
+    if (playerEmail) {
+      setLoading(true)
+      // Fetch data using the playerId
+      fetch(`/api/shop/player?playerEmail=${playerEmail}`)
+        .then(response => response.json())
+        .then(data => {
+          console.log("el player : " + data);
+          setPlayerData(data);
+          // localStorage.setItem('playerData', JSON.stringify( data ));
+          console.log(data, "is the data fetched");
+          setLoading(false);
+        })
+        .catch(error => {
+          console.error("Error fetching player:", error);
+        });
+    }
+  }, [playerEmail]);
+
+
+  ////////////////////////////////////////////////////////////////////////////////
+
 
   useEffect(() => {
 
@@ -121,31 +152,6 @@ const Shop = () => {
   }, [isCartOpen]);
 
   // ---- UTILITY ----  //
-
-
-
-  const loadPlayerData = (setter: (data: object | null) => void): void => {
-    // Get playerData from localStorage
-    const localStorageData = localStorage.getItem('playerData');
-
-    if (localStorageData) {
-      try {
-        const parsedData = JSON.parse(localStorageData); // Parse the JSON string
-        if (typeof parsedData === 'object' && parsedData !== null) {
-          setter(parsedData); // Set the parsed object data into state
-        } else {
-          console.warn("Data in localStorage is not a valid object:", parsedData);
-          setter(null); // Set to null if the data is not valid
-        }
-      } catch (error) {
-        console.error("Failed to parse localStorage data:", error);
-        setter(null); // Set to null in case of parsing error
-      }
-    } else {
-      console.log("No playerData found in localStorage.");
-      setter(null); // Set to null if no data exists
-    }
-  };
 
   const loadLocalStorageIntoStates = (categoryObject): void => {
 
@@ -312,14 +318,20 @@ const Shop = () => {
 
   const clearCart = () => setItemsInCart([]);
 
+  const cartItemCount = itemsInCart.reduce((acc, item) => acc + item.quantity, 0);
+
   // ---- RENDER ----  //
+
+  if (loading) {
+    return (<Loading />);
+  }
 
   return (
     <div
       className="relative min-h-screen flex flex-col bg-[#191A1D] bg-repeat-center"
     >
       <Layout>
-        <ShopHeader currentCategory={currentCategory} setCurrentCategory={setCurrentCategory} onCartClick={openCart} />
+        <ShopHeader currentCategory={currentCategory} setCurrentCategory={setCurrentCategory} onCartClick={openCart} cartItemCount={cartItemCount}/>
         <ShopPlayerInfo />
         <ShopContent currentCategory={currentCategory} categoryData={categoryData} setProductConfirm={setProductConfirm} addToCart={addToCart} />
         <Background />
@@ -373,7 +385,7 @@ const Shop = () => {
   );
 };
 
-const ShopHeader: React.FC<{ onCartClick: Function, currentCategory: string, setCurrentCategory: Function }> = ({ onCartClick, currentCategory, setCurrentCategory }) => {
+const ShopHeader: React.FC<{ onCartClick: Function, currentCategory: string, setCurrentCategory: Function }> = ({ onCartClick, currentCategory, setCurrentCategory, cartItemCount  }) => {
 
   const router = useRouter();
 
@@ -408,10 +420,16 @@ const ShopHeader: React.FC<{ onCartClick: Function, currentCategory: string, set
             className="relative px-8 py-6 rounded-full transition transform hover:scale-105 focus:outline-none"
           >
             <img
-              src="/images/shop/buy/Cart1.png" 
+              src="/images/shop/buy/Cart.png" 
               className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 " 
               draggable={false} 
             />
+             {/* Badge */}
+             {cartItemCount > 0 && (
+              <span className="absolute top-[-5px] right-0 inline-flex items-center justify-center w-7 h-7 text-4xl leading-none text-medievalSepia  transform translate-x-1/2 -translate-y-1/2">
+                {cartItemCount}
+              </span>
+            )}
           </button>
         </div>
 
