@@ -3,12 +3,14 @@ import Link from 'next/link';
 import { redirect } from "next/navigation";
 import { useRouter } from 'next/router'
 import React from "react";
+import { useSession, signOut } from 'next-auth/react';
 import { FaShoppingCart } from 'react-icons/fa';
 import Cart from "@/components/shop/Cart";
 import { useState, useEffect } from "react";
 import ShopPlayerInfo from "@/components/shop/ShopPlayerInfo";
 import { ItemData } from "@/_common/interfaces/ItemData";
 import { CartItem } from "@/_common/interfaces/CartItem";
+import Loading from "@/components/Loading";
 
 type ShopCategoryKeys = "helmets" | "weapons" | "armors" | "shields" | "boots" | "rings" | "ingredients" | "containers";
 
@@ -22,11 +24,13 @@ const magicalStuffCategories = ["ingredients", "containers"];
 const Shop = () => {
 
   const router = useRouter()
-
+  const [loading, setLoading] = useState(true);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [categoryData, setCategoryData] = useState<Array<ItemData>>([]);
   const [playerData, setPlayerData] = useState<object | null>(null);
   const [productConfirm, setProductConfirm] = useState<object | null>(null);
+  const { data: session } = useSession();
+  const [playerEmail, setPlayerEmail] = useState<string | null>(null);
 
   const [currentCategory, setCurrentCategory] = useState<string>('');
 
@@ -73,9 +77,36 @@ const Shop = () => {
   // ---- USE EFFECTS ----  //
   // ---------------------- //
 
+  ////////////////////////////////////////////////////////////////////////////////
   useEffect(() => {
-    loadPlayerData(setPlayerData);
-  }, []);
+    if (session?.user?.email) {
+      setLoading(true);
+      setPlayerEmail(session.user.email);
+    }
+  }, [session]);
+
+  useEffect(() => {
+    if (playerEmail) {
+      setLoading(true)
+      // Fetch data using the playerId
+      fetch(`/api/shop/player?playerEmail=${playerEmail}`)
+        .then(response => response.json())
+        .then(data => {
+          console.log("el player : " + data);
+          setPlayerData(data);
+          // localStorage.setItem('playerData', JSON.stringify( data ));
+          console.log(data, "is the data fetched");
+          setLoading(false);
+        })
+        .catch(error => {
+          console.error("Error fetching player:", error);
+        });
+    }
+  }, [playerEmail]);
+
+
+  ////////////////////////////////////////////////////////////////////////////////
+
 
   useEffect(() => {
 
@@ -121,31 +152,6 @@ const Shop = () => {
   }, [isCartOpen]);
 
   // ---- UTILITY ----  //
-
-
-
-  const loadPlayerData = (setter: (data: object | null) => void): void => {
-    // Get playerData from localStorage
-    const localStorageData = localStorage.getItem('playerData');
-
-    if (localStorageData) {
-      try {
-        const parsedData = JSON.parse(localStorageData); // Parse the JSON string
-        if (typeof parsedData === 'object' && parsedData !== null) {
-          setter(parsedData); // Set the parsed object data into state
-        } else {
-          console.warn("Data in localStorage is not a valid object:", parsedData);
-          setter(null); // Set to null if the data is not valid
-        }
-      } catch (error) {
-        console.error("Failed to parse localStorage data:", error);
-        setter(null); // Set to null in case of parsing error
-      }
-    } else {
-      console.log("No playerData found in localStorage.");
-      setter(null); // Set to null if no data exists
-    }
-  };
 
   const loadLocalStorageIntoStates = (categoryObject): void => {
 
@@ -313,6 +319,10 @@ const Shop = () => {
   const clearCart = () => setItemsInCart([]);
 
   // ---- RENDER ----  //
+
+  if (loading) {
+    return (<Loading />);
+  }
 
   return (
     <div
