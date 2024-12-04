@@ -312,6 +312,8 @@ const Shop = () => {
 
   const clearCart = () => setItemsInCart([]);
 
+  const cartItemCount = itemsInCart.reduce((acc, item) => acc + item.quantity, 0);
+
   // ---- RENDER ----  //
 
   return (
@@ -319,7 +321,7 @@ const Shop = () => {
       className="relative min-h-screen flex flex-col bg-[#191A1D] bg-repeat-center"
     >
       <Layout>
-        <ShopHeader currentCategory={currentCategory} setCurrentCategory={setCurrentCategory} onCartClick={openCart} />
+        <ShopHeader currentCategory={currentCategory} setCurrentCategory={setCurrentCategory} onCartClick={openCart} cartItemCount={cartItemCount}/>
         <ShopPlayerInfo />
         <ShopContent currentCategory={currentCategory} categoryData={categoryData} setProductConfirm={setProductConfirm} addToCart={addToCart} />
         <Background />
@@ -373,7 +375,7 @@ const Shop = () => {
   );
 };
 
-const ShopHeader: React.FC<{ onCartClick: Function, currentCategory: string, setCurrentCategory: Function }> = ({ onCartClick, currentCategory, setCurrentCategory }) => {
+const ShopHeader: React.FC<{ onCartClick: Function, currentCategory: string, setCurrentCategory: Function }> = ({ onCartClick, currentCategory, setCurrentCategory, cartItemCount  }) => {
 
   const router = useRouter();
 
@@ -408,10 +410,16 @@ const ShopHeader: React.FC<{ onCartClick: Function, currentCategory: string, set
             className="relative px-8 py-6 rounded-full transition transform hover:scale-105 focus:outline-none"
           >
             <img
-              src="/images/shop/buy/Cart1.png" 
+              src="/images/shop/buy/Cart.png" 
               className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 " 
               draggable={false} 
             />
+             {/* Badge */}
+             {cartItemCount > 0 && (
+              <span className="absolute top-[-5px] right-0 inline-flex items-center justify-center w-7 h-7 text-4xl leading-none text-medievalSepia  transform translate-x-1/2 -translate-y-1/2">
+                {cartItemCount}
+              </span>
+            )}
           </button>
         </div>
 
