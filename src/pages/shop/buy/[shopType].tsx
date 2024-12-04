@@ -242,10 +242,28 @@ const Shop = () => {
     }
   }
 
-  const handleConfirmBuy = (productConfirm) => {
-    purchaseProduct(playerData.player.email, productConfirm);
-    console.log("item purchased"); 
-    setProductConfirm(null); 
+  const handleConfirmBuy = async (productConfirm) => {
+    try {
+      const result = await purchaseProduct(playerData.player.email, productConfirm);
+      console.log(result); // logs the inventory and gold after the Promise resolves
+      console.log("Item purchased");
+      ////////////////////////////////////
+      // Update the playerData 
+      const updatedPlayerData = {
+        ...playerData,
+        player: {
+        ...playerData.player,
+        gold: result.gold, // Update gold with the new value
+        inventory: result.inventory, // Update inventory with the new value
+        }
+      };
+      // Save the updated playerData to localStorage
+      localStorage.setItem('playerData', JSON.stringify(updatedPlayerData));
+      ////////////////////////////////////
+      setProductConfirm(null);
+    } catch (error) {
+      console.error('Error during purchase:', error);
+    }
   };
 
   const handleCancel = () => {
@@ -274,7 +292,7 @@ const Shop = () => {
       // Handle the successful purchase case
       console.log('Purchase successful:', result);
       alert('Purchase successful!');
-      // Optionally update the UI or perform additional actions here
+      return result
   
     } catch (error) {
       console.error('Error during product purchase:', error);
