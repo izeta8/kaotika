@@ -144,6 +144,15 @@ const Sell = () => {
   };
 
 //####################################################################################################
+//####################################################################################################
+// Function to reset the item showing on details on the card
+//####################################################################################################
+//####################################################################################################
+const handleResetSelectedItemToSell = () => {
+  setSelectedItemToSell(undefined);
+}
+
+//####################################################################################################
 // Return loading spinner if there is charging something
 //####################################################################################################
 
@@ -182,7 +191,7 @@ const Sell = () => {
 
           <div className="flex flex-row items-center">
             <div className="mt-20 px-6">
-              <KaotikaButton text="KEEP IT" />
+              <KaotikaButton text="KEEP IT" handleClick={handleResetSelectedItemToSell}/>
             </div>
             <div className="mt-20 px-6">
             <KaotikaButton text="SELL IT" handleClick={handleSellClick} />
