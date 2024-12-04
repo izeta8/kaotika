@@ -23,12 +23,6 @@ const Sell = () => {
   const [productConfirm, setProductConfirm] = useState<object | null>(null);
   const [selectedItemToSell, setSelectedItemToSell] = useState()
 
-  
-  const armorFake = playerData?.inventory.armors[0];
-
-
-
-
 
 
 //####################################################################################################
@@ -85,7 +79,7 @@ const Sell = () => {
 
   const handleConfirmSell = async (productConfirm) => {
     try {
-      const result = await sellProduct(playerData.player.email, productConfirm);
+      const result = await sellProduct(playerData.player.email, productConfirm, 1000);
       console.log(result); // logs the inventory and gold after the Promise resolves
       ////////////////////////////////////
       if (result.success) {
@@ -138,7 +132,7 @@ const Sell = () => {
     }
   };
   const handleSellClick = () => {
-    setProductConfirm(armorFake);
+    setProductConfirm(selectedItemToSell);
   };
 
   const handleCancel = () => {
@@ -187,7 +181,7 @@ const Sell = () => {
               <KaotikaButton text="KEEP IT" />
             </div>
             <div className="mt-20 px-6">
-              <KaotikaButton text="SELL IT" />
+            <KaotikaButton text="SELL IT" handleClick={handleSellClick} />
             </div>
             <ShopPlayerInfo />
           </div>
