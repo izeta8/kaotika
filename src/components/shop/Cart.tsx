@@ -1,57 +1,45 @@
-import React, { useState } from 'react';
-import { FaTimes } from 'react-icons/fa';
-
-interface Ingredient {
-  id: number;
-  name: string;
-  quantity: number;
-  price: number;
-}
-
-interface Equipment {
-  id: number;
-  name: string;
-  price: number;
-}
+import React, { useState, useEffect } from "react";
+import { FaTimes, FaPlus, FaMinus } from 'react-icons/fa';
+import { useRouter } from 'next/router';
+import { ItemData } from "@/_common/interfaces/ItemData";
+import Layout from "@/components/Layout";
+import { log } from "node:console";
 
 interface CartProps {
   isOpen: boolean;
   onClose: () => void;
-  ingredients: Ingredient[];
-  equipment: Equipment[];
+  cartItems: CartItem[];
+  clearCart: () => void;
+  increaseItem: (id: string) => void;
+  decreaseItem: (id: string) => void;
+  removeItem: (id: string) => void;
 }
 
-const Cart: React.FC<CartProps> = ({ isOpen, onClose, ingredients, equipment }) => {
-  const [ingredientList, setIngredientList] = useState(ingredients);
-  const [equipmentList, setEquipmentList] = useState(equipment);
+interface CartItem extends ItemData {
+  quantity: number;
+}
+
+const Cart: React.FC<CartProps> = ({ isOpen, onClose, cartItems, clearCart, increaseItem, decreaseItem, removeItem }) => {
+  const router = useRouter();
+  
+  const isMagical = isMagicalStuffShop(router);
+
+  
+  const handlePurchase = () => {
+    clearCart();
+    onClose();
+  };
 
   if (!isOpen) return null;
 
-  const handleQuantityChange = (id: number, delta: number) => {
-    setIngredientList((prev) =>
-      prev.map((ingredient) =>
-        ingredient.id === id
-          ? { ...ingredient, quantity: Math.max(1, ingredient.quantity + delta) }
-          : ingredient
-      )
-    );
-  };
-
-  const handleRemoveIngredient = (id: number) => {
-    setIngredientList((prev) => prev.filter((ingredient) => ingredient.id !== id));
-  };
-
-  const handleRemoveEquipment = (id: number) => {
-    setEquipmentList((prev) => prev.filter((equipment) => equipment.id !== id));
-  };
-
+  console.log(cartItems);
+  
   // Calculate total
-  const ingredientTotal = ingredientList.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const equipmentTotal = equipmentList.reduce((sum, item) => sum + item.price, 0);
-  const total = ingredientTotal + equipmentTotal;
+  const total = cartItems.reduce((acc, item) => acc + (item.value || 0) * item.quantity, 0);
+
 
   return (
-    <div className="absolute right-4 top-20 w-[40rem] bg-gray-800 text-white z-50 border border-yellow-600 rounded-lg shadow-2xl">
+    <div className="absolute right-4 top-20 w-[40rem] bg-gray-800 text-white z-50 border border-yellow-600 rounded-lg shadow-2xl animate-slideInFromRight">
       <div className="bg-neutral-800 w-full max-h-[90vh] overflow-auto p-10 rounded-lg relative">
         {/* Close button */}
         <button
@@ -61,97 +49,77 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose, ingredients, equipment }) 
           <FaTimes size={36} />
         </button>
 
-        {/* Title */}
         <h2 className="text-5xl font-bold mb-8 text-center">Your Cart</h2>
 
-        {/* Items */}
-        {ingredientList.length === 0 && equipmentList.length === 0 ? (
-          <p className="text-center text-2xl">There are no items in your cart.</p>
+        {cartItems.length === 0 ? (
+          <p className="text-center text-3xl text-white">There are no items in your cart.</p>
         ) : (
-          <div className="space-y-10">
-            {/* Magic Stuff */}
-            {ingredientList.length > 0 && (
-              <div>
-                <h3 className="text-4xl font-bold mb-4">Magic Stuff</h3>
-                <div className="max-h-[18vh] overflow-y-auto scrollbar scrollbar-thumb-medievalGold scrollbar-track-medievalGray">
-                  <ul className="space-y-6">
-                    {ingredientList.map((ingredient) => (
-                      <li
-                        key={ingredient.id}
-                        className="flex justify-between items-center border-b border-gray-700 pb-4"
-                      >
-                        <span className="text-3xl">{ingredient.name}</span>
-                        <div className="flex items-center gap-6">
-                          <button
-                            onClick={() => handleQuantityChange(ingredient.id, -1)}
-                            className="px-3 py-2 bg-gray-600 text-white rounded hover:bg-gray-500 text-2xl"
-                          >
-                            -
-                          </button>
-                          <span className="text-2xl">{ingredient.quantity}</span>
-                          <button
-                            onClick={() => handleQuantityChange(ingredient.id, 1)}
-                            className="px-3 py-2 bg-gray-600 text-white rounded hover:bg-gray-500 text-2xl"
-                          >
-                            +
-                          </button>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <span className="text-3xl">{ingredient.price * ingredient.quantity}</span>
-                          <img
-                            src="/images/icons/gold.png"
-                            draggable={false}
-                            className="w-10 h-10 rounded-full"
-                          />
-                          <button
-                            onClick={() => handleRemoveIngredient(ingredient.id)}
-                            className="text-yellow-600 hover:text-yellow-700"
-                          >
-                            <FaTimes size={28} />
-                          </button>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            )}
+          <div className="max-h-[50vh] overflow-y-auto scrollbar scrollbar-thumb-medievalGold scrollbar-track-medievalGray">
+            <div className="space-y-4">
+              {cartItems.map(item => (
+                <div key={item._id} className="flex justify-between items-center border-b border-gray-700 pb-4">
+              <div className="flex items-center space-x-4">
+                  <img
+                    src={`https://kaotika.vercel.app${item.image}`}
+                    alt={item.name}
+                    draggable={false}
+                    className="w-16 h-16 object-cover rounded"
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = "/images/shop/buy/interrogation_sign.png";
+                    }}
+                  />
 
-            {/* Equipment */}
-            {equipmentList.length > 0 && (
-              <div>
-                <h3 className="text-4xl font-bold mb-4">Equipment</h3>
-                <div className="max-h-[16vh] overflow-y-auto scrollbar scrollbar-thumb-medievalGold scrollbar-track-medievalGray">
-                  <ul className="space-y-6">
-                    {equipmentList.map((item) => (
-                      <li
-                        key={item.id}
-                        className="flex justify-between items-center border-b border-gray-700 pb-4"
+                  <span className="text-3xl">{item.name}</span>
+                  </div>
+                  <div className="flex items-center space-x-10">
+                    <div className="flex items-center gap-6">
+                      {isMagical && (
+                        <>
+
+                          <div className="flex items-center gap-6">
+                            <button
+                              onClick={() => decreaseItem(item._id)}
+                              className="px-3 py-2 bg-gray-600 text-white rounded hover:bg-gray-500 text-2xl"
+                            >
+                              <FaMinus />
+                            </button>
+                            <span className="text-2xl">{item.quantity}</span>
+                            <button
+                              onClick={() => increaseItem(item._id)}
+                              className="px-3 py-2 bg-gray-600 text-white rounded hover:bg-gray-500 text-2xl"
+                            >
+                              <FaPlus />
+                            </button>
+                          </div>
+
+                        </>
+                      )}
+
+                    </div>
+                    <div className="flex items-center gap-3">
+                    <span className="text-3xl">{item.value * item.quantity}</span>  
+                      <img
+                        src="/images/icons/gold.png"
+                        draggable={false}
+                        className="w-10 h-10 rounded-full"
+                      />
+                      <button
+                        onClick={() => removeItem(item._id)}
+                        className="text-yellow-600 hover:text-yellow-700"
                       >
-                        <span className="text-3xl">{item.name}</span>
-                        <div className="flex items-center gap-3">
-                          <span className="text-3xl">{item.price}</span>
-                          <img
-                            src="/images/icons/gold.png"
-                            draggable={false}
-                            className="w-10 h-10 rounded-full"
-                          />
-                          <button
-                            onClick={() => handleRemoveEquipment(item.id)}
-                            className="text-yellow-600 hover:text-yellow-700"
-                          >
-                            <FaTimes size={28} />
-                          </button>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
+                        <FaTimes size={28} />
+                      </button>
+
+
+                    </div>
+
+                  </div>
                 </div>
-              </div>
-            )}
+              ))}
+            </div>
           </div>
         )}
-
         {/* Total */}
         <div className="mt-10">
           <div className="flex justify-between items-center text-4xl font-semibold">
@@ -167,9 +135,10 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose, ingredients, equipment }) 
           </div>
         </div>
 
-        {/* Buttons */}
+        {/*  Proceed to Checkout */}
         <div className="mt-12 flex justify-center relative">
           <button
+          onClick={() => handlePurchase()}
             className="cursor-pointer transition transform hover:scale-105"
           >
             <span className="absolute top-5 left-1/2 transform -translate-x-1/2 text-4xl font-semibold text-white">
@@ -189,4 +158,15 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose, ingredients, equipment }) 
 };
 
 export default Cart;
+
+// Funciones de utilidad para determinar el tipo de tienda
+const isEquipmentShop = (router): boolean => {
+  const currentShopType = router.query.shopType;
+  return currentShopType === "equipment";
+}
+
+const isMagicalStuffShop = (router): boolean => {
+  const currentShopType = router.query.shopType;
+  return currentShopType === "magical_stuff";
+}
 
