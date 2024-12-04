@@ -2,36 +2,27 @@
 
 
 interface promps {
-
+    item: any,
 }
 
-const SellShopObjectDetails: React.FC<promps> = () => {
+const SellShopObjectDetails: React.FC<promps> = ({ item }) => {
 
-  const item = {
-        "modifiers": {
-            "intelligence": 2,
-            "dexterity": 3,
-            "constitution": 10,
-            "insanity": 5,
-            "charisma": 4,
-            "strength": 6
-        },
-        "_id": "66f694d84a8f1157dab87bc3",
-        "name": "Berserker's Fury Boots",
-        "description": "Fuel your rage and strength.",
-        "type": "boot",
-        "image": "/images/equipment/boots/boot_11.png",
-        "value": 400,
-        "defense": 36,
-        "min_lvl": 15,
-        "isActive": true,
-        "isUnique": false
+
+    if (!item) {
+        return (
+            <div>
+                <div className="flex flex-row text-medievalSepia bg-cover bg-no-repeat bg-center w-2" style={{ backgroundImage: 'url(/images/shop/shop_item_details.png)', width: '740px', height: '500px' }}>
+                </div>
+            </div>
+        )
     }
 
     return (
 
         <div>
             <div className="flex flex-row text-medievalSepia bg-cover bg-no-repeat bg-center w-2" style={{ backgroundImage: 'url(/images/shop/shop_item_details.png)', width: '740px', height: '500px' }}>
+
+
                 <div className="flex-col w-1/2">
                     <h2 className="text-3xl pt-10 px-4 mb-4 text-center">{item.name}</h2>
 
@@ -100,7 +91,7 @@ const SellShopObjectDetails: React.FC<promps> = () => {
 
                     {/* Only if the item is an ingredient render the effects*/}
                     {(item.type === "ingredient") ?
-                        item.effects.map((effect) => {
+                        item.effects.map(effect => {
                             return (<h2 className="text-xl pl-24 mb-1">{getIngredientEffectName(effect)}</h2>)
                         })
                         : <></>}
@@ -111,7 +102,7 @@ const SellShopObjectDetails: React.FC<promps> = () => {
                     {(item.type === "ingredient") ?
                         <img src={item.image} alt={item.name} className="w-1/2 mt-14 ml-16 rounded-full" />
                         : <img src={item.image} alt={item.name} className="w-1/2 mt-14 ml-16" />
-                        }
+                    }
 
                     {/* Render th tem real value */}
                     <h2 className="text-3xl pl-20">Item value is {item.value}</h2>

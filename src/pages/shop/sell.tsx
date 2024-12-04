@@ -21,8 +21,15 @@ const Sell = () => {
   const [playerEmail, setPlayerEmail] = useState<string | null>(null);
   const [playerData, setPlayerData] = useState<Player | null>(null);
   const [productConfirm, setProductConfirm] = useState<object | null>(null);
+  const [selectedItemToSell, setSelectedItemToSell] = useState()
+
   
   const armorFake = playerData?.inventory.armors[0];
+
+
+
+
+
 
 //####################################################################################################
 //####################################################################################################
@@ -36,6 +43,10 @@ const Sell = () => {
       setPlayerEmail(session.user.email);
     }
   }, [session]);
+  useEffect(() => {
+    console.log(selectedItemToSell);
+    
+  }, [selectedItemToSell]);
 
   useEffect(() => {
     if (playerEmail) {
@@ -149,8 +160,8 @@ const Sell = () => {
       <div className="flex text-medievalSepia bg-cover bg-no-repeat bg-center min-h-screen" style={{ backgroundImage: 'url(/images/shop/background_sell_shop.jpg)' }}>
 
         <div className="flex-col w-1/2">
-          <PlayerInventorySellShop playerData={playerData} />
-          <SellShopObjectDetails />
+          <PlayerInventorySellShop playerData={playerData} setSelectedItemToSell={setSelectedItemToSell} />
+          <SellShopObjectDetails item={selectedItemToSell}/>
         </div>
 
         <div className="flex flex-col w-1/2">
