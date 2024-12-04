@@ -8,6 +8,7 @@ import Cart from "@/components/shop/Cart";
 import { useState,useEffect } from "react";
 import ShopPlayerInfo from "@/components/shop/ShopPlayerInfo";
 import { ItemData } from "@/_common/interfaces/ItemData";
+import { CartItem } from "@/_common/interfaces/CartItem";
 
 type ShopCategoryKeys = "helmets" | "weapons" | "armors" | "shields" | "boots" | "rings" | "ingredients" | "containers";
 
@@ -16,9 +17,7 @@ type ShopCategoryKeys = "helmets" | "weapons" | "armors" | "shields" | "boots" |
 const equipmentCategories = ["helmets", "weapons", "armors", "shields", "boots", "rings"];
 const magicalStuffCategories = ["ingredients", "containers"];
 
-interface CartItem extends ItemData {
-  quantity: number;
-}
+
 
 const Shop = () => {
 
@@ -152,7 +151,7 @@ const Shop = () => {
   //Cart funcions
 
   const [itemsInCart, setItemsInCart] = useState<CartItem[]>(() => {
-    if (typeof window !== 'undefined') { // Verificar que estamos en el lado del cliente
+    if (typeof window !== 'undefined') { 
       const storedCart = localStorage.getItem('cart');
       if (storedCart) {
         try {
