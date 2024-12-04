@@ -7,86 +7,25 @@ import { FaShoppingCart } from 'react-icons/fa';
 import Cart from "@/components/shop/Cart";
 import { useState,useEffect } from "react";
 import ShopPlayerInfo from "@/components/shop/ShopPlayerInfo";
-
-interface ItemData {
-  _id: string;
-  name: string;
-  description: string;
-  image: string;
-  type: string;
-  value?: number;
-  modifiers?: any;
-  min_lvl?: number;
-  effects?: Array<string>;
-  profiles?: Array<string>;
-  base_percentage?: number;
-  defense?: number;
-  isUnique?: boolean;
-  isActive?: boolean;
-  die_faces?: number;
-  die_modifier?: number;
-  die_num?: number;
-}
+import { ItemData } from "@/_common/interfaces/ItemData";
 
 type ShopCategoryKeys = "helmets" | "weapons" | "armors" | "shields" | "boots" | "rings" | "ingredients" | "containers";
-
-const fakeIngredients = [
-  {
-    id: 1,
-    name: "Vitalis Root",
-    quantity: 3,
-    price: 70,
-  },
-  {
-    id: 2,
-    name: "Fire Blossom",
-    quantity: 2,
-    price: 120,
-  },
-  {
-    id: 3,
-    name: "Fire Blossom",
-    quantity: 2,
-    price: 120,
-  },
-  {
-    id: 4,
-    name: "Fire Blossom",
-    quantity: 2,
-    price: 120,
-  },
-];
-
-const fakeEquipment = [
-  {
-    id: 1,
-    name: "Dragonbones Plate",
-    price: 32000,
-  },
-  {
-    id: 2,
-    name: "Shadowfang Blade",
-    price: 15000,
-  },
-  {
-    id: 3,
-    name: "Armor",
-    price: 12000,
-  },
-];
 
 
 // Shops item categories
 const equipmentCategories = ["helmets", "weapons", "armors", "shields", "boots", "rings"];
 const magicalStuffCategories = ["ingredients", "containers"];
 
+interface CartItem extends ItemData {
+  quantity: number;
+}
+
 const Shop = () => {
 
   const router = useRouter()
 
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [ingredietsInCart,setIngredientsInCart] = useState([]);
-  const [equipmentInCart,setEquipmentInCart] = useState([]);
+  const [itemsInCart, setItemsInCart] = useState<CartItem[]>([]);
   const [categoryData, setCategoryData] = useState<Array<ItemData>>([]);
   const [playerData, setPlayerData] = useState<object | null>(null);
   const [productConfirm, setProductConfirm] = useState<object | null>(null);
@@ -301,6 +240,73 @@ const Shop = () => {
     }
   };  
   
+  
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(itemsInCart));
+  }, [itemsInCart]);
+  
+  useEffect(() => {
+    const storedCart = localStorage.getItem('cart');
+    if (storedCart) {
+      try {
+        const parsedCart: CartItem[] = JSON.parse(storedCart);
+        setItemsInCart(parsedCart);
+      } catch (error) {
+        console.error("Error al cargar el carrito desde localStorage:", error);
+        setItemsInCart([]);
+      }
+    }
+  }, []);
+
+  const addToCart = (item: ItemData) => {
+    if (isEquipmentShop(router)) {
+      setItemsInCart(prevItems => {
+        if (prevItems.find(cartItem => cartItem._id === item._id)) {
+          return prevItems;
+        } else {
+          return [...prevItems, { ...item, quantity: 1 }];
+        }
+      });
+    } else if (isMagicalStuffShop(router)) {
+      setItemsInCart(prevItems => {
+        const itemInCart = prevItems.find(cartItem => cartItem._id === item._id);
+        if (itemInCart) {
+          return prevItems.map(cartItem =>
+            cartItem._id === item._id
+              ? { ...cartItem, quantity: cartItem.quantity + 1 }
+              : cartItem
+          );
+        } else {
+          return [...prevItems, { ...item, quantity: 1 }];
+        }
+      });
+    }
+  };
+  const increaseItem = (id: string) => {
+    setItemsInCart(prevItems =>
+      prevItems.map(item =>
+        item._id === id
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
+      )
+    );
+  };
+
+  const decreaseItem = (id: string) => {
+    setItemsInCart(prevItems =>
+      prevItems.map(item =>
+        item._id === id && item.quantity > 1
+          ? { ...item, quantity: item.quantity - 1 }
+          : item
+      )
+    );
+  };
+
+  const removeItem = (id: string) => {
+    setItemsInCart(prevItems => prevItems.filter(item => item._id !== id));
+  };
+
+  const clearCart = () => setItemsInCart([]);
 
   // ---- RENDER ----  //
 
@@ -311,7 +317,7 @@ const Shop = () => {
       <Layout>
         <ShopHeader currentCategory={currentCategory} setCurrentCategory={setCurrentCategory} onCartClick={openCart}/>
         <ShopPlayerInfo />
-        <ShopContent currentCategory={currentCategory} categoryData={categoryData} setProductConfirm={setProductConfirm}/>  
+        <ShopContent currentCategory={currentCategory} categoryData={categoryData} setProductConfirm={setProductConfirm} addToCart={addToCart}/>  
         <Background />
 
         {/********** Modals ***********/}
@@ -327,8 +333,11 @@ const Shop = () => {
             <Cart
               isOpen={isCartOpen}
               onClose={closeCart}
-              ingredients={fakeIngredients}
-              equipment={fakeEquipment}
+              cartItems={itemsInCart}
+              clearCart={clearCart}
+              increaseItem={increaseItem}
+              decreaseItem={decreaseItem}
+              removeItem={removeItem}
             />
           </div>
         )}
@@ -423,35 +432,32 @@ const HeaderLink: React.FC<{category: string, currentCategory: string, setCurren
   )
 }
 
-const ShopContent: React.FC<{categoryData: Array<ItemData>, currentCategory: string}> = ({categoryData, currentCategory, setProductConfirm}) => {
-
+const ShopContent: React.FC<{ categoryData: Array<ItemData>; currentCategory: string; addToCart: (item: ItemData) => void }> = ({ categoryData, currentCategory, addToCart , setProductConfirm}) => {
   return (
-    <section className='w-full h-full relative z-30 flex justify-center items-center'>    
-  
+    <section className='w-full h-full relative z-30 flex justify-center items-center'>
       {/* FILTER AND SORT BY */}
-      <ItemsList currentCategory={currentCategory} categoryData = {categoryData} setProductConfirm={setProductConfirm}/>
-
+      <ItemsList currentCategory={currentCategory} categoryData={categoryData} setProductConfirm={setProductConfirm} addToCart={addToCart} />
     </section>
   );
-}
+};
 
-const ItemsList: React.FC<{categoryData: Array<ItemData>, currentCategory: string}> = ({categoryData, currentCategory, setProductConfirm}) => {
 
+const ItemsList: React.FC<{ categoryData: Array<ItemData>; currentCategory: string; addToCart: (item: ItemData) => void }> = ({ categoryData, currentCategory, addToCart, setProductConfirm }) => {
   if (categoryData.length === 0) {
     return <h2 className="text-4xl m-10 text-medievalSepia">There are no available items in this category</h2>;
   }
 
   return (
-    <div className="w-11/12 my-10 grid grid-cols-5 gap-8 place-items-center"> 
-      {categoryData.map((item: ItemData, index: number) => {
-         return <Card key={index} itemData={item} currentCategory={currentCategory} setProductConfirm={setProductConfirm} />
-        })
-      }
+    <div className="w-11/12 my-10 grid grid-cols-5 gap-8 place-items-center">
+      {categoryData.map((item: ItemData, index: number) => (
+        <Card key={index} itemData={item} currentCategory={currentCategory} addToCart={addToCart} setProductConfirm={setProductConfirm} />
+      ))}
     </div>
-  )
-}
+  );
+};
 
-const Card: React.FC<{itemData: ItemData, currentCategory: string}> = ({itemData, currentCategory, setProductConfirm}) => {
+
+const Card: React.FC<{ itemData: ItemData; currentCategory: string; addToCart: (item: ItemData) => void }> = ({ itemData, currentCategory, addToCart , setProductConfirm}) => {
 
   const handleBuyClick = () => {
     setProductConfirm(itemData); 
@@ -529,8 +535,8 @@ const Card: React.FC<{itemData: ItemData, currentCategory: string}> = ({itemData
 
         {/* BUY BUTTONS */}
         <div className="w-full flex flex-row gap-4">
-          <CardButton onClick={handleBuyClick} label="BUY"/> 
-          <CardButton onClick={() => {console.log("HANDLE ADD TO CART")}} label="ADD TO CART"/> 
+          <CardButton onClick={() => handleBuyClick()} label="BUY"/> 
+          <CardButton onClick={() => addToCart(itemData)} label="ADD TO CART" />
         </div>
 
       </div>
@@ -546,7 +552,7 @@ const Card: React.FC<{itemData: ItemData, currentCategory: string}> = ({itemData
 
 const CardButton: React.FC<{onClick: Function, label: string}> = ({onClick, label}) => {
 
-  if (!label || !onClick) {return}
+  if (!label || !onClick) {return null;}
 
   const fontSize = label.length > 8 ? 'text-md' : 'text-xl'; 
 
