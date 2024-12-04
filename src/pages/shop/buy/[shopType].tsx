@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import React from "react";
 import { FaShoppingCart } from 'react-icons/fa';
 import Cart from "@/components/shop/Cart";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import ShopPlayerInfo from "@/components/shop/ShopPlayerInfo";
 import { ItemData } from "@/_common/interfaces/ItemData";
 import { CartItem } from "@/_common/interfaces/CartItem";
@@ -38,10 +38,10 @@ const Shop = () => {
   const [shields, setShields] = useState<Array<ItemData>>([]);
   const [boots, setBoots] = useState<Array<ItemData>>([]);
   const [rings, setRings] = useState<Array<ItemData>>([]);
-  
+
   const [ingredients, setIngredients] = useState<Array<ItemData>>([]);
   const [containers, setContainers] = useState<Array<ItemData>>([]);
-  
+
   // ---- SHOP CATEGORIES VARIABLES FOR MAPPING  ----  //
 
   const shopCategories: Record<string, ItemData[]> = {
@@ -56,18 +56,18 @@ const Shop = () => {
   };
 
   const equipmentStateSetters = [
-    {state: "helmets", setter: setHelmets},
-    {state: "weapons", setter: setWeapons},
-    {state: "armors", setter: setArmors},
-    {state: "shields", setter: setShields},
-    {state: "boots", setter: setBoots},
-    {state: "rings", setter: setRings},
+    { state: "helmets", setter: setHelmets },
+    { state: "weapons", setter: setWeapons },
+    { state: "armors", setter: setArmors },
+    { state: "shields", setter: setShields },
+    { state: "boots", setter: setBoots },
+    { state: "rings", setter: setRings },
   ];
 
   const magicalStuffStateSetters = [
-    {state: "ingredients", setter: setIngredients},
-    {state: "containers", setter: setContainers},
-  ]; 
+    { state: "ingredients", setter: setIngredients },
+    { state: "containers", setter: setContainers },
+  ];
 
   // ---------------------- //
   // ---- USE EFFECTS ----  //
@@ -80,7 +80,7 @@ const Shop = () => {
   useEffect(() => {
 
     const currentRoute = router.query.shopType;
-    if (!currentRoute) {return}
+    if (!currentRoute) { return }
 
     // If the current route is not equipment or magical stuff, redirect to equipment.
     if (!["equipment", "magical_stuff"].includes(currentRoute)) {
@@ -96,14 +96,14 @@ const Shop = () => {
 
   // Update 'categoryData' state (the displayed category) when the user changes.
   useEffect(() => {
-    if (!currentCategory) {return}
+    if (!currentCategory) { return }
     setCategoryData(shopCategories[currentCategory]);
   }, [currentCategory]);
-   
+
 
   // Load each category data from localStorage into the states.
-  useEffect(() => { 
-    const currentShopType = isMagicalStuffShop(router) ? magicalStuffStateSetters: equipmentStateSetters;
+  useEffect(() => {
+    const currentShopType = isMagicalStuffShop(router) ? magicalStuffStateSetters : equipmentStateSetters;
     currentShopType.forEach(categoryObject => loadLocalStorageIntoStates(categoryObject));
   }, []);
 
@@ -127,7 +127,7 @@ const Shop = () => {
   const loadPlayerData = (setter: (data: object | null) => void): void => {
     // Get playerData from localStorage
     const localStorageData = localStorage.getItem('playerData');
-  
+
     if (localStorageData) {
       try {
         const parsedData = JSON.parse(localStorageData); // Parse the JSON string
@@ -145,15 +145,15 @@ const Shop = () => {
       console.log("No playerData found in localStorage.");
       setter(null); // Set to null if no data exists
     }
-  };  
+  };
 
-  const loadLocalStorageIntoStates = (categoryObject): void => { 
+  const loadLocalStorageIntoStates = (categoryObject): void => {
 
     // Desestructurize the loop's current state name and setter.
-    const {state, setter} = categoryObject;
-        
+    const { state, setter } = categoryObject;
+
     // If the state name or setter is null jump to next iteration
-    if (!state || !setter) {return}
+    if (!state || !setter) { return }
 
     // Get current iteration object's value from localstorage
     const localStorageData = localStorage.getItem(state);
@@ -166,11 +166,11 @@ const Shop = () => {
           setter(parsedData);
         } else {
           console.warn("Data in localStorage is not an array:", parsedData);
-          setter([]); 
+          setter([]);
         }
       } catch (error) {
         console.error("Failed to parse localStorage data:", error);
-        setter([]); 
+        setter([]);
       }
     } else {
       console.log("No data found in localStorage for key:", currentCategory);
@@ -184,17 +184,17 @@ const Shop = () => {
       console.log(result); // logs the inventory and gold after the Promise resolves
       ////////////////////////////////////
       if (result.success) {
-      // Update the playerData 
-      const updatedPlayerData = {
-        ...playerData,
-        player: {
-        ...playerData.player,
-        gold: result.gold, // Update gold with the new value
-        inventory: result.inventory, // Update inventory with the new value
-        }
-      };
-      // Save the updated playerData to localStorage
-      localStorage.setItem('playerData', JSON.stringify(updatedPlayerData));
+        // Update the playerData 
+        const updatedPlayerData = {
+          ...playerData,
+          player: {
+            ...playerData.player,
+            gold: result.gold, // Update gold with the new value
+            inventory: result.inventory, // Update inventory with the new value
+          }
+        };
+        // Save the updated playerData to localStorage
+        localStorage.setItem('playerData', JSON.stringify(updatedPlayerData));
       }
       ////////////////////////////////////
       setProductConfirm(null);
@@ -216,44 +216,44 @@ const Shop = () => {
         },
         body: JSON.stringify({ playerEmail, product }),
       });
-  
+
       const result = await response.json();
-  
+
       if (!response.ok || !result.success) {
         // Handle the case where the purchase fails due to business logic (e.g., low level or insufficient funds)
         console.log('Purchase failed:', result.message);
         alert(result.message); // Show the error message to the user
         return result;
       }
-  
+
       // Handle the successful purchase case
       console.log('Purchase successful:', result);
       alert('Purchase successful!');
       return result
-  
+
     } catch (error) {
       console.error('Error during product purchase:', error);
       alert('An error occurred while processing your purchase.');
     }
-  };  
-  
+  };
 
- //Cart funcions
 
- const [itemsInCart, setItemsInCart] = useState<CartItem[]>(() => {
-  if (typeof window !== 'undefined') { 
-    const storedCart = localStorage.getItem('cart');
-    if (storedCart) {
-      try {
-        const parsedCart: CartItem[] = JSON.parse(storedCart);
-        return parsedCart;
-      } catch (error) {
-        console.error("Error al cargar el carrito desde localStorage:", error);
+  //Cart funcions
+
+  const [itemsInCart, setItemsInCart] = useState<CartItem[]>(() => {
+    if (typeof window !== 'undefined') {
+      const storedCart = localStorage.getItem('cart');
+      if (storedCart) {
+        try {
+          const parsedCart: CartItem[] = JSON.parse(storedCart);
+          return parsedCart;
+        } catch (error) {
+          console.error("Error al cargar el carrito desde localStorage:", error);
+        }
       }
     }
-  }
-  return [];
-});
+    return [];
+  });
 
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(itemsInCart));
@@ -314,14 +314,14 @@ const Shop = () => {
 
   // ---- RENDER ----  //
 
-  return (  
+  return (
     <div
       className="relative min-h-screen flex flex-col bg-[#191A1D] bg-repeat-center"
     >
       <Layout>
-        <ShopHeader currentCategory={currentCategory} setCurrentCategory={setCurrentCategory} onCartClick={openCart}/>
+        <ShopHeader currentCategory={currentCategory} setCurrentCategory={setCurrentCategory} onCartClick={openCart} />
         <ShopPlayerInfo />
-        <ShopContent currentCategory={currentCategory} categoryData={categoryData} setProductConfirm={setProductConfirm} addToCart={addToCart}/>  
+        <ShopContent currentCategory={currentCategory} categoryData={categoryData} setProductConfirm={setProductConfirm} addToCart={addToCart} />
         <Background />
 
         {/********** Modals ***********/}
@@ -367,50 +367,54 @@ const Shop = () => {
             </div>
           </div>
         )}
-        
-      </Layout> 
+
+      </Layout>
     </div>
   );
 };
 
-const ShopHeader:React.FC<{onCartClick: Function, currentCategory: string, setCurrentCategory: Function}> = ({onCartClick, currentCategory, setCurrentCategory}) => {
- 
+const ShopHeader: React.FC<{ onCartClick: Function, currentCategory: string, setCurrentCategory: Function }> = ({ onCartClick, currentCategory, setCurrentCategory }) => {
+
   const router = useRouter();
 
   return (
     <header className='w-full h-full relative py-4 z-30 flex-col flex justify-center items-center'>
       <div className="container mx-auto flex items-center justify-between">
-        
+
         {/* Return Button Section */}
-        <div className="flex items-center"> 
+        <div className="flex items-center">
           <Link href={'/shop/shopHome'}>
             <span className='text-4xl mx-6 hover:underline hover:cursor-pointer text-medievalSepia'> &lt; Return</span>
-          </Link> 
+          </Link>
         </div>
 
         {/* Category Buttons Section */}
-        <nav className="flex-1 text-center">  
+        <nav className="flex-1 text-center">
           {
-          isEquipmentShop(router) ? 
-            equipmentCategories.map(category => <HeaderLink key={category} category={category} currentCategory={currentCategory} setCurrentCategory={setCurrentCategory} /> )
-          :
-          isMagicalStuffShop(router) ? 
-            magicalStuffCategories.map(category => <HeaderLink key={category} category={category} currentCategory={currentCategory} setCurrentCategory={setCurrentCategory} /> )
-          :
-            null
+            isEquipmentShop(router) ?
+              equipmentCategories.map(category => <HeaderLink key={category} category={category} currentCategory={currentCategory} setCurrentCategory={setCurrentCategory} />)
+              :
+              isMagicalStuffShop(router) ?
+                magicalStuffCategories.map(category => <HeaderLink key={category} category={category} currentCategory={currentCategory} setCurrentCategory={setCurrentCategory} />)
+                :
+                null
           }
         </nav>
 
         {/* Cart Button Section */}
         <div className="flex items-center">
-           <button 
-            onClick={onCartClick} 
-            className="relative bg-amber-500 hover:bg-amber-600 text-black  px-8  py-6  rounded-full transition transform hover:scale-105 focus:outline-none"
+          <button
+            onClick={onCartClick}
+            className="relative px-8 py-6 rounded-full transition transform hover:scale-105 focus:outline-none"
           >
-            <FaShoppingCart size={27} className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+            <img
+              src="/images/shop/buy/Cart1.png" 
+              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 " 
+              draggable={false} 
+            />
           </button>
         </div>
-        
+
       </div>
 
       <img className="w-full px-12" src="/images/shop/buy/header_separator.png" />
@@ -419,9 +423,9 @@ const ShopHeader:React.FC<{onCartClick: Function, currentCategory: string, setCu
   );
 }
 
-const HeaderLink: React.FC<{category: string, currentCategory: string, setCurrentCategory: Function}> = ({category, currentCategory, setCurrentCategory}) => {
-  
-  const label = category.toUpperCase(); 
+const HeaderLink: React.FC<{ category: string, currentCategory: string, setCurrentCategory: Function }> = ({ category, currentCategory, setCurrentCategory }) => {
+
+  const label = category.toUpperCase();
 
   // Check if the tab is the current category.
   const isSelected = currentCategory === category;
@@ -436,7 +440,7 @@ const HeaderLink: React.FC<{category: string, currentCategory: string, setCurren
   )
 }
 
-const ShopContent: React.FC<{ categoryData: Array<ItemData>; currentCategory: string; addToCart: (item: ItemData) => void }> = ({ categoryData, currentCategory, addToCart , setProductConfirm}) => {
+const ShopContent: React.FC<{ categoryData: Array<ItemData>; currentCategory: string; addToCart: (item: ItemData) => void }> = ({ categoryData, currentCategory, addToCart, setProductConfirm }) => {
   return (
     <section className='w-full h-full relative z-30 flex justify-center items-center'>
       {/* FILTER AND SORT BY */}
@@ -461,39 +465,39 @@ const ItemsList: React.FC<{ categoryData: Array<ItemData>; currentCategory: stri
 };
 
 
-const Card: React.FC<{ itemData: ItemData; currentCategory: string; addToCart: (item: ItemData) => void }> = ({ itemData, currentCategory, addToCart , setProductConfirm}) => {
+const Card: React.FC<{ itemData: ItemData; currentCategory: string; addToCart: (item: ItemData) => void }> = ({ itemData, currentCategory, addToCart, setProductConfirm }) => {
 
   const handleBuyClick = () => {
-    setProductConfirm(itemData); 
+    setProductConfirm(itemData);
   };
-  
+
   const router = useRouter();
 
-  if (!itemData) {return}
+  if (!itemData) { return }
 
-  const {_id, name, description, type, value, modifiers, min_lvl, image, base_percentage, defense} = itemData;
+  const { _id, name, description, type, value, modifiers, min_lvl, image, base_percentage, defense } = itemData;
   const image_url = `https://kaotika.vercel.app${image}`;
 
-  if (!name) {return}
+  if (!name) { return }
 
   const nameFontSize = name.length > 15 ? 'text-3xl' : 'text-4xl';
 
-  const backgroundPath = isMagicalStuffShop(router) ? 
-                          "url('/images/shop/buy/magic_stuff_card_background.png')" : 
-                          "url('/images/shop/buy/equipment_card_background.png')";
+  const backgroundPath = isMagicalStuffShop(router) ?
+    "url('/images/shop/buy/magic_stuff_card_background.png')" :
+    "url('/images/shop/buy/equipment_card_background.png')";
 
 
-  const goldLevelGridStyle =  (!value || !min_lvl) ? 
-                              `w-1/2 grid-cols-1` :
-                              `w-full grid-cols-2`;
+  const goldLevelGridStyle = (!value || !min_lvl) ?
+    `w-1/2 grid-cols-1` :
+    `w-full grid-cols-2`;
 
 
-  const equipmentTextGradient = "bg-gradient-to-b from-[#FFD0A0] via-[#EED1B4] to-[#B2AF9E]"; 
-  const magicalStuffTextGradient = "bg-gradient-to-b from-[#212532] via-[#9CB5EA] to-[#3A3C45]"; 
+  const equipmentTextGradient = "bg-gradient-to-b from-[#FFD0A0] via-[#EED1B4] to-[#B2AF9E]";
+  const magicalStuffTextGradient = "bg-gradient-to-b from-[#212532] via-[#9CB5EA] to-[#3A3C45]";
 
-                                                  
+
   return (
-    <div className="bg-slate-900 w-72 p-6 flex flex-col justify-center items-center relative z-10 select-none" 
+    <div className="bg-slate-900 w-72 p-6 flex flex-col justify-center items-center relative z-10 select-none"
       style={{
         height: 420,
         backgroundImage: backgroundPath,
@@ -501,9 +505,9 @@ const Card: React.FC<{ itemData: ItemData; currentCategory: string; addToCart: (
         WebkitBackgroundSize: 'contain',
         backgroundSize: '100%'
       }}
-    > 
-       
-      <div className="flex flex-col justify-center items-center gap-3 z-30"> 
+    >
+
+      <div className="flex flex-col justify-center items-center gap-3 z-30">
 
         {/* GOLD & MIN. LEVEL */}
         <div className={`grid gap-3 place-items-center ${goldLevelGridStyle}`}>
@@ -513,25 +517,25 @@ const Card: React.FC<{ itemData: ItemData; currentCategory: string; addToCart: (
           )}
 
           {min_lvl && (
-            <ItemDataLabel data={min_lvl} image={"/images/icons/level.png"} title='Min. lvl' /> 
+            <ItemDataLabel data={min_lvl} image={"/images/icons/level.png"} title='Min. lvl' />
           )}
 
         </div>
 
         {/* IMAGE  */}
-        <img  
+        <img
           className={`h-44 drop-shadow-2xl ${isMagicalStuffShop(router) ? 'rounded-full border-3 border-[#1e1f23]' : null}`}
-          src={image_url}  
+          src={image_url}
           draggable={false}
           onError={(e) => {
             e.currentTarget.onerror = null; // Prevent infinite loop if fallback also fails
             e.currentTarget.src = "/images/shop/buy/interrogation_sign.png"; // Fallback image
-            e.currentTarget.title="Image not found"
+            e.currentTarget.title = "Image not found"
           }}
         />
 
         {/* ITEM NAME */}
-        <p 
+        <p
           className={`${nameFontSize} font-medium bg-clip-text text-transparent select-text text-center ${isMagicalStuffShop(router) ? magicalStuffTextGradient : equipmentTextGradient}`}
         >
           {name}
@@ -539,29 +543,29 @@ const Card: React.FC<{ itemData: ItemData; currentCategory: string; addToCart: (
 
         {/* BUY BUTTONS */}
         <div className="w-full flex flex-row gap-4">
-          <CardButton onClick={() => handleBuyClick()} label="BUY"/> 
+          <CardButton onClick={() => handleBuyClick()} label="BUY" />
           <CardButton onClick={() => addToCart(itemData)} label="ADD TO CART" />
         </div>
 
       </div>
-       
-      <img 
-        className="absolute w-full h-full top-0 user" 
+
+      <img
+        className="absolute w-full h-full top-0 user"
         src="/images/shop/buy/card_frame.png"
         draggable={false}
       />
     </div>
   );
-} 
+}
 
-const CardButton: React.FC<{onClick: Function, label: string}> = ({onClick, label}) => {
+const CardButton: React.FC<{ onClick: Function, label: string }> = ({ onClick, label }) => {
 
-  if (!label || !onClick) {return null;}
+  if (!label || !onClick) { return null; }
 
-  const fontSize = label.length > 8 ? 'text-md' : 'text-xl'; 
+  const fontSize = label.length > 8 ? 'text-md' : 'text-xl';
 
   return (
-    <button 
+    <button
       onClick={onClick}
       className="bg-[#1E1E1E] leading-7 border rounded hover:bg-medievalSepia transition-all border-medievalSepia/60"
     >
@@ -572,16 +576,16 @@ const CardButton: React.FC<{onClick: Function, label: string}> = ({onClick, labe
   )
 
 }
- 
-const ItemDataLabel: React.FC<{image: string, data: number, title: string}> = ({ image, data, title }) => {
+
+const ItemDataLabel: React.FC<{ image: string, data: number, title: string }> = ({ image, data, title }) => {
 
   if (!data) return null;
 
-  const fontSize = data.toString().length>=5 ? 'text-2xl' : 'text-3xl';
+  const fontSize = data.toString().length >= 5 ? 'text-2xl' : 'text-3xl';
 
   return (
-    
-    <div 
+
+    <div
       className="w-5/6 border rounded border-medievalSepia p-2 bg-black/45 gap-2 flex"
       title={title}
     >
@@ -602,10 +606,10 @@ const ItemDataLabel: React.FC<{image: string, data: number, title: string}> = ({
 
 
 const Background = () => {
-  
+
   return (
     <>
-    <img 
+      <img
         className='w-full h-full absolute top-0 opacity-10 z-20'
         style={{
           backgroundColor: '#191A1D',
@@ -613,20 +617,20 @@ const Background = () => {
           backgroundRepeat: "repeat",
           backgroundPosition: "center",
         }}
-        />
+      />
 
       <div
         className='w-full h-full absolute top-0 z-10'
         style={{
           backgroundColor: '#191A1D',
         }}
-        >
+      >
       </div>
     </>
   );
 
 }
- 
+
 // --------------------//
 // ----- UTILITY ----- //
 // ------------------- //
@@ -642,5 +646,5 @@ const isMagicalStuffShop = (router): boolean => {
 }
 
 
-export default Shop;  
+export default Shop;
 
