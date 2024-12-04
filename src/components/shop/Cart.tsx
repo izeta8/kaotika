@@ -19,9 +19,10 @@ interface CartItem extends ItemData {
   quantity: number;
 }
 
-const Cart: React.FC<CartProps> = ({ isOpen, onClose, cartItems, clearCart, increaseItem, decreaseItem, removeItem }) => {
+const Cart: React.FC<CartProps> = ({ isOpen, onClose, cartItems, clearCart, increaseItem, decreaseItem, removeItem, confirmPurchase }) => {
  
   const handlePurchase = () => {
+    confirmPurchase(cartItems);
     clearCart();
     onClose();
   };
