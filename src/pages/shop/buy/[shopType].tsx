@@ -24,8 +24,9 @@ const Shop = () => {
   const router = useRouter()
 
   const [isCartOpen, setIsCartOpen] = useState(false);
-  //const [itemsInCart, setItemsInCart] = useState<CartItem[]>([]);
   const [categoryData, setCategoryData] = useState<Array<ItemData>>([]);
+  const [playerData, setPlayerData] = useState<object | null>(null);
+  const [productConfirm, setProductConfirm] = useState<object | null>(null);
 
   const [currentCategory, setCurrentCategory] = useState<string>('');
 
@@ -73,6 +74,10 @@ const Shop = () => {
   // ---------------------- //
 
   useEffect(() => {
+    loadPlayerData(setPlayerData);
+  }, []);
+
+  useEffect(() => {
 
     const currentRoute = router.query.shopType;
     if (!currentRoute) {return}
@@ -117,6 +122,31 @@ const Shop = () => {
 
   // ---- UTILITY ----  //
 
+
+
+  const loadPlayerData = (setter: (data: object | null) => void): void => {
+    // Get playerData from localStorage
+    const localStorageData = localStorage.getItem('playerData');
+  
+    if (localStorageData) {
+      try {
+        const parsedData = JSON.parse(localStorageData); // Parse the JSON string
+        if (typeof parsedData === 'object' && parsedData !== null) {
+          setter(parsedData); // Set the parsed object data into state
+        } else {
+          console.warn("Data in localStorage is not a valid object:", parsedData);
+          setter(null); // Set to null if the data is not valid
+        }
+      } catch (error) {
+        console.error("Failed to parse localStorage data:", error);
+        setter(null); // Set to null in case of parsing error
+      }
+    } else {
+      console.log("No playerData found in localStorage.");
+      setter(null); // Set to null if no data exists
+    }
+  };  
+
   const loadLocalStorageIntoStates = (categoryObject): void => { 
 
     // Desestructurize the loop's current state name and setter.
@@ -148,22 +178,82 @@ const Shop = () => {
     }
   }
 
-  //Cart funcions
-
-  const [itemsInCart, setItemsInCart] = useState<CartItem[]>(() => {
-    if (typeof window !== 'undefined') { 
-      const storedCart = localStorage.getItem('cart');
-      if (storedCart) {
-        try {
-          const parsedCart: CartItem[] = JSON.parse(storedCart);
-          return parsedCart;
-        } catch (error) {
-          console.error("Error al cargar el carrito desde localStorage:", error);
+  const handleConfirmBuy = async (productConfirm) => {
+    try {
+      const result = await purchaseProduct(playerData.player.email, productConfirm);
+      console.log(result); // logs the inventory and gold after the Promise resolves
+      ////////////////////////////////////
+      if (result.success) {
+      // Update the playerData 
+      const updatedPlayerData = {
+        ...playerData,
+        player: {
+        ...playerData.player,
+        gold: result.gold, // Update gold with the new value
+        inventory: result.inventory, // Update inventory with the new value
         }
+      };
+      // Save the updated playerData to localStorage
+      localStorage.setItem('playerData', JSON.stringify(updatedPlayerData));
+      }
+      ////////////////////////////////////
+      setProductConfirm(null);
+    } catch (error) {
+      console.error('Error during purchase:', error);
+    }
+  };
+
+  const handleCancel = () => {
+    setProductConfirm(null);
+  };
+
+  const purchaseProduct = async (playerEmail, product) => {
+    try {
+      const response = await fetch('/api/shop/confirmPurchase', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ playerEmail, product }),
+      });
+  
+      const result = await response.json();
+  
+      if (!response.ok || !result.success) {
+        // Handle the case where the purchase fails due to business logic (e.g., low level or insufficient funds)
+        console.log('Purchase failed:', result.message);
+        alert(result.message); // Show the error message to the user
+        return result;
+      }
+  
+      // Handle the successful purchase case
+      console.log('Purchase successful:', result);
+      alert('Purchase successful!');
+      return result
+  
+    } catch (error) {
+      console.error('Error during product purchase:', error);
+      alert('An error occurred while processing your purchase.');
+    }
+  };  
+  
+
+ //Cart funcions
+
+ const [itemsInCart, setItemsInCart] = useState<CartItem[]>(() => {
+  if (typeof window !== 'undefined') { 
+    const storedCart = localStorage.getItem('cart');
+    if (storedCart) {
+      try {
+        const parsedCart: CartItem[] = JSON.parse(storedCart);
+        return parsedCart;
+      } catch (error) {
+        console.error("Error al cargar el carrito desde localStorage:", error);
       }
     }
-    return [];
-  });
+  }
+  return [];
+});
 
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(itemsInCart));
@@ -231,8 +321,10 @@ const Shop = () => {
       <Layout>
         <ShopHeader currentCategory={currentCategory} setCurrentCategory={setCurrentCategory} onCartClick={openCart}/>
         <ShopPlayerInfo />
-        <ShopContent currentCategory={currentCategory} categoryData={categoryData} addToCart={addToCart}/>  
+        <ShopContent currentCategory={currentCategory} categoryData={categoryData} setProductConfirm={setProductConfirm} addToCart={addToCart}/>  
         <Background />
+
+        {/********** Modals ***********/}
 
         {isCartOpen && (
           <div className="fixed inset-0 z-50">
@@ -253,6 +345,29 @@ const Shop = () => {
             />
           </div>
         )}
+
+        {productConfirm && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 shadow-lg w-1/3">
+              <h2 className="text-lg font-semibold">Are you sure you want to buy it?</h2>
+              <div className="mt-4 flex justify-end gap-4">
+                <button
+                  className="bg-gray-300 text-gray-800 px-4 py-2 rounded"
+                  onClick={() => handleCancel()}
+                >
+                  No
+                </button>
+                <button
+                  className="bg-blue-500 text-white px-4 py-2 rounded"
+                  onClick={() => handleConfirmBuy(productConfirm)}
+                >
+                  Yes
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+        
       </Layout> 
     </div>
   );
@@ -321,17 +436,17 @@ const HeaderLink: React.FC<{category: string, currentCategory: string, setCurren
   )
 }
 
-const ShopContent: React.FC<{ categoryData: Array<ItemData>; currentCategory: string; addToCart: (item: ItemData) => void }> = ({ categoryData, currentCategory, addToCart }) => {
+const ShopContent: React.FC<{ categoryData: Array<ItemData>; currentCategory: string; addToCart: (item: ItemData) => void }> = ({ categoryData, currentCategory, addToCart , setProductConfirm}) => {
   return (
     <section className='w-full h-full relative z-30 flex justify-center items-center'>
       {/* FILTER AND SORT BY */}
-      <ItemsList currentCategory={currentCategory} categoryData={categoryData} addToCart={addToCart} />
+      <ItemsList currentCategory={currentCategory} categoryData={categoryData} setProductConfirm={setProductConfirm} addToCart={addToCart} />
     </section>
   );
 };
 
 
-const ItemsList: React.FC<{ categoryData: Array<ItemData>; currentCategory: string; addToCart: (item: ItemData) => void }> = ({ categoryData, currentCategory, addToCart }) => {
+const ItemsList: React.FC<{ categoryData: Array<ItemData>; currentCategory: string; addToCart: (item: ItemData) => void }> = ({ categoryData, currentCategory, addToCart, setProductConfirm }) => {
   if (categoryData.length === 0) {
     return <h2 className="text-4xl m-10 text-medievalSepia">There are no available items in this category</h2>;
   }
@@ -339,15 +454,19 @@ const ItemsList: React.FC<{ categoryData: Array<ItemData>; currentCategory: stri
   return (
     <div className="w-11/12 my-10 grid grid-cols-5 gap-8 place-items-center">
       {categoryData.map((item: ItemData, index: number) => (
-        <Card key={index} itemData={item} currentCategory={currentCategory} addToCart={addToCart} />
+        <Card key={index} itemData={item} currentCategory={currentCategory} addToCart={addToCart} setProductConfirm={setProductConfirm} />
       ))}
     </div>
   );
 };
 
 
-const Card: React.FC<{ itemData: ItemData; currentCategory: string; addToCart: (item: ItemData) => void }> = ({ itemData, currentCategory, addToCart }) => {
+const Card: React.FC<{ itemData: ItemData; currentCategory: string; addToCart: (item: ItemData) => void }> = ({ itemData, currentCategory, addToCart , setProductConfirm}) => {
 
+  const handleBuyClick = () => {
+    setProductConfirm(itemData); 
+  };
+  
   const router = useRouter();
 
   if (!itemData) {return}
@@ -420,7 +539,7 @@ const Card: React.FC<{ itemData: ItemData; currentCategory: string; addToCart: (
 
         {/* BUY BUTTONS */}
         <div className="w-full flex flex-row gap-4">
-          <CardButton onClick={() => {console.log("HANDLE BUY")}} label="BUY"/> 
+          <CardButton onClick={() => handleBuyClick()} label="BUY"/> 
           <CardButton onClick={() => addToCart(itemData)} label="ADD TO CART" />
         </div>
 
