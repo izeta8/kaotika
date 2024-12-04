@@ -11,6 +11,14 @@ import ShopPlayerInfo from "@/components/shop/ShopPlayerInfo";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import Loading from "@/components/Loading";
+import { Armor } from "@/_common/interfaces/Armor";
+import { Artifact } from "@/_common/interfaces/Artifact";
+import { Boot } from "@/_common/interfaces/Boot";
+import { Helmet } from "@/_common/interfaces/Helmet";
+import { Ingredient } from "@/_common/interfaces/Ingredients";
+import { Ring } from "@/_common/interfaces/Ring";
+import { Shield } from "@/_common/interfaces/Shield";
+import { Weapon } from "@/_common/interfaces/Weapon";
 
 
 const Sell = () => {
@@ -19,9 +27,9 @@ const Sell = () => {
   const [loading, setLoading] = useState(true);
   const { data: session } = useSession();
   const [playerEmail, setPlayerEmail] = useState<string | null>(null);
-  const [playerData, setPlayerData] = useState<Player | null>(null);
+  const [playerData, setPlayerData] = useState<Player>();
   const [productConfirm, setProductConfirm] = useState<object | null>(null);
-  const [selectedItemToSell, setSelectedItemToSell] = useState()
+  const [selectedItemToSell, setSelectedItemToSell] = useState< Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield | Ingredient>();
 
 
 
