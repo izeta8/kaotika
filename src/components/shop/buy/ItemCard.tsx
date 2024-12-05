@@ -1,7 +1,16 @@
 import ItemDataContainer from "./ItemDataContainer";
 import { ItemData } from "@/_common/interfaces/ItemData";
 
-const ItemCard: React.FC<{ itemData: ItemData; currentCategory: string; addToCart: (item: ItemData) => void ; setItemModalShown: Function, setModalItemData: Function, isMagicalStuffShop: boolean}> = ({ itemData, currentCategory, addToCart, setProductConfirm, setItemModalShown, setModalItemData, isMagicalStuffShop }) => {
+type ItemCardProps = {
+  itemData: ItemData, 
+  addToCart: (item: ItemData) => void,
+  setProductConfirm: Function,
+  setItemModalShown: Function,
+  setModalItemData: Function,
+  isMagicalStuffShop: boolean
+} 
+ 
+const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, isMagicalStuffShop }) => {
 
   if (!itemData) { return }
 
@@ -90,10 +99,14 @@ const ItemCard: React.FC<{ itemData: ItemData; currentCategory: string; addToCar
 
 } 
 
-
 // -----  CARD BUTTON  ----- //
 
-const CardButton: React.FC<{ onClick:  React.MouseEventHandler<HTMLButtonElement>, label: string }> = ({ onClick, label }) => {
+interface CardButtonProps {
+  onClick: React.MouseEventHandler<HTMLButtonElement>,
+  label: string 
+}
+
+const CardButton: React.FC<CardButtonProps> = ({ onClick, label }) => {
 
   if (!label || !onClick) { return null; }
 
