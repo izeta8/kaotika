@@ -88,7 +88,7 @@ const EquipmentShop = () => {
       <Image
         src="/images/shop/Equipment_buy_button.png" 
         alt="Equipment"
-        width={309}
+        width={300}
         height={100}
         className="mr-2"
         draggable={false}
@@ -101,12 +101,12 @@ const MagicalStuffShop = () => {
   return (
     <Link
       href="/shop/buy/magical_stuff"
-      className="flex items-center justify-center text-white rounded-lg transition transform hover:scale-105 px-4 py-2"
+      className="flex items-center justify-center text-white rounded-lg transition transform hover:scale-105 px-4 py-1"
     >
       <Image
         src="/images/shop/Magical_stuff_button.png" 
         alt="Magical Stuff"
-        width={300}
+        width={299}
         height={100}
         className="mr-2"
         draggable={false}
@@ -124,7 +124,7 @@ const SellItem = () => {
       <Image
         src="/images/shop/Sell_item_button.png" 
         alt="Sell item"
-        width={282}
+        width={290}
         height={100}
         className="mr-2"
         draggable={false}

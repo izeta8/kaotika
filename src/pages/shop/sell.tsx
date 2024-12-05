@@ -20,7 +20,7 @@ import { Ring } from "@/_common/interfaces/Ring";
 import { Shield } from "@/_common/interfaces/Shield";
 import { Weapon } from "@/_common/interfaces/Weapon";
 import { MESSAGES } from "@/constants/shop/constants_messages";
-
+import Confirm from "@/components/shop/Confirm";
 
 
 const Sell = () => {
@@ -36,11 +36,11 @@ const Sell = () => {
 
 
 
-//####################################################################################################
-//####################################################################################################
-// Get the player data with the email that the user has been autenticated
-//####################################################################################################
-//####################################################################################################
+  //####################################################################################################
+  //####################################################################################################
+  // Get the player data with the email that the user has been autenticated
+  //####################################################################################################
+  //####################################################################################################
 
   useEffect(() => {
     if (session?.user?.email) {
@@ -103,18 +103,18 @@ const Sell = () => {
       const itemPrice = Math.ceil(productConfirm.value/3);
   
       const result = await sellProduct(playerData.email, productConfirm, itemPrice);
-      console.log(result); 
-  
+      console.log(result);
+
       if (result && result.success) {
         const updatedPlayerData = {
           ...playerData,
-          gold: result.gold, 
-          inventory: result.inventory, 
+          gold: result.gold,
+          inventory: result.inventory,
         };
         localStorage.setItem('playerData', JSON.stringify(updatedPlayerData));
         setPlayerData(updatedPlayerData);
       }
-  
+      setSelectedItemToSell(undefined);
       setProductConfirm(null);
     } catch (error) {
       console.error('Error during sell:', error);
@@ -130,20 +130,20 @@ const Sell = () => {
         },
         body: JSON.stringify({ playerEmail, product, productPrice: itemPrice }),
       });
-  
+
       const result = await response.json();
-  
+
       if (!response.ok || !result.success) {
         console.log('Sell failed:', result.message);
-        alert(result.message); 
+        //alert(result.message); 
         return result;
       }
       console.log('Sell successful:', result);
-      alert('Sell successful!');
+      //alert('Sell successful!');
       return result;
     } catch (error) {
       console.error('Error during product sell:', error);
-      alert('An error occurred while processing your sell.');
+      //alert('An error occurred while processing your sell.');
     }
   };
   const handleSellClick = () => {
@@ -155,18 +155,18 @@ const Sell = () => {
     setSellerDialogueMessage(MESSAGES.ITEM_SELL_CANCEL)
   };
 
-//####################################################################################################
-//####################################################################################################
-// Function to reset the item showing on details on the card
-//####################################################################################################
-//####################################################################################################
-const handleResetSelectedItemToSell = () => {
-  setSelectedItemToSell(undefined);
-}
+  //####################################################################################################
+  //####################################################################################################
+  // Function to reset the item showing on details on the card
+  //####################################################################################################
+  //####################################################################################################
+  const handleResetSelectedItemToSell = () => {
+    setSelectedItemToSell(undefined);
+  }
 
-//####################################################################################################
-// Return loading spinner if there is charging something
-//####################################################################################################
+  //####################################################################################################
+  // Return loading spinner if there is charging something
+  //####################################################################################################
 
   if (loading) {
     return (<Loading />);
@@ -180,7 +180,7 @@ const handleResetSelectedItemToSell = () => {
 
         <div className="flex-col w-1/2">
           <PlayerInventorySellShop playerData={playerData} setSelectedItemToSell={setSelectedItemToSell} />
-          <SellShopObjectDetails item={selectedItemToSell}/>
+          <SellShopObjectDetails item={selectedItemToSell} />
         </div>
 
         <div className="flex flex-col w-1/2">
@@ -203,39 +203,19 @@ const handleResetSelectedItemToSell = () => {
 
           <div className="flex flex-row items-center">
             <div className="mt-20 px-6">
-              <KaotikaButton text="KEEP IT" handleClick={handleResetSelectedItemToSell}/>
+              <KaotikaButton text="KEEP IT" handleClick={handleResetSelectedItemToSell} />
             </div>
             <div className="mt-20 px-6">
-            <KaotikaButton text="SELL IT" handleClick={handleSellClick} />
+              <KaotikaButton text="SELL IT" handleClick={handleSellClick} />
             </div>
-            <ShopPlayerInfo gold={playerData?.gold!} level={playerData?.level!}/>
+            <ShopPlayerInfo gold={playerData?.gold!} level={playerData?.level!} />
           </div>
 
 
         </div>
-
         {productConfirm && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 shadow-lg w-1/3">
-              <h2 className="text-lg font-semibold">Are you sure you want to buy it?</h2>
-              <div className="mt-4 flex justify-end gap-4">
-                <button
-                  className="bg-gray-300 text-gray-800 px-4 py-2 rounded"
-                  onClick={() => handleCancel()}
-                >
-                  No
-                </button>
-                <button
-                  className="bg-blue-500 text-white px-4 py-2 rounded"
-                  onClick={() => handleConfirmSell(productConfirm)}
-                >
-                  Yes
-                </button>
-              </div>
-            </div>
-          </div>
+          <Confirm isOpen={handleSellClick} onCancel={handleCancel} onConfirm={handleConfirmSell} product={selectedItemToSell} />
         )}
-
       </div>
     </Layout>
 

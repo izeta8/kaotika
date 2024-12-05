@@ -1,17 +1,16 @@
 import { ReactNode } from 'react';
 
-
- interface promps {
-  gold: number;
-  level: number;
- }
+interface promps {
+  gold: number|undefined;
+  level: number|undefined;
+}
 
 const ShopPlayerInfo: React.FC<promps> = ({gold, level}) => {
 
   return (
     <InfoContainer>
-      <Info imagePath={"/images/icons/gold.png"} label={gold} />
-      <Info imagePath={"/images/icons/level.png"} label={level} />
+      {(gold !== undefined && gold !== null) && (<Info imagePath={"/images/icons/gold.png"} label={gold} />)}
+      {(level !== undefined && gold !== null) && (<Info imagePath={"/images/icons/level.png"} label={level} />)}
     </InfoContainer>
   )
 
