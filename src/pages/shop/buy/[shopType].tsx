@@ -120,13 +120,16 @@ const Shop = () => {
 
     const currentRoute = router.query.shopType;
     if (!currentRoute) { return }
-    if (!currentRoute) { return }
 
     // If the current route is not equipment or magical stuff, redirect to equipment.
     if (!["equipment", "magical_stuff"].includes(currentRoute)) {
       router.push("/shop/buy/equipment");
     }
 
+    // Load the local storage data into the states
+    const currentShopType = isMagicalStuffShop(router) ? magicalStuffStateSetters : equipmentStateSetters;
+    currentShopType.forEach(categoryObject => loadLocalStorageIntoStates(categoryObject));
+    
     // Set each shop type's default categories
     const defaultCategory = isMagicalStuffShop(router) ? magicalStuffCategories[0] : equipmentCategories[0];
     setCurrentCategory(defaultCategory);
@@ -137,17 +140,11 @@ const Shop = () => {
   // Update 'categoryData' state (the displayed category) when the user changes.
   useEffect(() => {
     if (!currentCategory) { return }
-    if (!currentCategory) { return }
+
     setCategoryData(shopCategories[currentCategory]);
+
   }, [currentCategory]);
 
-
-
-  // Load each category data from localStorage into the states.
-  useEffect(() => {
-    const currentShopType = isMagicalStuffShop(router) ? magicalStuffStateSetters : equipmentStateSetters;
-    currentShopType.forEach(categoryObject => loadLocalStorageIntoStates(categoryObject));
-  }, []);
 
   // Disable scroll when the item modal shows.
   useEffect(() => {
@@ -367,7 +364,7 @@ const Shop = () => {
           </div>
 
           <ShopPlayerInfo gold={playerData?.player.gold} level={playerData?.player.level}/>
-          
+
           {/********** Modals ***********/}
 
           {itemModalShown && (
