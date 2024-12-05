@@ -561,8 +561,6 @@ const Card: React.FC<{ itemData: ItemData; currentCategory: string; addToCart: (
   // If the item is unique, we do not want to show it in the shop.
   if (isUnique ) { return }
 
-  const image_url = `https://kaotika.vercel.app${image}`;
-
   if (!name) { return }
 
   const nameFontSize = name.length > 15 ? 'text-3xl' : 'text-4xl';
@@ -621,7 +619,7 @@ const Card: React.FC<{ itemData: ItemData; currentCategory: string; addToCart: (
         {/* IMAGE  */}
         <img
           className={`h-44 drop-shadow-2xl ${isMagicalStuffShop(router) ? 'rounded-full border-3 border-[#1e1f23]' : null}`}
-          src={image_url}
+          src={image}
           draggable={false}
           onError={(e) => {
             e.currentTarget.onerror = null; // Prevent infinite loop if fallback also fails
