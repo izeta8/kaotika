@@ -92,7 +92,7 @@ const Shop = () => {
       fetch(`/api/shop/player?playerEmail=${playerEmail}`)
         .then(response => response.json())
         .then(data => {
-          console.log("el player : " + data);
+          console.log(`el player : `, data);
           setPlayerData(data);
           // localStorage.setItem('playerData', JSON.stringify( data ));
           console.log(data, "is the data fetched");
@@ -194,7 +194,7 @@ const Shop = () => {
     }
     console.log('products after push:', JSON.stringify(products, null, 2));
     try {
-      const result = await purchaseProduct(playerData.player.email, products);
+      const result = await purchaseProduct(playerData?.email, products);
       console.log(result); // logs the inventory and gold after the Promise resolves
       ////////////////////////////////////
       if (result.success) {
@@ -340,7 +340,7 @@ const Shop = () => {
     >
       <Layout>
         <ShopHeader currentCategory={currentCategory} setCurrentCategory={setCurrentCategory} onCartClick={openCart} cartItemCount={cartItemCount}/>
-        <ShopPlayerInfo />
+        <ShopPlayerInfo gold={playerData?.player.gold} level={playerData?.player.level}/>
         <ShopContent currentCategory={currentCategory} categoryData={categoryData} setProductConfirm={setProductConfirm} addToCart={addToCart} />
         <Background />
 

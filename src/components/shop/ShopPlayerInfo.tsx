@@ -1,16 +1,17 @@
 import { ReactNode } from 'react';
 
-const fakePlayer = {
-  "level": 17,
-  "gold": 2053
+
+ interface promps {
+  gold: number;
+  level: number;
  }
 
-const ShopPlayerInfo = () => {
+const ShopPlayerInfo: React.FC<promps> = ({gold, level}) => {
 
   return (
     <InfoContainer>
-      <Info imagePath={"/images/icons/gold.png"} label={fakePlayer.gold} />
-      <Info imagePath={"/images/icons/level.png"} label={fakePlayer.level} />
+      <Info imagePath={"/images/icons/gold.png"} label={gold} />
+      <Info imagePath={"/images/icons/level.png"} label={level} />
     </InfoContainer>
   )
 

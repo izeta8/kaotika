@@ -110,7 +110,7 @@ const Sell = () => {
     }
   };
 
-  const sellProduct = async (playerEmail, product,itemPrice) => {
+  const sellProduct = async (playerEmail, product, itemPrice) => {
     try {
       const response = await fetch('/api/shop/confirmSell', {
         method: 'POST',
@@ -196,7 +196,7 @@ const handleResetSelectedItemToSell = () => {
             <div className="mt-20 px-6">
             <KaotikaButton text="SELL IT" handleClick={handleSellClick} />
             </div>
-            <ShopPlayerInfo />
+            <ShopPlayerInfo gold={playerData?.gold!} level={playerData?.level!}/>
           </div>
 
 
