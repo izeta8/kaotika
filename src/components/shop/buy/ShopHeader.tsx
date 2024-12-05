@@ -1,10 +1,21 @@
+import { ShopCategories } from "@/pages/shop/buy/[shopType]";
 import Link from "next/link"; 
  
+interface ShopHeaderProps { 
+  onCartClick: React.MouseEventHandler<HTMLButtonElement>,
+  currentCategory: ShopCategories | undefined,
+  setCurrentCategory: Function,
+  cartItemCount: number,
+  isMagicalStuffShop: boolean 
+}
+
 // Shops item categories
 const equipmentCategories = ["helmets", "weapons", "armors", "shields", "boots", "rings"];
 const magicalStuffCategories = ["ingredients", "containers"];
 
-const ShopHeader: React.FC<{ onCartClick: Function, currentCategory: string, setCurrentCategory: Function, isMagicalStuffShop: boolean }> = ({ onCartClick, currentCategory, setCurrentCategory, cartItemCount, isMagicalStuffShop  }) => {
+const ShopHeader: React.FC<ShopHeaderProps> = ({ onCartClick, currentCategory, setCurrentCategory, cartItemCount, isMagicalStuffShop  }) => {
+
+  if (!currentCategory) {return}
 
   return (
     <header className='w-full h-full relative py-4 z-30 flex-col flex justify-center items-center'>
@@ -58,7 +69,13 @@ const ShopHeader: React.FC<{ onCartClick: Function, currentCategory: string, set
 
 // -----  LINKS (CATEGORIES)  ----- //
 
-const HeaderLink: React.FC<{ category: string, currentCategory: string, setCurrentCategory: Function }> = ({ category, currentCategory, setCurrentCategory }) => {
+interface HeaderLinkProps {
+  category: string,
+  currentCategory: string,
+  setCurrentCategory: Function, 
+}
+
+const HeaderLink: React.FC<HeaderLinkProps> = ({ category, currentCategory, setCurrentCategory }) => {
 
   const label = category.toUpperCase();
 
