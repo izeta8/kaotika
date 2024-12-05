@@ -14,11 +14,9 @@ import Loading from "@/components/Loading";
 
 type ShopCategoryKeys = "helmets" | "weapons" | "armors" | "shields" | "boots" | "rings" | "ingredients" | "containers";
 
-
 // Shops item categories
 const equipmentCategories = ["helmets", "weapons", "armors", "shields", "boots", "rings"];
 const magicalStuffCategories = ["ingredients", "containers"];
-
 
 
 const Shop = () => {
@@ -49,6 +47,7 @@ const Shop = () => {
   const [ingredients, setIngredients] = useState<Array<ItemData>>([]);
   const [containers, setContainers] = useState<Array<ItemData>>([]);
 
+
   // ---- SHOP CATEGORIES VARIABLES FOR MAPPING  ----  //
 
   const shopCategories: Record<string, ItemData[]> = {
@@ -63,6 +62,12 @@ const Shop = () => {
   };
 
   const equipmentStateSetters = [
+    { state: "helmets", setter: setHelmets },
+    { state: "weapons", setter: setWeapons },
+    { state: "armors", setter: setArmors },
+    { state: "shields", setter: setShields },
+    { state: "boots", setter: setBoots },
+    { state: "rings", setter: setRings },
     { state: "helmets", setter: setHelmets },
     { state: "weapons", setter: setWeapons },
     { state: "armors", setter: setArmors },
@@ -95,7 +100,7 @@ const Shop = () => {
       fetch(`/api/shop/player?playerEmail=${playerEmail}`)
         .then(response => response.json())
         .then(data => {
-          console.log("el player : " + data);
+          console.log(`el player : `, data);
           setPlayerData(data);
           // localStorage.setItem('playerData', JSON.stringify( data ));
           console.log(data, "is the data fetched");
@@ -115,6 +120,7 @@ const Shop = () => {
 
     const currentRoute = router.query.shopType;
     if (!currentRoute) { return }
+    if (!currentRoute) { return }
 
     // If the current route is not equipment or magical stuff, redirect to equipment.
     if (!["equipment", "magical_stuff"].includes(currentRoute)) {
@@ -131,8 +137,10 @@ const Shop = () => {
   // Update 'categoryData' state (the displayed category) when the user changes.
   useEffect(() => {
     if (!currentCategory) { return }
+    if (!currentCategory) { return }
     setCategoryData(shopCategories[currentCategory]);
   }, [currentCategory]);
+
 
 
   // Load each category data from localStorage into the states.
@@ -198,10 +206,14 @@ const Shop = () => {
   const handleConfirmBuy = async (productConfirm) => {
     const products = [];
     console.log('productConfirm before push:', JSON.stringify(productConfirm, null, 2));
-    products.push(productConfirm);
+    if (!Array.isArray(productConfirm)) {
+      products.push(productConfirm);
+    } else {
+      products.push(...productConfirm);
+    }
     console.log('products after push:', JSON.stringify(products, null, 2));
     try {
-      const result = await purchaseProduct(playerData.player.email, products);
+      const result = await purchaseProduct(playerData?.email, products);
       console.log(result); // logs the inventory and gold after the Promise resolves
       ////////////////////////////////////
       if (result.success) {
@@ -348,7 +360,7 @@ const Shop = () => {
         <div className="relative -mt-2">
 
           <ShopHeader currentCategory={currentCategory} setCurrentCategory={setCurrentCategory} onCartClick={openCart} cartItemCount={cartItemCount} />
-          <ShopPlayerInfo />
+          <ShopPlayerInfo gold={playerData?.player.gold} level={playerData?.player.level}/>
           <ShopContent currentCategory={currentCategory} categoryData={categoryData} setProductConfirm={setProductConfirm} addToCart={addToCart} setItemModalShown={setItemModalShown} setModalItemData={setModalItemData} />
           <Background />
 
@@ -408,7 +420,7 @@ const Shop = () => {
 
         </div>
       </Layout>
-  );
+  )
 };
 
 // --------------------------- //
@@ -417,7 +429,7 @@ const Shop = () => {
 
 
 const ShopHeader: React.FC<{ onCartClick: Function, currentCategory: string, setCurrentCategory: Function }> = ({ onCartClick, currentCategory, setCurrentCategory, cartItemCount  }) => {
-  
+
   const router = useRouter();
 
   return (
@@ -513,7 +525,6 @@ const ShopContent: React.FC<{ categoryData: Array<ItemData>; currentCategory: st
 
 
 const ItemsList: React.FC<{ categoryData: Array<ItemData>; currentCategory: string; addToCart: (item: ItemData) => void; setItemModalShown: Function, setModalItemData: Function }> = ({ categoryData, currentCategory, addToCart, setProductConfirm, setItemModalShown, setModalItemData }) => {
-
   if (categoryData.length === 0) {
     return <h2 className="text-4xl m-10 text-medievalSepia">There are no available items in this category</h2>;
   }
@@ -631,6 +642,7 @@ const Card: React.FC<{ itemData: ItemData; currentCategory: string; addToCart: (
       />
     </div>
   );
+
 }
 
 // -----  CARD BUTTON  ----- //
