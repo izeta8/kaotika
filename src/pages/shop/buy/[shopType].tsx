@@ -176,7 +176,7 @@ const Shop = () => {
 
   // ---- UTILITY ----  //
 
-  const loadLocalStorageIntoStates = (categoryObject): void => {
+  const loadLocalStorageIntoStates = (categoryObject: {state: string, setter: Function}): void => {
 
     // Desestructurize the loop's current state name and setter.
     const { state, setter } = categoryObject;
@@ -208,6 +208,7 @@ const Shop = () => {
   }
 
   const handleConfirmBuy = async (productConfirm) => {
+
     const products = [];
     console.log('productConfirm before push:', JSON.stringify(productConfirm, null, 2));
     if (!Array.isArray(productConfirm)) {
@@ -323,31 +324,6 @@ const Shop = () => {
       });
     }
   };
-  const increaseItem = (id: string) => {
-    setItemsInCart(prevItems =>
-      prevItems.map(item =>
-        item._id === id
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      )
-    );
-  };
-
-  const decreaseItem = (id: string) => {
-    setItemsInCart(prevItems =>
-      prevItems.map(item =>
-        item._id === id && item.quantity > 1
-          ? { ...item, quantity: item.quantity - 1 }
-          : item
-      )
-    );
-  };
-
-  const removeItem = (id: string) => {
-    setItemsInCart(prevItems => prevItems.filter(item => item._id !== id));
-  };
-
-  const clearCart = () => setItemsInCart([]);
 
   const cartItemCount = itemsInCart.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -407,10 +383,7 @@ const Shop = () => {
                 isOpen={isCartOpen}
                 onClose={closeCart}
                 cartItems={itemsInCart}
-                clearCart={clearCart}
-                increaseItem={increaseItem}
-                decreaseItem={decreaseItem}
-                removeItem={removeItem}
+                setItemsInCart={setItemsInCart}
                 confirmPurchase={handleConfirmBuy}
               />
             </div>
