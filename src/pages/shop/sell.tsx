@@ -52,11 +52,13 @@ const Sell = () => {
   useEffect(() => {
     console.log(selectedItemToSell);
     if (selectedItemToSell) {
-      const itemSellPrice = Math.ceil(selectedItemToSell.value/3);
+      const itemSellPrice = Math.floor(selectedItemToSell.value/3);
       const message = createItemSellPriceMessage(MESSAGES.ITEM_SELECTED, selectedItemToSell.name, itemSellPrice);
       setSellerDialogueMessage(message);
     } else {
-      setSellerDialogueMessage(MESSAGES.SELECT_ITEM);
+      if (sellerDialogueMessage !== MESSAGES.ITEM_SELL_SUCCESS) {
+        setSellerDialogueMessage(MESSAGES.SELECT_ITEM);
+      }
     }
     
   }, [selectedItemToSell]);
@@ -114,8 +116,10 @@ const Sell = () => {
         localStorage.setItem('playerData', JSON.stringify(updatedPlayerData));
         setPlayerData(updatedPlayerData);
       }
+      
       setSelectedItemToSell(undefined);
       setProductConfirm(null);
+      setSellerDialogueMessage(MESSAGES.ITEM_SELL_SUCCESS);
     } catch (error) {
       console.error('Error during sell:', error);
     }
