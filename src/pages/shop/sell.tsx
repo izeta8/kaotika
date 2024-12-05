@@ -19,6 +19,7 @@ import { Ingredient } from "@/_common/interfaces/Ingredients";
 import { Ring } from "@/_common/interfaces/Ring";
 import { Shield } from "@/_common/interfaces/Shield";
 import { Weapon } from "@/_common/interfaces/Weapon";
+import Confirm from "@/components/shop/Confirm";
 
 
 const Sell = () => {
@@ -124,15 +125,15 @@ const Sell = () => {
   
       if (!response.ok || !result.success) {
         console.log('Sell failed:', result.message);
-        alert(result.message); 
+        //alert(result.message); 
         return result;
       }
       console.log('Sell successful:', result);
-      alert('Sell successful!');
+      //alert('Sell successful!');
       return result;
     } catch (error) {
       console.error('Error during product sell:', error);
-      alert('An error occurred while processing your sell.');
+      //alert('An error occurred while processing your sell.');
     }
   };
   const handleSellClick = () => {
@@ -201,27 +202,9 @@ const handleResetSelectedItemToSell = () => {
 
 
         </div>
-
+        {/* isOpen, onCancel, onConfirm, product */}
         {productConfirm && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 shadow-lg w-1/3">
-              <h2 className="text-lg font-semibold">Are you sure you want to buy it?</h2>
-              <div className="mt-4 flex justify-end gap-4">
-                <button
-                  className="bg-gray-300 text-gray-800 px-4 py-2 rounded"
-                  onClick={() => handleCancel()}
-                >
-                  No
-                </button>
-                <button
-                  className="bg-blue-500 text-white px-4 py-2 rounded"
-                  onClick={() => handleConfirmSell(productConfirm)}
-                >
-                  Yes
-                </button>
-              </div>
-            </div>
-          </div>
+          <Confirm isOpen={handleSellClick} onCancel={handleCancel} onConfirm={handleConfirmSell} product={selectedItemToSell}/>
         )}
 
       </div>
