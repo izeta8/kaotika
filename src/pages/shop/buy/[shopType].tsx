@@ -32,7 +32,7 @@ const Shop = () => {
   const [productConfirm, setProductConfirm] = useState<object | null>(null);
   const [currentCategory, setCurrentCategory] = useState<string>('');
 
-  const [itemModalShown, setItemModalShown] = useState(true);
+  const [itemModalShown, setItemModalShown] = useState(false);
   const [modalItemData, setModalItemData] = useState<ItemData|undefined>();
 
   // ---- SHOP ITEMS ----  //
