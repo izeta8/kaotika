@@ -138,6 +138,7 @@ const Sell = () => {
   };
   const handleSellClick = () => {
     setProductConfirm(selectedItemToSell);
+    setSelectedItemToSell(undefined);
   };
 
   const handleCancel = () => {
@@ -195,18 +196,16 @@ const handleResetSelectedItemToSell = () => {
               <KaotikaButton text="KEEP IT" handleClick={handleResetSelectedItemToSell}/>
             </div>
             <div className="mt-20 px-6">
-            <KaotikaButton text="SELL IT" handleClick={handleSellClick} />
+            <KaotikaButton text="SELL IT" handleClick={handleSellClick}/>
             </div>
             <ShopPlayerInfo gold={playerData?.gold!} level={playerData?.level!}/>
           </div>
 
 
         </div>
-        {/* isOpen, onCancel, onConfirm, product */}
         {productConfirm && (
           <Confirm isOpen={handleSellClick} onCancel={handleCancel} onConfirm={handleConfirmSell} product={selectedItemToSell}/>
         )}
-
       </div>
     </Layout>
 
