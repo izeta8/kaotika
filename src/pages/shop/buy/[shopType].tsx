@@ -18,25 +18,26 @@ import ItemModal from "@/components/shop/buy/ItemModal";
 import ShopBackground from "@/components/shop/buy/ShopBackground";
 import ItemCard from "@/components/shop/buy/ItemCard"; 
 import ShopHeader from "@/components/shop/buy/ShopHeader"; 
+import { Player } from "@/_common/interfaces/Player";
 
-type ShopCategoryKeys = "helmets" | "weapons" | "armors" | "shields" | "boots" | "rings" | "ingredients" | "containers";
+export type ShopCategories = "helmets" | "weapons" | "armors" | "shields" | "boots" | "rings" | "ingredients" | "containers";
 
 // Shops item categories
-const equipmentCategories = ["helmets", "weapons", "armors", "shields", "boots", "rings"];
-const magicalStuffCategories = ["ingredients", "containers"];
+const equipmentCategories: ShopCategories[] = ["helmets", "weapons", "armors", "shields", "boots", "rings"];
+const magicalStuffCategories: ShopCategories[] = ["ingredients", "containers"];
 
 const Shop = () => {
 
   const router = useRouter()
   const [loading, setLoading] = useState(true);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [playerData, setPlayerData] = useState<object | null>(null);
+  const [playerData, setPlayerData] = useState<Player | null>(null);
   const [playerEmail, setPlayerEmail] = useState<string | null>(null);
   const { data: session } = useSession();
 
   const [categoryData, setCategoryData] = useState<Array<ItemData>>([]);
   const [productConfirm, setProductConfirm] = useState<object | null>(null);
-  const [currentCategory, setCurrentCategory] = useState<string>('');
+  const [currentCategory, setCurrentCategory] = useState<ShopCategories | undefined>(undefined);
 
   const [itemModalShown, setItemModalShown] = useState(false);
   const [modalItemData, setModalItemData] = useState<ItemData|undefined>();
@@ -363,8 +364,20 @@ const Shop = () => {
         <div className="relative -mt-2 min-h-screen">
            
           <div className={`relative transition-all min-h-screen duration-200 ${itemModalShown || productConfirm ? 'blur-sm' : 'blur-none'}`}> 
-            <ShopHeader currentCategory={currentCategory} setCurrentCategory={setCurrentCategory} onCartClick={openCart} cartItemCount={cartItemCount} isMagicalStuffShop={isMagicalStuffShop(router)} />
-            <ShopContent currentCategory={currentCategory} categoryData={categoryData} setProductConfirm={setProductConfirm} addToCart={addToCart} setItemModalShown={setItemModalShown} setModalItemData={setModalItemData} />
+            <ShopHeader 
+              currentCategory={currentCategory}
+              setCurrentCategory={setCurrentCategory}
+              onCartClick={openCart} 
+              cartItemCount={cartItemCount}
+              isMagicalStuffShop={isMagicalStuffShop(router)}
+            />
+            <ShopContent 
+              categoryData={categoryData}
+              setProductConfirm={setProductConfirm}
+              addToCart={addToCart}
+              setItemModalShown={setItemModalShown}
+              setModalItemData={setModalItemData}
+            />
             <ShopBackground />
           </div>
 
@@ -413,17 +426,31 @@ const Shop = () => {
 };
 
 
-
 // ---------------------------- //
 // -----   SHOP CONTENT   ----- //
 // ---------------------------- //
 
+interface ShopContentProps { 
+  categoryData: Array<ItemData>,
+  addToCart: (item: ItemData) => void,
+  setProductConfirm: Function,
+  setItemModalShown: Function,
+  setModalItemData: Function,
+}
 
-const ShopContent: React.FC<{ categoryData: Array<ItemData>; currentCategory: string; addToCart: (item: ItemData) => void }> = ({ categoryData, currentCategory, addToCart, setProductConfirm, setItemModalShown, setModalItemData }) => {
+const ShopContent: React.FC<ShopContentProps> = ({ categoryData, addToCart, setProductConfirm, setItemModalShown, setModalItemData }) => {
   return (
     <section className='w-full h-full relative z-30 flex justify-center items-center'>
+
       {/* FILTER AND SORT BY */}
-      <ItemsList currentCategory={currentCategory} categoryData={categoryData} setProductConfirm={setProductConfirm} addToCart={addToCart} setItemModalShown={setItemModalShown} setModalItemData={setModalItemData} />
+      <ItemsList 
+        categoryData={categoryData}
+        setProductConfirm={setProductConfirm}
+        addToCart={addToCart}
+        setItemModalShown={setItemModalShown}
+        setModalItemData={setModalItemData}
+      />
+    
     </section>
   );
 };
@@ -433,8 +460,15 @@ const ShopContent: React.FC<{ categoryData: Array<ItemData>; currentCategory: st
 // -----   ITEMS GRID   ----- //
 // -------------------------- //
 
+interface ItemsListProps { 
+  categoryData: Array<ItemData>,
+  addToCart: (item: ItemData) => void,
+  setProductConfirm: Function,
+  setItemModalShown: Function,
+  setModalItemData: Function 
+} 
 
-const ItemsList: React.FC<{ categoryData: Array<ItemData>; currentCategory: string; addToCart: (item: ItemData) => void; setItemModalShown: Function, setModalItemData: Function }> = ({ categoryData, currentCategory, addToCart, setProductConfirm, setItemModalShown, setModalItemData }) => {
+const ItemsList: React.FC<ItemsListProps> = ({ categoryData, addToCart, setProductConfirm, setItemModalShown, setModalItemData }) => {
      
   const router = useRouter();
    
@@ -445,7 +479,14 @@ const ItemsList: React.FC<{ categoryData: Array<ItemData>; currentCategory: stri
   return (
     <div className="w-11/12 my-10 grid grid-cols-5 gap-8 place-items-center">
       {categoryData.map((item: ItemData, index: number) => (
-        <ItemCard key={index} itemData={item} currentCategory={currentCategory} addToCart={addToCart} setProductConfirm={setProductConfirm} setItemModalShown={setItemModalShown} setModalItemData={setModalItemData} isMagicalStuffShop={isMagicalStuffShop(router)} />
+        <ItemCard 
+          key={index}
+          itemData={item}
+          addToCart={addToCart}
+          setProductConfirm={setProductConfirm}
+          setItemModalShown={setItemModalShown}
+          setModalItemData={setModalItemData} 
+          isMagicalStuffShop={isMagicalStuffShop(router)} />
       ))}
     </div>
   );
@@ -455,12 +496,12 @@ const ItemsList: React.FC<{ categoryData: Array<ItemData>; currentCategory: stri
 // ----- UTILITY ----- //
 // ------------------- //
 
-const isEquipmentShop = (router): boolean => {
+const isEquipmentShop = (router: any): boolean => {
   const currentShopType = router.query.shopType;
   return currentShopType === "equipment";
 }
 
-const isMagicalStuffShop = (router): boolean => {
+const isMagicalStuffShop = (router: any): boolean => {
   const currentShopType = router.query.shopType;
   return currentShopType === "magical_stuff";
 }
