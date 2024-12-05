@@ -31,7 +31,7 @@ export default async function handler(req, res) {
     });
   } catch (error) {
     console.error('Error processing purchase:', error);
-    res.status(500).json({ success: false, message: 'Internal Server Error' });
+    res.status(500).json({ success: false, error: error?.message, message: 'Internal Server Error' });
   } finally {
     if (connection) {
       await closeDatabaseConnection(connection);
