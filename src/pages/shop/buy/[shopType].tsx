@@ -358,11 +358,13 @@ const Shop = () => {
       <Layout>
 
         <div className="relative -mt-2">
-
-          <ShopHeader currentCategory={currentCategory} setCurrentCategory={setCurrentCategory} onCartClick={openCart} cartItemCount={cartItemCount} />
-          <ShopPlayerInfo gold={playerData?.player.gold} level={playerData?.player.level}/>
-          <ShopContent currentCategory={currentCategory} categoryData={categoryData} setProductConfirm={setProductConfirm} addToCart={addToCart} setItemModalShown={setItemModalShown} setModalItemData={setModalItemData} />
-          <Background />
+           
+          <div className={`transition-all duration-700 ${itemModalShown ? 'blur-sm' : 'blur-none'}`}> 
+            <ShopHeader currentCategory={currentCategory} setCurrentCategory={setCurrentCategory} onCartClick={openCart} cartItemCount={cartItemCount} />
+            <ShopPlayerInfo gold={playerData?.player.gold} level={playerData?.player.level}/>
+            <ShopContent currentCategory={currentCategory} categoryData={categoryData} setProductConfirm={setProductConfirm} addToCart={addToCart} setItemModalShown={setItemModalShown} setModalItemData={setModalItemData} />
+            <Background />
+          </div>
 
           {/********** Modals ***********/}
 
@@ -722,8 +724,9 @@ const ItemModal: React.FC<{itemModalShown: boolean, setItemModalShown: Function,
     
     <div 
       onClick={() => setItemModalShown(false)} 
-      className={`fixed flex justify-center items-center h-screen pb-28 mt-28 w-full top-0 left-0 bg-black/40 z-50 transition-opacity hover:cursor-pointer ${itemModalShown ? 'opacity-100' : 'opacity-0'} `}> 
-
+      className={`fixed flex justify-center items-center h-screen pb-28 mt-28 w-full top-0 left-0 bg-black/50 transition-all z-50 ${itemModalShown ? 'opacity-100' : 'opacity-0'} `} 
+    > 
+    
       <div 
         onClick={(e) => e.stopPropagation()}
         className='relative flex justify-center items-center hover:cursor-default'
@@ -732,8 +735,9 @@ const ItemModal: React.FC<{itemModalShown: boolean, setItemModalShown: Function,
           backgroundPosition: "center",
           backgroundSize: '100%',
           width: 1024,
-          height: 690,
-        }}
+          height: 690, 
+        }} 
+        
       >
          
         {/* Content Container */}
@@ -741,7 +745,7 @@ const ItemModal: React.FC<{itemModalShown: boolean, setItemModalShown: Function,
 
           {/* Close Button */}
           <div 
-            className="absolute hover:cursor-pointer -right-3 -top-8 bg-[#523f29]/30 rounded-full border border-medievalSepia w-12 h-12 flex justify-center items-center"
+            className="absolute hover:cursor-pointer -right-3 -top-8 bg-[#523f29]/30 rounded-full border border-medievalSepia w-12 h-12 flex justify-center items-center hover:scale-105 transition-all"
             onClick={() => setItemModalShown(false)}
           >  
             <p className="ml-0.5 text-2xl">X</p>
