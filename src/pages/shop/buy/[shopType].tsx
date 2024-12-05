@@ -709,7 +709,7 @@ const ItemModal: React.FC<{itemModalShown: boolean, setItemModalShown: Function,
 
   const image_url = `https://kaotika.vercel.app${image}`; 
 
-  const modalBackgroundImage = isMagicalStuffShop(router) ? "url('/images/shop/buy/magical_stuff_modal_background.png')" : "url('/images/shop/buy/equipment_modal_background.webp')";
+  const modalBackgroundImage = isMagicalStuffShop(router) ? "url('/images/shop/buy/magical_stuff_modal_background.webp')" : "url('/images/shop/buy/equipment_modal_background.webp')";
  
   // Style variables 
   const equipmentTextGradient = "bg-gradient-to-b from-[#FFD0A0] via-[#EED1B4] to-[#B2AF9E]"; 
