@@ -11,14 +11,19 @@ import ShopPlayerInfo from "@/components/shop/ShopPlayerInfo";
 import { ItemData } from "@/_common/interfaces/ItemData";
 import { CartItem } from "@/_common/interfaces/CartItem";
 import Loading from "@/components/Loading";
+
+// Shop Components
 import Confirm from "@/components/shop/Confirm";
+import ItemModal from "@/components/shop/buy/ItemModal";
+import ShopBackground from "@/components/shop/buy/ShopBackground";
+import ItemCard from "@/components/shop/buy/ItemCard"; 
+import ShopHeader from "@/components/shop/buy/ShopHeader"; 
 
 type ShopCategoryKeys = "helmets" | "weapons" | "armors" | "shields" | "boots" | "rings" | "ingredients" | "containers";
 
 // Shops item categories
 const equipmentCategories = ["helmets", "weapons", "armors", "shields", "boots", "rings"];
 const magicalStuffCategories = ["ingredients", "containers"];
-
 
 const Shop = () => {
 
@@ -358,10 +363,10 @@ const Shop = () => {
 
         <div className="relative -mt-2 min-h-screen">
            
-          <div className={`relative transition-all min-h-screen duration-200 ${itemModalShown ? 'blur-sm' : 'blur-none'}`}> 
-            <ShopHeader currentCategory={currentCategory} setCurrentCategory={setCurrentCategory} onCartClick={openCart} cartItemCount={cartItemCount} />
+          <div className={`relative transition-all min-h-screen duration-200 ${itemModalShown || productConfirm ? 'blur-sm' : 'blur-none'}`}> 
+            <ShopHeader currentCategory={currentCategory} setCurrentCategory={setCurrentCategory} onCartClick={openCart} cartItemCount={cartItemCount} isMagicalStuffShop={isMagicalStuffShop(router)} />
             <ShopContent currentCategory={currentCategory} categoryData={categoryData} setProductConfirm={setProductConfirm} addToCart={addToCart} setItemModalShown={setItemModalShown} setModalItemData={setModalItemData} />
-            <Background />
+            <ShopBackground />
           </div>
 
           <ShopPlayerInfo gold={playerData?.player.gold} level={playerData?.player.level}/>
@@ -374,6 +379,7 @@ const Shop = () => {
               itemModalShown={itemModalShown}
               setItemModalShown={setItemModalShown}
               itemData={modalItemData}
+              isMagicalStuffShop={isMagicalStuffShop(router)}
             />
           )}
 
@@ -407,85 +413,6 @@ const Shop = () => {
   )
 };
 
-// --------------------------- //
-// -----   SHOP HEADER   ----- //
-// --------------------------- //
-
-
-const ShopHeader: React.FC<{ onCartClick: Function, currentCategory: string, setCurrentCategory: Function }> = ({ onCartClick, currentCategory, setCurrentCategory, cartItemCount  }) => {
-
-  const router = useRouter();
-
-  return (
-    <header className='w-full h-full relative py-4 z-30 flex-col flex justify-center items-center'>
-      <div className="container mx-auto flex items-center justify-between">
-
-        {/* Return Button Section */}
-        <div className="flex items-center">
-          <Link href={'/shop/shopHome'}>
-            <span className='text-4xl mx-6 hover:underline hover:cursor-pointer text-medievalSepia'> &lt; Return</span>
-          </Link>
-        </div>
-
-        {/* Category Buttons Section */}
-        <nav className="flex-1 text-center">
-          {
-            isEquipmentShop(router) ?
-              equipmentCategories.map(category => <HeaderLink key={category} category={category} currentCategory={currentCategory} setCurrentCategory={setCurrentCategory} />)
-              :
-              isMagicalStuffShop(router) ?
-                magicalStuffCategories.map(category => <HeaderLink key={category} category={category} currentCategory={currentCategory} setCurrentCategory={setCurrentCategory} />)
-                :
-                null
-          }
-        </nav>
-
-        {/* Cart Button Section */}
-        <div className="flex items-center">
-          <button
-            onClick={onCartClick}
-            className="relative px-8 py-6 rounded-full transition transform hover:scale-105 focus:outline-none"
-          >
-            <img
-              src="/images/shop/buy/Cart.png" 
-              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 " 
-              draggable={false} 
-            />
-             {/* Badge */}
-             {cartItemCount > 0 && (
-              <span className="absolute top-[-5px] right-0 inline-flex items-center justify-center w-7 h-7 text-4xl leading-none text-medievalSepia  transform translate-x-1/2 -translate-y-1/2">
-                {cartItemCount}
-              </span>
-            )}
-          </button>
-        </div>
-
-      </div>
-
-      <img className="w-full px-12" src="/images/shop/buy/header_separator.png" />
-
-    </header>
-  );
-}
-
-// -----  LINKS (CATEGORIES)  ----- //
-
-const HeaderLink: React.FC<{ category: string, currentCategory: string, setCurrentCategory: Function }> = ({ category, currentCategory, setCurrentCategory }) => {
-
-  const label = category.toUpperCase();
-
-  // Check if the tab is the current category.
-  const isSelected = currentCategory === category;
-
-  // Set the styles tabs.
-  const commonStyles = "text-3xl mx-6 font-medium text-white hover:cursor-pointer transition-all duration-200";
-  const selectedTabStyle = `${commonStyles} underline text-amber-400`;
-  const unselectedTabStyle = `${commonStyles} hover:underline hover:text-medievalSepia`;
-
-  return (
-    <span onClick={() => setCurrentCategory(category)} className={isSelected ? selectedTabStyle : unselectedTabStyle}>{label}</span>
-  )
-}
 
 
 // ---------------------------- //
@@ -509,6 +436,9 @@ const ShopContent: React.FC<{ categoryData: Array<ItemData>; currentCategory: st
 
 
 const ItemsList: React.FC<{ categoryData: Array<ItemData>; currentCategory: string; addToCart: (item: ItemData) => void; setItemModalShown: Function, setModalItemData: Function }> = ({ categoryData, currentCategory, addToCart, setProductConfirm, setItemModalShown, setModalItemData }) => {
+     
+  const router = useRouter();
+   
   if (categoryData.length === 0) {
     return <h2 className="text-4xl m-10 text-medievalSepia">There are no available items in this category</h2>;
   }
@@ -516,340 +446,11 @@ const ItemsList: React.FC<{ categoryData: Array<ItemData>; currentCategory: stri
   return (
     <div className="w-11/12 my-10 grid grid-cols-5 gap-8 place-items-center">
       {categoryData.map((item: ItemData, index: number) => (
-        <Card key={index} itemData={item} currentCategory={currentCategory} addToCart={addToCart} setProductConfirm={setProductConfirm} setItemModalShown={setItemModalShown} setModalItemData={setModalItemData} />
+        <ItemCard key={index} itemData={item} currentCategory={currentCategory} addToCart={addToCart} setProductConfirm={setProductConfirm} setItemModalShown={setItemModalShown} setModalItemData={setModalItemData} isMagicalStuffShop={isMagicalStuffShop(router)} />
       ))}
     </div>
   );
 };
-
-
-// ------------------------- //
-// -----   ITEM CARD   ----- //
-// ------------------------- //
-
-
-const Card: React.FC<{ itemData: ItemData; currentCategory: string; addToCart: (item: ItemData) => void ; setItemModalShown: Function, setModalItemData: Function}> = ({ itemData, currentCategory, addToCart, setProductConfirm, setItemModalShown, setModalItemData }) => {
-
-  const router = useRouter();
-
-  if (!itemData) { return }
-
-  const { _id, name, description, type, value, modifiers, min_lvl, image, base_percentage, defense, isUnique } = itemData;
-
-  // If the item does not have value, we do not want to show it in the shop.
-  if (!value || value === 0 ) { return }
-
-  // If the item is unique, we do not want to show it in the shop.
-  if (isUnique ) { return }
-
-  if (!name) { return }
-
-  const nameFontSize = name.length > 15 ? 'text-3xl' : 'text-4xl';
-
-  const backgroundPath = isMagicalStuffShop(router) ?
-    "url('/images/shop/buy/magic_stuff_card_background.png')" :
-    "url('/images/shop/buy/equipment_card_background.png')";
-
-  const equipmentTextGradient = "bg-gradient-to-b from-[#FFD0A0] via-[#EED1B4] to-[#B2AF9E]";
-  const magicalStuffTextGradient = "bg-gradient-to-b from-[#212532] via-[#9CB5EA] to-[#3A3C45]";
-
-
-  // ---- UTILITY ---- //
-
-  const handleCardClick = () => {
-    setModalItemData(itemData);
-    setItemModalShown(true);
-  } 
-
-  const handleBuyClick = () => {
-    setProductConfirm(itemData);
-  };
-
-  return (
-    <div className="bg-slate-900 w-72 p-6 flex flex-col justify-center items-center relative z-10 select-none hover:cursor-pointer hover:-translate-y-4 transition-all" 
-      style={{
-        height: 420,
-        backgroundImage: backgroundPath,
-        backgroundRepeat: "no-repeat",
-        WebkitBackgroundSize: 'contain',
-        backgroundSize: '100%'
-      }}
-      onClick={() => handleCardClick()}
-    >
-
-      <div className="flex flex-col justify-center items-center gap-3 z-30">
-
-        {/* GOLD & MIN. LEVEL */}
-        <ItemDataContainer value={value} min_lvl={min_lvl} />
-
-        {/* IMAGE  */}
-        <img
-          className={`h-44 drop-shadow-2xl ${isMagicalStuffShop(router) ? 'rounded-full border-3 border-[#1e1f23]' : null}`}
-          src={image}
-          draggable={false}
-          onError={(e) => {
-            e.currentTarget.onerror = null; // Prevent infinite loop if fallback also fails
-            e.currentTarget.src = "/images/shop/buy/interrogation_sign.png"; // Fallback image
-            e.currentTarget.title = "Image not found"
-          }}
-        />
-
-        {/* ITEM NAME */}
-        <p
-          className={`${nameFontSize} font-medium bg-clip-text text-transparent select-text text-center ${isMagicalStuffShop(router) ? magicalStuffTextGradient : equipmentTextGradient}`}
-        >
-          {name}
-        </p>
-
-        {/* BUY BUTTONS */}
-        <div className="w-full flex flex-row gap-4">
-          <CardButton onClick={(e) => {e.stopPropagation(); handleBuyClick()}} label="BUY" />
-          <CardButton onClick={(e) => {e.stopPropagation(); addToCart(itemData)}} label="ADD TO CART" />
-        </div>
-
-      </div>
-
-      <img
-        className="absolute w-full h-full top-0 user"
-        src="/images/shop/buy/card_frame.png"
-        draggable={false}
-      />
-    </div>
-  );
-
-}
-
-// -----  CARD BUTTON  ----- //
-
-const CardButton: React.FC<{ onClick:  React.MouseEventHandler<HTMLButtonElement>, label: string }> = ({ onClick, label }) => {
-
-  if (!label || !onClick) { return null; }
-
-  const fontSize = label.length > 8 ? 'text-md' : 'text-xl';
-
-  return (
-    <button
-      onClick={onClick}
-      className="bg-[#1E1E1E] leading-7 border rounded hover:bg-medievalSepia transition-all border-medievalSepia/60"
-    >
-      <p
-        className={`${fontSize} py-2 px-4 text-white/90 hover:text-[#1E1E1E] transition-all duration-500 `}
-      >{label}</p>
-    </button>
-  )
-
-}
-
-// -----  GOLD AND MIN XP CONTANIERS  ----- //
-
-const ItemDataContainer: React.FC<{value: number, min_lvl: number|undefined}> = ({value, min_lvl}) => {
-  
-  const goldLevelGridStyle =  (!value || !min_lvl) ? 
-                              `w-1/2 grid-cols-1` :
-                              `w-full grid-cols-2`;
-
-
-  return (
-
-    <div className={`grid gap-3 place-items-center ${goldLevelGridStyle}`}>
-
-      {value && (
-        <ItemDataLabel data={value} image={"/images/icons/gold.png"} title='Value' />
-      )}
-
-      {min_lvl && (
-        <ItemDataLabel data={min_lvl} image={"/images/icons/level.png"} title='Min. lvl' />
-      )}
-
-    </div>
-  );
-}
-
-const ItemDataLabel: React.FC<{ image: string, data: number, title: string }> = ({ image, data, title }) => {
-
-  if (!data) return null;
-
-  const fontSize = data.toString().length >= 5 ? 'text-2xl' : 'text-3xl';
-
-  return (
-
-    <div
-      className="w-5/6 border rounded border-medievalSepia p-2 bg-black/45 gap-2 flex"
-      title={title}
-    >
-      {image && (
-        <img
-          className="rounded-full w-6 flex-shrink-0"
-          src={image}
-          alt="Item"
-          draggable={false}
-        />
-      )}
-      <p className={`flex-grow ${fontSize} leading-4 text-center text-white/90 select-none`}>
-        {data}
-      </p>
-    </div>
-  );
-};
-
-
-// -------------------------- //
-// -----   ITEM MODAL   ----- //
-// -------------------------- //
-
- 
-const ItemModal: React.FC<{itemModalShown: boolean, setItemModalShown: Function, itemData: ItemData | undefined, playerData: any}> = ({itemModalShown, setItemModalShown, itemData, playerData}) => {
-   
-  if (!itemData) {return}
-  const router = useRouter();
-
-  const {_id, name, description, type, value, modifiers, effects, min_lvl, image, base_percentage, defense} = itemData;
-
-  if (!value) {return}
-
-  const image_url = `https://kaotika.vercel.app${image}`; 
-
-  const modalBackgroundImage = isMagicalStuffShop(router) ? "url('/images/shop/buy/magical_stuff_modal_background.webp')" : "url('/images/shop/buy/equipment_modal_background.webp')";
- 
-  // Style variables 
-  const equipmentTextGradient = "bg-gradient-to-b from-[#FFD0A0] via-[#EED1B4] to-[#B2AF9E]"; 
-  const magicalStuffTextGradient = "bg-gradient-to-b from-[#212532] via-[#9CB5EA] to-[#3A3C45]"; 
-   
-  const hasModifiers = () => Object.values(modifiers).some(value => value !== 0);
-  const hasEffects = () => effects && effects.length>0;
-
-  return (
-    
-    <div 
-      onClick={() => setItemModalShown(false)} 
-      className={`fixed flex justify-center items-center h-screen pb-28 mt-28 w-full top-0 left-0 bg-black/50 transition-all z-50 ${itemModalShown ? 'opacity-100' : 'opacity-0'} `} 
-    > 
-    
-      <div 
-        onClick={(e) => e.stopPropagation()}
-        className='relative flex justify-center items-center hover:cursor-default'
-        style={{
-          backgroundImage: modalBackgroundImage,
-          backgroundPosition: "center",
-          backgroundSize: '100%',
-          width: 1024,
-          height: 690, 
-        }} 
-      >
-         
-        {/* Content Container */}
-        <div className="relative bg-red-500/0 w-3/4 h-3/5 py-3 flex flex-col gap-3">
-
-          {/* Close Button */}
-          <div 
-            className="absolute hover:cursor-pointer -right-3 -top-8 bg-[#523f29]/30 rounded-full border border-medievalSepia w-12 h-12 flex justify-center items-center hover:scale-105 transition-all"
-            onClick={() => setItemModalShown(false)}
-          >  
-            <p className="ml-0.5 text-2xl">X</p>
-          </div>
-
-          {/* Row 1: Title */}
-          <div className="bg-blue-500/0 ">
-            <h2 className={`text-7xl py-2 bg-clip-text text-transparent select-text text-center ${isMagicalStuffShop(router) ? magicalStuffTextGradient : equipmentTextGradient}`}>
-              {name}
-            </h2>
-          </div>
-
-          {/* Row 2: Item Data, Image, Description */}
-          <div className="grid grid-cols-3 h-full bg-orange-300/0">
-
-            {/* Item Data */}
-            <div className="flex justify-center items-center flex-col ">  
-
-                {!isMagicalStuffShop(router) ? 
-                  // EQUIPMENT MODAL 
-                  <div>
-                    {!hasModifiers ?
-                      <p className={`text-[#EED1B4] text-3xl italic`}>This item does not have any modifier.</p> 
-                    :
-                      renderModifiers(modifiers, playerData, type) 
-                    }
-                    {(defense || base_percentage) && <hr className="w-5/6 mt-3 mb-1 border-medievalSepia opacity-30"/> }
-                    {defense && <p className="text-[#EED1B4] text-3xl">{`Defense: ${defense}`}</p>}
-                    {base_percentage && <p className="text-[#EED1B4] text-3xl">{`Base Percentage: ${base_percentage}`}</p>}
-                  </div>
-                  :
-                  // SHOP MODAL 
-                  <div>
-                    {!hasEffects ?
-                      <p className={`text-[#EED1B4] text-3xl italic`}>This item does not have any effect.</p> 
-                    :
-                      renderEffects(effects, type)
-                    }
-                  </div>
-                }
-
-            </div>
-            
-            {/* Image */}
-            <div className="flex justify-center items-center flex-col gap-3">
-              <img  
-                className={`h-56 drop-shadow-[0_10px_10px_rgba(0,0,0,0.45)] ${isMagicalStuffShop(router) ? 'rounded-full border-3 border-[#1e1f23]' : null}`}
-                src={image_url}  
-                draggable={false}
-                onError={(e) => {
-                  e.currentTarget.onerror = null; // Prevent infinite loop if fallback also fails
-                  e.currentTarget.src = "/images/shop/buy/interrogation_sign.png"; // Fallback image
-                  e.currentTarget.title="Image not found"
-                }}
-              />
-              <ItemDataContainer value={value} min_lvl={min_lvl} />
-            </div>
-
-            {/* Description */}
-            <div className="flex justify-center items-center bg">
-              <p
-                className={`text-4xl italic text-balance py-2 bg-clip-text text-transparent select-text text-center ${isMagicalStuffShop(router) ? magicalStuffTextGradient : equipmentTextGradient}`}
-              >
-                {`"${description}"`}
-              </p>
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-    </div>
-     
-  );
-
-} 
-
-// -------------------------- //
-// -----   BACKGROUND   ----- //
-// -------------------------- //
-
-const Background = () => {
-
-  return (
-    <>
-      <img
-        className='w-full h-full absolute top-0 opacity-10 z-20'
-        style={{
-          backgroundColor: '#191A1D',
-          backgroundImage: "url('/images/shop/background_pattern.png')",
-          backgroundRepeat: "repeat",
-          backgroundPosition: "center",
-        }}
-      />
-
-      <div
-        className='w-full h-full absolute top-0 z-10'
-        style={{
-          backgroundColor: '#191A1D',
-        }}
-      >
-      </div>
-    </>
-  );
-
-}
 
 // --------------------//
 // ----- UTILITY ----- //
@@ -866,100 +467,5 @@ const isMagicalStuffShop = (router): boolean => {
 }
 
 
-// Capitalize first letter of string
-function capitalizeFirstLetter(string: string): string {
-  if (!string) return ''; // Handle empty string
-  return string.charAt(0).toUpperCase() + string.slice(1).replaceAll('_', ' ');
-} 
-
-// Function to render the modifiers of the modal
-const renderModifiers = (modifiers: Record<string, number>, playerData: any, itemType: string) => {
-
-  if (!modifiers) {return}
-
-  const redColor = "text-[#e8513c]";
-  const greenColor = "text-[#7cc74e]";
-
-  return Object.entries(modifiers)
-    .map(([key, value]) => {
-
-      const attribute = key;
-      const formatedAttribute = attribute?.split('_')
-                              .map((word) => capitalizeFirstLetter(word))
-                              .join(' ');
-
-
-      let valueDifference; 
-       
-      if (playerData?.equipment && playerData?.modifiers) { 
-        const equippedItem = playerData.equipment[itemType];
-        const playerValue = equippedItem.modifiers[attribute];
-        valueDifference = value - playerValue;
-      }
-
-      if (value !== 0) {
-        return (
-          <p  
-            key={`${attribute}-p`}
-            className="text-[#EED1B4] text-3xl"
-          >
-            {/* Attribute Name */}
-            {`${formatedAttribute}: `}
-
-            {/* Attibute Value */}
-            <span   
-              className={`${value>0 ? greenColor : redColor}`}
-              key={`${attribute}-value`}
-            >
-              {value}
-            </span>
-            
-            {/* Difference from current stats */} 
-            {valueDifference && (
-              valueDifference === 0 ? (
-                <span
-                  className="text-2xl italic text-gray-300 opacity-60"
-                  key={`${attribute}-valueDifference`}
-                >
-                  (same)
-                </span>
-              ) : (
-                <span
-                  className={`${valueDifference > 0 ? greenColor : redColor} text-2xl italic`}
-                  key={`${attribute}-valueDifference`}
-                >
-                  {`(${valueDifference > 0 ? '+' : ''}${valueDifference})`}
-                </span>
-              )
-            )}
-
-
-          </p>
-        )
-      }
-
-      return;
-    });
-};
-
-const renderEffects = (effects: Array<string>, itemType: string) => {
-
-  if (itemType !== "ingredient") { return }
-
-  return (
-    
-    effects.map(effect => {
-      const effectName = capitalizeFirstLetter(effect);
-
-      return (<p  
-        key={`${effect}-p`}
-        className="text-[#9CB5EA] text-3xl"
-        >
-          {effectName}
-        </p>
-      )
-    })
-  );  
-}
 
 export default Shop;
