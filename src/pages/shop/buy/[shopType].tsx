@@ -347,9 +347,9 @@ const Shop = () => {
 
         <div className="relative -mt-2">
 
-          <ShopHeader currentCategory={currentCategory} setCurrentCategory={setCurrentCategory} onCartClick={openCart} cartItemCount={cartItemCount}/>
+          <ShopHeader currentCategory={currentCategory} setCurrentCategory={setCurrentCategory} onCartClick={openCart} cartItemCount={cartItemCount} />
           <ShopPlayerInfo />
-          <ShopContent currentCategory={currentCategory} categoryData={categoryData} setProductConfirm={setProductConfirm} addToCart={addToCart} />
+          <ShopContent currentCategory={currentCategory} categoryData={categoryData} setProductConfirm={setProductConfirm} addToCart={addToCart} setItemModalShown={setItemModalShown} setModalItemData={setModalItemData} />
           <Background />
 
           {/********** Modals ***********/}
@@ -497,11 +497,11 @@ const HeaderLink: React.FC<{ category: string, currentCategory: string, setCurre
 // ---------------------------- //
 
 
-const ShopContent: React.FC<{ categoryData: Array<ItemData>; currentCategory: string; addToCart: (item: ItemData) => void }> = ({ categoryData, currentCategory, addToCart, setProductConfirm }) => {
+const ShopContent: React.FC<{ categoryData: Array<ItemData>; currentCategory: string; addToCart: (item: ItemData) => void }> = ({ categoryData, currentCategory, addToCart, setProductConfirm, setItemModalShown, setModalItemData }) => {
   return (
     <section className='w-full h-full relative z-30 flex justify-center items-center'>
       {/* FILTER AND SORT BY */}
-      <ItemsList currentCategory={currentCategory} categoryData={categoryData} setProductConfirm={setProductConfirm} addToCart={addToCart} />
+      <ItemsList currentCategory={currentCategory} categoryData={categoryData} setProductConfirm={setProductConfirm} addToCart={addToCart} setItemModalShown={setItemModalShown} setModalItemData={setModalItemData} />
     </section>
   );
 };
@@ -571,7 +571,7 @@ const Card: React.FC<{ itemData: ItemData; currentCategory: string; addToCart: (
   };
 
   return (
-    <div className="bg-slate-900 w-72 p-6 flex flex-col justify-center items-center relative z-10 select-none"
+    <div className="bg-slate-900 w-72 p-6 flex flex-col justify-center items-center relative z-10 select-none hover:cursor-pointer hover:-translate-y-4 transition-all" 
       style={{
         height: 420,
         backgroundImage: backgroundPath,
@@ -618,8 +618,8 @@ const Card: React.FC<{ itemData: ItemData; currentCategory: string; addToCart: (
 
         {/* BUY BUTTONS */}
         <div className="w-full flex flex-row gap-4">
-          <CardButton onClick={() => handleBuyClick()} label="BUY" />
-          <CardButton onClick={() => addToCart(itemData)} label="ADD TO CART" />
+          <CardButton onClick={(e) => {e.stopPropagation(); handleBuyClick()}} label="BUY" />
+          <CardButton onClick={(e) => {e.stopPropagation(); addToCart(itemData)}} label="ADD TO CART" />
         </div>
 
       </div>
@@ -635,7 +635,7 @@ const Card: React.FC<{ itemData: ItemData; currentCategory: string; addToCart: (
 
 // -----  CARD BUTTON  ----- //
 
-const CardButton: React.FC<{ onClick: Function, label: string }> = ({ onClick, label }) => {
+const CardButton: React.FC<{ onClick:  React.MouseEventHandler<HTMLButtonElement>, label: string }> = ({ onClick, label }) => {
 
   if (!label || !onClick) { return null; }
 
@@ -864,9 +864,14 @@ const renderModifiers = (modifiers: Record<string, number>, playerData: any, ite
                               .map((word) => capitalizeFirstLetter(word))
                               .join(' ');
 
-      const equippedItem = playerData.equipment[itemType];
-      const playerValue = equippedItem.modifiers[attribute];
-      const valueDifference = value - playerValue;
+
+      let valueDifference; 
+       
+      if (playerData?.equipment && playerData?.modifiers) { 
+        const equippedItem = playerData.equipment[itemType];
+        const playerValue = equippedItem.modifiers[attribute];
+        valueDifference = value - playerValue;
+      }
 
       if (value !== 0) {
         return (
@@ -885,21 +890,26 @@ const renderModifiers = (modifiers: Record<string, number>, playerData: any, ite
               {value}
             </span>
             
-            {/* Difference from current stats */}
-            {valueDifference === 0 ?
-              <span 
-                className="text-2xl italic text-gray-300 opacity-60"
-                key={`${attribute}-valueDifference`}
-              > (same)</span>
-              :
-              (
-              <span 
-                className={`${valueDifference > 0 ? greenColor : redColor} text-2xl italic`}
-                key={`${attribute}-valueDifference`}
-              > 
-                ({valueDifference > 0 ? '+' : null}{valueDifference})
-              </span>
+            {/* Difference from current stats */} 
+            {valueDifference && (
+              valueDifference === 0 ? (
+                <span
+                  className="text-2xl italic text-gray-300 opacity-60"
+                  key={`${attribute}-valueDifference`}
+                >
+                  (same)
+                </span>
+              ) : (
+                <span
+                  className={`${valueDifference > 0 ? greenColor : redColor} text-2xl italic`}
+                  key={`${attribute}-valueDifference`}
+                >
+                  {`(${valueDifference > 0 ? '+' : ''}${valueDifference})`}
+                </span>
+              )
             )}
+
+
           </p>
         )
       }
