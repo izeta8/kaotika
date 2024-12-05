@@ -2,7 +2,6 @@ import React from 'react';
 
 const Confirm = ({ isOpen, onCancel, onConfirm, product }) => {
     if (!isOpen) return null;
-
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center z-50">
             <div
@@ -21,6 +20,10 @@ const Confirm = ({ isOpen, onCancel, onConfirm, product }) => {
                     alt={product.name}
                     draggable={false}
                     className="w-20 h-20 object-cover rounded mx-auto my-1"
+                    onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = "/images/shop/buy/interrogation_sign.png";
+                      }}
                 />
 
                 <div className="mt-2 flex justify-center gap-6">

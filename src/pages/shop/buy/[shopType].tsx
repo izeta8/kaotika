@@ -106,10 +106,10 @@ const Shop = () => {
       fetch(`/api/shop/player?playerEmail=${playerEmail}`)
         .then(response => response.json())
         .then(data => {
-          console.log(`el player : `, data);
-          setPlayerData(data);
+          console.log(`el player : `, data.player);
+          setPlayerData(data.player);
           // localStorage.setItem('playerData', JSON.stringify( data ));
-          console.log(data, "is the data fetched");
+          console.log(data.player, "is the data fetched");
           setLoading(false);
         })
         .catch(error => {
@@ -215,6 +215,7 @@ const Shop = () => {
       products.push(...productConfirm);
     }
     console.log('products after push:', JSON.stringify(products, null, 2));
+    console.log("dame el email" + playerData?.email);
     try {
       const result = await purchaseProduct(playerData?.email, products);
       console.log(result); // logs the inventory and gold after the Promise resolves
@@ -222,15 +223,13 @@ const Shop = () => {
       if (result.success) {
         // Update the playerData 
         const updatedPlayerData = {
-          ...playerData,
-          player: {
-            ...playerData.player,
-            gold: result.gold, // Update gold with the new value
-            inventory: result.inventory, // Update inventory with the new value
-          }
+          ...playerData,    // Spread all properties of playerData
+          gold: result.gold,        // Override the gold property
+          inventory: result.inventory // Override the inventory property
         };
         // Save the updated playerData to localStorage
-        localStorage.setItem('playerData', JSON.stringify(updatedPlayerData));
+        // localStorage.setItem('playerData', JSON.stringify(updatedPlayerData));
+        setPlayerData(updatedPlayerData);
       }
       ////////////////////////////////////
       setProductConfirm(null);
@@ -369,8 +368,8 @@ const Shop = () => {
             <ShopBackground />
           </div>
 
-          <ShopPlayerInfo gold={playerData?.player.gold} level={playerData?.player.level}/>
-
+          <ShopPlayerInfo gold={playerData?.gold} level={playerData?.level}/>
+          
           {/********** Modals ***********/}
 
           {itemModalShown && (
