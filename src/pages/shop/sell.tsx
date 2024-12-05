@@ -4,7 +4,7 @@ import PlayerInventorySellShop from "@/components/shop/PlayerInventorySellShop";
 import Link from 'next/link';
 import player from "./FakeTestPlayer";
 import SellShopObjectDetails from "@/components/shop/SellShopObjectDetails";
-import SellerDialogueBox from "@/components/shop/SellerDialgueBox";
+import { SellerDialogueBox, createItemSellPriceMessage } from "@/components/shop/SellerDialgueBox";
 import { Button } from "@nextui-org/button";
 import KaotikaButton from "@/components/KaotikaButton";
 import ShopPlayerInfo from "@/components/shop/ShopPlayerInfo";
@@ -19,6 +19,8 @@ import { Ingredient } from "@/_common/interfaces/Ingredients";
 import { Ring } from "@/_common/interfaces/Ring";
 import { Shield } from "@/_common/interfaces/Shield";
 import { Weapon } from "@/_common/interfaces/Weapon";
+import { MESSAGES } from "@/constants/shop/constants_messages";
+
 
 
 const Sell = () => {
@@ -29,7 +31,8 @@ const Sell = () => {
   const [playerEmail, setPlayerEmail] = useState<string | null>(null);
   const [playerData, setPlayerData] = useState<Player>();
   const [productConfirm, setProductConfirm] = useState<object | null>(null);
-  const [selectedItemToSell, setSelectedItemToSell] = useState< Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield | Ingredient>();
+  const [selectedItemToSell, setSelectedItemToSell] = useState< Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield >();
+  const [sellerDialogueMessage, setSellerDialogueMessage] = useState<string>(MESSAGES.WELCOME);
 
 
 
@@ -45,8 +48,16 @@ const Sell = () => {
       setPlayerEmail(session.user.email);
     }
   }, [session]);
+
   useEffect(() => {
     console.log(selectedItemToSell);
+    if (selectedItemToSell) {
+      const itemSellPrice = Math.ceil(selectedItemToSell.value/3);
+      const message = createItemSellPriceMessage(MESSAGES.ITEM_SELECTED, selectedItemToSell.name, itemSellPrice);
+      setSellerDialogueMessage(message);
+    } else {
+      setSellerDialogueMessage(MESSAGES.SELECT_ITEM);
+    }
     
   }, [selectedItemToSell]);
 
@@ -89,7 +100,7 @@ const Sell = () => {
     if (!productConfirm) return;
 
     try {
-      const itemPrice = 1000;
+      const itemPrice = Math.ceil(productConfirm.value/3);
   
       const result = await sellProduct(playerData.email, productConfirm, itemPrice);
       console.log(result); 
@@ -141,6 +152,7 @@ const Sell = () => {
 
   const handleCancel = () => {
     setProductConfirm(null);
+    setSellerDialogueMessage(MESSAGES.ITEM_SELL_CANCEL)
   };
 
 //####################################################################################################
@@ -186,7 +198,7 @@ const handleResetSelectedItemToSell = () => {
           </div>
 
           <div className="flex flex-row  place-content-end">
-            <SellerDialogueBox phrase="Welcome to the best trade shop of the continent!!!" />
+            <SellerDialogueBox phrase={sellerDialogueMessage} />
           </div>
 
           <div className="flex flex-row items-center">
