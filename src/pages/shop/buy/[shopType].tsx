@@ -357,7 +357,7 @@ const Shop = () => {
 
         <div className="relative -mt-2 min-h-screen">
            
-          <div className={`relative transition-all min-h-screen duration-700 ${itemModalShown ? 'blur-sm' : 'blur-none'}`}> 
+          <div className={`relative transition-all min-h-screen duration-200 ${itemModalShown ? 'blur-sm' : 'blur-none'}`}> 
             <ShopHeader currentCategory={currentCategory} setCurrentCategory={setCurrentCategory} onCartClick={openCart} cartItemCount={cartItemCount} />
             <ShopContent currentCategory={currentCategory} categoryData={categoryData} setProductConfirm={setProductConfirm} addToCart={addToCart} setItemModalShown={setItemModalShown} setModalItemData={setModalItemData} />
             <Background />
@@ -567,11 +567,6 @@ const Card: React.FC<{ itemData: ItemData; currentCategory: string; addToCart: (
     "url('/images/shop/buy/magic_stuff_card_background.png')" :
     "url('/images/shop/buy/equipment_card_background.png')";
 
-
-  const goldLevelGridStyle =  (!value || !min_lvl) ? 
-                            `w-1/2 grid-cols-1` :
-                            `w-full grid-cols-2`;
-
   const equipmentTextGradient = "bg-gradient-to-b from-[#FFD0A0] via-[#EED1B4] to-[#B2AF9E]";
   const magicalStuffTextGradient = "bg-gradient-to-b from-[#212532] via-[#9CB5EA] to-[#3A3C45]";
 
@@ -725,7 +720,9 @@ const ItemModal: React.FC<{itemModalShown: boolean, setItemModalShown: Function,
   if (!itemData) {return}
   const router = useRouter();
 
-  const {_id, name, description, type, value, modifiers, min_lvl, image, base_percentage, defense} = itemData;
+  const {_id, name, description, type, value, modifiers, effects, min_lvl, image, base_percentage, defense} = itemData;
+
+  if (!value) {return}
 
   const image_url = `https://kaotika.vercel.app${image}`; 
 
@@ -735,7 +732,8 @@ const ItemModal: React.FC<{itemModalShown: boolean, setItemModalShown: Function,
   const equipmentTextGradient = "bg-gradient-to-b from-[#FFD0A0] via-[#EED1B4] to-[#B2AF9E]"; 
   const magicalStuffTextGradient = "bg-gradient-to-b from-[#212532] via-[#9CB5EA] to-[#3A3C45]"; 
    
-  const hasModifiers = Object.values(modifiers).some(value => value !== 0);
+  const hasModifiers = () => Object.values(modifiers).some(value => value !== 0);
+  const hasEffects = () => effects && effects.length>0;
 
   return (
     
@@ -754,7 +752,6 @@ const ItemModal: React.FC<{itemModalShown: boolean, setItemModalShown: Function,
           width: 1024,
           height: 690, 
         }} 
-        
       >
          
         {/* Content Container */}
@@ -780,16 +777,30 @@ const ItemModal: React.FC<{itemModalShown: boolean, setItemModalShown: Function,
 
             {/* Item Data */}
             <div className="flex justify-center items-center flex-col ">  
-                <div>
-                  {!hasModifiers ?
-                    <p className={`text-[#EED1B4] text-3xl italic`}>This item does not have any modifier.</p> 
+
+                {!isMagicalStuffShop(router) ? 
+                  // EQUIPMENT MODAL 
+                  <div>
+                    {!hasModifiers ?
+                      <p className={`text-[#EED1B4] text-3xl italic`}>This item does not have any modifier.</p> 
+                    :
+                      renderModifiers(modifiers, playerData, type) 
+                    }
+                    {(defense || base_percentage) && <hr className="w-5/6 mt-3 mb-1 border-medievalSepia opacity-30"/> }
+                    {defense && <p className="text-[#EED1B4] text-3xl">{`Defense: ${defense}`}</p>}
+                    {base_percentage && <p className="text-[#EED1B4] text-3xl">{`Base Percentage: ${base_percentage}`}</p>}
+                  </div>
                   :
-                    renderModifiers(modifiers, playerData, type)
-                  }
-                  {(defense || base_percentage) && <hr className="w-5/6 mt-3 mb-1 border-medievalSepia opacity-30"/> }
-                  {defense && <p className="text-[#EED1B4] text-3xl">{`Defense: ${defense}`}</p>}
-                  {base_percentage && <p className="text-[#EED1B4] text-3xl">{`Base Percentage: ${base_percentage}`}</p>}
-                </div>
+                  // SHOP MODAL 
+                  <div>
+                    {!hasEffects ?
+                      <p className={`text-[#EED1B4] text-3xl italic`}>This item does not have any effect.</p> 
+                    :
+                      renderEffects(effects, type)
+                    }
+                  </div>
+                }
+
             </div>
             
             {/* Image */}
@@ -875,7 +886,7 @@ const isMagicalStuffShop = (router): boolean => {
 // Capitalize first letter of string
 function capitalizeFirstLetter(string: string): string {
   if (!string) return ''; // Handle empty string
-  return string.charAt(0).toUpperCase() + string.slice(1);
+  return string.charAt(0).toUpperCase() + string.slice(1).replaceAll('_', ' ');
 } 
 
 // Function to render the modifiers of the modal
@@ -943,9 +954,29 @@ const renderModifiers = (modifiers: Record<string, number>, playerData: any, ite
           </p>
         )
       }
-      return null;
+
+      return;
     });
 };
 
+const renderEffects = (effects: Array<string>, itemType: string) => {
+
+  if (itemType !== "ingredient") { return }
+
+  return (
+    
+    effects.map(effect => {
+      const effectName = capitalizeFirstLetter(effect);
+
+      return (<p  
+        key={`${effect}-p`}
+        className="text-[#9CB5EA] text-3xl"
+        >
+          {effectName}
+        </p>
+      )
+    })
+  );  
+}
 
 export default Shop;
