@@ -259,19 +259,16 @@ const Shop = () => {
       if (!response.ok || !result.success) {
         // Handle the case where the purchase fails due to business logic (e.g., low level or insufficient funds)
         console.log('Purchase failed:', result.error); 
-        
-        alert(result.message); // Show the error message to the user
+
         return result;
       }
 
       // Handle the successful purchase case
       console.log('Purchase successful:', result);
-      alert('Purchase successful!');
       return result
 
     } catch (error) {
       console.error('Error during product purchase:', error);
-      alert('An error occurred while processing your purchase.');
     }
   };
 
