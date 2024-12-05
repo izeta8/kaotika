@@ -602,17 +602,7 @@ const Card: React.FC<{ itemData: ItemData; currentCategory: string; addToCart: (
       <div className="flex flex-col justify-center items-center gap-3 z-30">
 
         {/* GOLD & MIN. LEVEL */}
-        <div className={`grid gap-3 place-items-center ${goldLevelGridStyle}`}>
-
-          {value && (
-            <ItemDataLabel data={value} image={"/images/icons/gold.png"} title='Value' />
-          )}
-
-          {min_lvl && (
-            <ItemDataLabel data={min_lvl} image={"/images/icons/level.png"} title='Min. lvl' />
-          )}
-
-        </div>
+        <ItemDataContainer value={value} min_lvl={min_lvl} />
 
         {/* IMAGE  */}
         <img
@@ -673,6 +663,29 @@ const CardButton: React.FC<{ onClick:  React.MouseEventHandler<HTMLButtonElement
 }
 
 // -----  GOLD AND MIN XP CONTANIERS  ----- //
+
+const ItemDataContainer: React.FC<{value: number, min_lvl: number|undefined}> = ({value, min_lvl}) => {
+  
+  const goldLevelGridStyle =  (!value || !min_lvl) ? 
+                              `w-1/2 grid-cols-1` :
+                              `w-full grid-cols-2`;
+
+
+  return (
+
+    <div className={`grid gap-3 place-items-center ${goldLevelGridStyle}`}>
+
+      {value && (
+        <ItemDataLabel data={value} image={"/images/icons/gold.png"} title='Value' />
+      )}
+
+      {min_lvl && (
+        <ItemDataLabel data={min_lvl} image={"/images/icons/level.png"} title='Min. lvl' />
+      )}
+
+    </div>
+  );
+}
 
 const ItemDataLabel: React.FC<{ image: string, data: number, title: string }> = ({ image, data, title }) => {
 
@@ -791,10 +804,7 @@ const ItemModal: React.FC<{itemModalShown: boolean, setItemModalShown: Function,
                   e.currentTarget.title="Image not found"
                 }}
               />
-              <div className={`grid place-items-center grid-cols-2 w-full mb-2`}>
-                <ItemDataLabel data={value} image={"/images/icons/gold.png"} title='Value' />
-                <ItemDataLabel data={min_lvl} image={"/images/icons/level.png"} title='Min. lvl' /> 
-              </div>
+              <ItemDataContainer value={value} min_lvl={min_lvl} />
             </div>
 
             {/* Description */}
