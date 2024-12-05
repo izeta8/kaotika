@@ -1,8 +1,19 @@
 
+// Gold and Min Level data containers
 
-// -----  GOLD AND MIN XP CONTANIERS  ----- //
+interface ItemDataContainerProps {
+  value: number|undefined,
+  min_lvl: number|undefined
+}
 
-const ItemDataContainer: React.FC<{value: number, min_lvl: number|undefined}> = ({value, min_lvl}) => {
+interface ItemDataLabelProps {  
+  image: string,
+  data: number,
+  title: string 
+}
+
+
+const ItemDataContainer: React.FC<ItemDataContainerProps> = ({value, min_lvl}) => {
   
   const goldLevelGridStyle =  (!value || !min_lvl) ? 
                               `w-1/2 grid-cols-1` :
@@ -25,7 +36,7 @@ const ItemDataContainer: React.FC<{value: number, min_lvl: number|undefined}> = 
   );
 }
 
-const ItemDataLabel: React.FC<{ image: string, data: number, title: string }> = ({ image, data, title }) => {
+const ItemDataLabel: React.FC<ItemDataLabelProps> = ({ image, data, title }) => {
 
   if (!data) return null;
 
