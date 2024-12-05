@@ -553,7 +553,14 @@ const Card: React.FC<{ itemData: ItemData; currentCategory: string; addToCart: (
 
   if (!itemData) { return }
 
-  const { _id, name, description, type, value, modifiers, min_lvl, image, base_percentage, defense } = itemData;
+  const { _id, name, description, type, value, modifiers, min_lvl, image, base_percentage, defense, isUnique } = itemData;
+
+  // If the item does not have value, we do not want to show it in the shop.
+  if (!value || value === 0 ) { return }
+
+  // If the item is unique, we do not want to show it in the shop.
+  if (isUnique ) { return }
+
   const image_url = `https://kaotika.vercel.app${image}`;
 
   if (!name) { return }
