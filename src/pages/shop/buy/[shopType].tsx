@@ -358,15 +358,16 @@ const Shop = () => {
  
       <Layout>
 
-        <div className="relative -mt-2">
+        <div className="relative -mt-2 min-h-screen">
            
-          <div className={`transition-all duration-700 ${itemModalShown ? 'blur-sm' : 'blur-none'}`}> 
+          <div className={`relative transition-all min-h-screen duration-700 ${itemModalShown ? 'blur-sm' : 'blur-none'}`}> 
             <ShopHeader currentCategory={currentCategory} setCurrentCategory={setCurrentCategory} onCartClick={openCart} cartItemCount={cartItemCount} />
-            <ShopPlayerInfo gold={playerData?.player.gold} level={playerData?.player.level}/>
             <ShopContent currentCategory={currentCategory} categoryData={categoryData} setProductConfirm={setProductConfirm} addToCart={addToCart} setItemModalShown={setItemModalShown} setModalItemData={setModalItemData} />
             <Background />
           </div>
 
+          <ShopPlayerInfo gold={playerData?.player.gold} level={playerData?.player.level}/>
+          
           {/********** Modals ***********/}
 
           {itemModalShown && (
