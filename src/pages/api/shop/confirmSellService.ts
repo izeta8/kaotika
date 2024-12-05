@@ -31,29 +31,23 @@ export const processProductSell = async (connection, playerEmail, product, produ
         player.inventory[category].splice(productIndex, 1);
       }
 
-      // Si la categoría está vacía, eliminarla
-      if (player.inventory[category].length === 0) {
-        delete player.inventory[category];
-      }
     } else {
-      // Manejar el caso en que el producto no se encuentra en la categoría
       return {
         success: false,
-        message: 'El producto no se encuentra en el inventario.',
+        message: 'The product is not in stock.',
       };
     }
   } else {
-    // Manejar el caso en que la categoría no existe
     return {
       success: false,
-      message: 'La categoría del producto no existe en el inventario.',
+      message: 'The product category does not exist in the inventory.',
     };
   }
 
   const updatedPlayer = await PlayerModel.findOneAndUpdate(
-    { email: playerEmail }, // Encontrar al jugador por email
+    { email: playerEmail }, 
     { $set: { gold: player.gold, inventory: player.inventory } }, 
-    { new: true } // Retornar el documento actualizado
+    { new: true } 
   );
 
   console.log(`Oro actualizado: ${updatedPlayer.gold}`);
