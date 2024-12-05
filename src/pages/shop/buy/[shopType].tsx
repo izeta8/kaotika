@@ -11,6 +11,7 @@ import ShopPlayerInfo from "@/components/shop/ShopPlayerInfo";
 import { ItemData } from "@/_common/interfaces/ItemData";
 import { CartItem } from "@/_common/interfaces/CartItem";
 import Loading from "@/components/Loading";
+import Confirm from "@/components/shop/Confirm";
 
 type ShopCategoryKeys = "helmets" | "weapons" | "armors" | "shields" | "boots" | "rings" | "ingredients" | "containers";
 
@@ -239,6 +240,9 @@ const Shop = () => {
   const handleCancel = () => {
     setProductConfirm(null);
   };
+  const handleBuyClick = () => {
+    setProductConfirm(productConfirm);
+  };
 
   const purchaseProduct = async (playerEmail, products) => {
     try {
@@ -401,25 +405,7 @@ const Shop = () => {
           )}
 
           {productConfirm && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-              <div className="bg-white rounded-lg p-6 shadow-lg w-1/3">
-                <h2 className="text-lg font-semibold">Are you sure you want to buy it?</h2>
-                <div className="mt-4 flex justify-end gap-4">
-                  <button
-                    className="bg-gray-300 text-gray-800 px-4 py-2 rounded"
-                    onClick={() => handleCancel()}
-                  >
-                    No
-                  </button>
-                  <button
-                    className="bg-blue-500 text-white px-4 py-2 rounded"
-                    onClick={() => handleConfirmBuy(productConfirm)}
-                  >
-                    Yes
-                  </button>
-                </div>
-              </div>
-            </div>
+             <Confirm isOpen={handleBuyClick} onCancel={handleCancel} onConfirm={handleConfirmBuy} product={productConfirm}/>
           )}
 
         </div>
