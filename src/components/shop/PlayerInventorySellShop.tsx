@@ -19,7 +19,7 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData, setSelectedItemTo
         return (
         <div className="w-10/12 p-4">
           <div className="w-full h-full bg-black/70">
-            <div className="grid grid-cols-11 grid-rows-5 flex-grow">
+            <div className="grid grid-cols-12 grid-rows-5 flex-grow">
               {
                 playerData?.inventory.helmets.map(helmet => {
                   return (
