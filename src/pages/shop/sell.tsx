@@ -102,7 +102,7 @@ const Sell = () => {
     if (!productConfirm) return;
 
     try {
-      const itemPrice = Math.ceil(productConfirm.value/3);
+      const itemPrice = Math.floor(productConfirm.value/3);
   
       const result = await sellProduct(playerData.email, productConfirm, itemPrice);
       console.log(result);
