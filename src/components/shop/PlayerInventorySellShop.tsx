@@ -8,7 +8,6 @@ import { Ring } from "@/_common/interfaces/Ring";
 import { Shield } from "@/_common/interfaces/Shield";
 import { Weapon } from "@/_common/interfaces/Weapon";
 import { GRID_NUMBER } from "@/constants/constants";
-import { log } from "node:console";
 
 interface Props {
     playerData?: Player;
