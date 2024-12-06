@@ -1,4 +1,4 @@
-import { fetchPlayer } from '../shop/playersService';
+import { fetchPlayer, updatePlayer } from '../shop/playersService';
 import Player from '../../../database/models/playerModel';
 
 export const processProductsPurchase = async (connection, playerEmail, products) => {
@@ -12,8 +12,8 @@ export const processProductsPurchase = async (connection, playerEmail, products)
   let player = await fetchPlayer(connection, playerEmail);
 
   player = player.player; // Assuming fetchPlayer returns { player: {...} }
-  console.log("el player: " + JSON.stringify(player));
-  console.log("los productos: " + JSON.stringify(products));
+  // console.log("el player: " + JSON.stringify(player));
+  // console.log("los productos: " + JSON.stringify(products));
 
   // Calculate the total cost of all products
   const totalCost = products.reduce((sum, product) => {
@@ -61,16 +61,15 @@ export const processProductsPurchase = async (connection, playerEmail, products)
   });
 
   // Update the player document in the database
-  const updatedPlayer = await PlayerModel.findOneAndUpdate(
-    { email: playerEmail }, // Find the player by email
-    { $set: { gold: player.gold, inventory: player.inventory } }, // Fields to update using the $set operator
-    { new: true } // Return the updated document
-  );
+  const updatedPlayer = await updatePlayer(connection, playerEmail, {
+    gold: player.gold as number,
+    inventory: player.inventory as object,
+  });
 
   return {
     success: true,
-    inventory: updatedPlayer.inventory,
-    gold: updatedPlayer.gold,
+    inventory: updatedPlayer.updatedPlayer.inventory,
+    gold: updatedPlayer.updatedPlayer.gold,
   };
 };
 
