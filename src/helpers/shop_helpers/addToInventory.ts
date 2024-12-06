@@ -1,5 +1,10 @@
+import { findExistingProduct } from "./findExistingProduct";
+import { incrementProductQuantity } from "./incrementProductQuantity";
+
+
 export const addToInventory = (playerInventory: Record<string, any[]>, products: Array<{ _id: string, type: string }>) => {
     products.forEach((product) => {
+      
       const category = product.type + 's'; // Determine the category based on the product type
   
       // Ensure the category exists in the player's inventory
@@ -8,13 +13,11 @@ export const addToInventory = (playerInventory: Record<string, any[]>, products:
       }
   
       // Check if the product is already in the specific category
-      const existingProduct = playerInventory[category].find(
-        (item) => item._id.toString() === product._id
-      );
+      const existingProduct = findExistingProduct(playerInventory[category], product._id);
   
       if (existingProduct) {
         // If the product exists, increment the quantity
-        existingProduct.quantity = (existingProduct.quantity || 1) + 1;
+        incrementProductQuantity(existingProduct);
       } else {
         // If the product does not exist, add it to the category
         playerInventory[category].push({
