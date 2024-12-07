@@ -9,6 +9,7 @@ describe('POST /api/shop/confirmPurchase', () => {
   let connection = null;
   let TestPlayerModel: Model<typeof Player>;
   const app = express();
+  const testRunId = "confirm_purchase";
 
   beforeAll(async () => {
     connection = await createDatabaseConnection();
@@ -20,7 +21,7 @@ describe('POST /api/shop/confirmPurchase', () => {
   });
 
   afterAll(async () => {
-    await TestPlayerModel.deleteMany({ isTest: true });
+    await TestPlayerModel.deleteMany({ testRunId: testRunId });
     if (connection) {
       await closeDatabaseConnection(connection);
     }
@@ -36,7 +37,7 @@ describe('POST /api/shop/confirmPurchase', () => {
       experience: 0,
       gold: 1000,
       inventory: { helmets: [] },
-      isTest: true,
+      testRunId: testRunId
     });
 
     const response = await request(app)
@@ -69,7 +70,7 @@ describe('POST /api/shop/confirmPurchase', () => {
       experience: 0,
       gold: 100, // Not enough for the product
       inventory: { helmets: [] },
-      isTest: true,
+      testRunId: testRunId
     });
 
     const response = await request(app)

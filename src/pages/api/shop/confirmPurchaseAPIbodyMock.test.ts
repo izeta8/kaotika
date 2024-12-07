@@ -10,6 +10,7 @@ describe('POST /api/shop/confirmPurchase', () => {
   // let server;
   let connection: mongoose.Connection | null = null;
   let TestPlayerModel: Model<typeof Player>;
+  const testRunId = "confirm_purchase_mock";
 
   beforeAll(async () => {
     console.log('Starting beforeAll');
@@ -29,7 +30,7 @@ describe('POST /api/shop/confirmPurchase', () => {
     console.log('Starting afterAll');
 
     // Clean up all test players
-    await TestPlayerModel.deleteMany({ isTest: true });
+    await TestPlayerModel.deleteMany({ testRunId: testRunId });
 
     if (connection) {
       await closeDatabaseConnection(connection);
@@ -53,7 +54,7 @@ describe('POST /api/shop/confirmPurchase', () => {
         inventory: {
           helmets: [], // Optional field, included in your example
         },
-        isTest: true, // Tagging as a test record
+        testRunId: testRunId
     });
     console.log('Created Test Player:', testPlayer);
 
@@ -112,7 +113,7 @@ describe('POST /api/shop/confirmPurchase', () => {
       inventory: {
         helmets: [], // Optional field, included in your example
       },
-      isTest: true, // Tagging as a test record
+      testRunId: testRunId
     });
 
     const playerEmail = 'test@gmail.com';

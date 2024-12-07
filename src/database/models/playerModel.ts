@@ -11,9 +11,9 @@ const playerSchema = new Schema({
      type: Object, 
     default: {} 
 },
-  isTest: {
-  type: Boolean, 
-  default: false
+  testRunId: {
+  type: String, 
+  default: null
   },
   equipment: {
      type: Object, 
