@@ -210,7 +210,11 @@ const Shop = () => {
     }
     console.log('products after push:', JSON.stringify(products, null, 2));
     console.log("dame el email" + playerData?.email);
+
     try {
+
+      if (!playerData?.email) {throw new Error("[Client Error] Playerdata state does not have a email currently!")}
+
       const result = await purchaseProduct(playerData?.email, products);
       console.log(result); // logs the inventory and gold after the Promise resolves
       ////////////////////////////////////
