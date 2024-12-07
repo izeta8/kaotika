@@ -4,7 +4,7 @@ import PlayerInventorySellShop from "@/components/shop/PlayerInventorySellShop";
 import Link from 'next/link';
 import player from "./FakeTestPlayer";
 import SellShopObjectDetails from "@/components/shop/SellShopObjectDetails";
-import SellerDialogueBox from "@/components/shop/SellerDialgueBox";
+import { SellerDialogueBox, createItemSellPriceMessage } from "@/components/shop/SellerDialgueBox";
 import { Button } from "@nextui-org/button";
 import KaotikaButton from "@/components/KaotikaButton";
 import ShopPlayerInfo from "@/components/shop/ShopPlayerInfo";
@@ -19,6 +19,7 @@ import { Ingredient } from "@/_common/interfaces/Ingredients";
 import { Ring } from "@/_common/interfaces/Ring";
 import { Shield } from "@/_common/interfaces/Shield";
 import { Weapon } from "@/_common/interfaces/Weapon";
+import { MESSAGES } from "@/constants/shop/constants_messages";
 import Confirm from "@/components/shop/Confirm";
 
 
@@ -30,15 +31,16 @@ const Sell = () => {
   const [playerEmail, setPlayerEmail] = useState<string | null>(null);
   const [playerData, setPlayerData] = useState<Player>();
   const [productConfirm, setProductConfirm] = useState<object | null>(null);
-  const [selectedItemToSell, setSelectedItemToSell] = useState< Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield | Ingredient>();
+  const [selectedItemToSell, setSelectedItemToSell] = useState< Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield >();
+  const [sellerDialogueMessage, setSellerDialogueMessage] = useState<string>(MESSAGES.WELCOME);
 
 
 
-//####################################################################################################
-//####################################################################################################
-// Get the player data with the email that the user has been autenticated
-//####################################################################################################
-//####################################################################################################
+  //####################################################################################################
+  //####################################################################################################
+  // Get the player data with the email that the user has been autenticated
+  //####################################################################################################
+  //####################################################################################################
 
   useEffect(() => {
     if (session?.user?.email) {
@@ -46,8 +48,18 @@ const Sell = () => {
       setPlayerEmail(session.user.email);
     }
   }, [session]);
+
   useEffect(() => {
     console.log(selectedItemToSell);
+    if (selectedItemToSell) {
+      const itemSellPrice = Math.floor(selectedItemToSell.value/3);
+      const message = createItemSellPriceMessage(MESSAGES.ITEM_SELECTED, selectedItemToSell.name, itemSellPrice);
+      setSellerDialogueMessage(message);
+    } else {
+      if (sellerDialogueMessage !== MESSAGES.ITEM_SELL_SUCCESS) {
+        setSellerDialogueMessage(MESSAGES.SELECT_ITEM);
+      }
+    }
     
   }, [selectedItemToSell]);
 
@@ -90,22 +102,24 @@ const Sell = () => {
     if (!productConfirm) return;
 
     try {
-      const itemPrice = 1000;
+      const itemPrice = Math.floor(productConfirm.value/3);
   
       const result = await sellProduct(playerData.email, productConfirm, itemPrice);
-      console.log(result); 
-  
+      console.log(result);
+
       if (result && result.success) {
         const updatedPlayerData = {
           ...playerData,
-          gold: result.gold, 
-          inventory: result.inventory, 
+          gold: result.gold,
+          inventory: result.inventory,
         };
         localStorage.setItem('playerData', JSON.stringify(updatedPlayerData));
         setPlayerData(updatedPlayerData);
       }
-  
+      
+      setSelectedItemToSell(undefined);
       setProductConfirm(null);
+      setSellerDialogueMessage(MESSAGES.ITEM_SELL_SUCCESS);
     } catch (error) {
       console.error('Error during sell:', error);
     }
@@ -120,9 +134,9 @@ const Sell = () => {
         },
         body: JSON.stringify({ playerEmail, product, productPrice: itemPrice }),
       });
-  
+
       const result = await response.json();
-  
+
       if (!response.ok || !result.success) {
         console.log('Sell failed:', result.message);
         //alert(result.message); 
@@ -138,25 +152,25 @@ const Sell = () => {
   };
   const handleSellClick = () => {
     setProductConfirm(selectedItemToSell);
-    setSelectedItemToSell(undefined);
   };
 
   const handleCancel = () => {
     setProductConfirm(null);
+    setSellerDialogueMessage(MESSAGES.ITEM_SELL_CANCEL)
   };
 
-//####################################################################################################
-//####################################################################################################
-// Function to reset the item showing on details on the card
-//####################################################################################################
-//####################################################################################################
-const handleResetSelectedItemToSell = () => {
-  setSelectedItemToSell(undefined);
-}
+  //####################################################################################################
+  //####################################################################################################
+  // Function to reset the item showing on details on the card
+  //####################################################################################################
+  //####################################################################################################
+  const handleResetSelectedItemToSell = () => {
+    setSelectedItemToSell(undefined);
+  }
 
-//####################################################################################################
-// Return loading spinner if there is charging something
-//####################################################################################################
+  //####################################################################################################
+  // Return loading spinner if there is charging something
+  //####################################################################################################
 
   if (loading) {
     return (<Loading />);
@@ -170,7 +184,7 @@ const handleResetSelectedItemToSell = () => {
 
         <div className="flex-col w-1/2">
           <PlayerInventorySellShop playerData={playerData} setSelectedItemToSell={setSelectedItemToSell} />
-          <SellShopObjectDetails item={selectedItemToSell}/>
+          <SellShopObjectDetails item={selectedItemToSell} />
         </div>
 
         <div className="flex flex-col w-1/2">
@@ -188,23 +202,23 @@ const handleResetSelectedItemToSell = () => {
           </div>
 
           <div className="flex flex-row  place-content-end">
-            <SellerDialogueBox phrase="Welcome to the best trade shop of the continent!!!" />
+            <SellerDialogueBox phrase={sellerDialogueMessage} />
           </div>
 
           <div className="flex flex-row items-center">
             <div className="mt-20 px-6">
-              <KaotikaButton text="KEEP IT" handleClick={handleResetSelectedItemToSell}/>
+              <KaotikaButton text="KEEP IT" handleClick={handleResetSelectedItemToSell} />
             </div>
             <div className="mt-20 px-6">
-            <KaotikaButton text="SELL IT" handleClick={handleSellClick}/>
+              <KaotikaButton text="SELL IT" handleClick={handleSellClick} />
             </div>
-            <ShopPlayerInfo gold={playerData?.gold!} level={playerData?.level!}/>
+            <ShopPlayerInfo gold={playerData?.gold!} level={playerData?.level!} />
           </div>
 
 
         </div>
         {productConfirm && (
-          <Confirm isOpen={handleSellClick} onCancel={handleCancel} onConfirm={handleConfirmSell} product={selectedItemToSell}/>
+          <Confirm isOpen={handleSellClick} onCancel={handleCancel} onConfirm={handleConfirmSell} product={selectedItemToSell} />
         )}
       </div>
     </Layout>

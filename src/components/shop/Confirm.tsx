@@ -13,31 +13,46 @@ const Confirm = ({ isOpen, onCancel, onConfirm, product }) => {
                 }}
             >
                 <h2 className="p-6 text-center text-4xl">
-                    {product ? `¿Are you sure you want to sell ${product.name}?` : '¿Are you sure you want to sell this item?'}
+                    {product ? `Are you sure you want to sell ${product.name}?` : '¿Are you sure you want to sell this item?'}
                 </h2>
-                <img
-                    src={`https://kaotika.vercel.app${product.image}`}
-                    alt={product.name}
-                    draggable={false}
-                    className="w-20 h-20 object-cover rounded mx-auto my-1"
-                    onError={(e) => {
-                        e.currentTarget.onerror = null;
-                        e.currentTarget.src = "/images/shop/buy/interrogation_sign.png";
-                      }}
-                />
+
+                {(product.type === "ingredient") ?
+                    <img
+                        src={product.image}
+                        alt={product.name}
+                        draggable={false}
+                        className="w-20 h-20 object-cover rounded-full mx-auto my-1"
+                        onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = "/images/shop/buy/interrogation_sign.png";
+                        }}
+                    />
+                    :
+                    <img
+                        src={product.image}
+                        alt={product.name}
+                        draggable={false}
+                        className="w-20 h-20 object-cover rounded mx-auto my-1"
+                        onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = "/images/shop/buy/interrogation_sign.png";
+                        }}
+                    />
+                }
+
 
                 <div className="mt-2 flex justify-center gap-6">
-                <button
+                    <button
                         onClick={onCancel}
                         className="bg-darkSepia text-black px-4 py-2 rounded  hover:bg-medievalSepia transition text-xl"
                     >
-                        No
+                        NO
                     </button>
                     <button
                         onClick={() => onConfirm(product)}
                         className="bg-darkSepia text-black px-4 py-2 rounded hover:bg-medievalSepia transition text-xl"
                     >
-                        Sí
+                        YES
                     </button>
                 </div>
             </div>
