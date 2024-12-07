@@ -204,8 +204,10 @@ const renderModifiers = (modifiers: Record<string, number>, playerData: any, ite
        
       if (playerData?.equipment && playerData?.modifiers) { 
         const equippedItem = playerData.equipment[itemType];
-        const playerValue = equippedItem.modifiers[attribute];
-        valueDifference = value - playerValue;
+        if (equippedItem?.modifiers) {
+          const playerValue = equippedItem.modifiers[attribute];
+          valueDifference = value - playerValue;
+        }
       }
 
       if (value !== 0) {
@@ -226,7 +228,7 @@ const renderModifiers = (modifiers: Record<string, number>, playerData: any, ite
             </span>
             
             {/* Difference from current stats */} 
-            {valueDifference && (
+            {(valueDifference !== undefined && valueDifference !== null) && (
               valueDifference === 0 ? (
                 <span
                   className="text-2xl italic text-gray-300 opacity-60"
@@ -243,7 +245,6 @@ const renderModifiers = (modifiers: Record<string, number>, playerData: any, ite
                 </span>
               )
             )}
-
 
           </p>
         )
