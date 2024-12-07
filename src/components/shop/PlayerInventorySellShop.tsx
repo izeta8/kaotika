@@ -19,7 +19,7 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData, setSelectedItemTo
         return (
         <div className="w-10/12 p-4">
           <div className="w-full h-full bg-black/70">
-            <div className="grid grid-cols-11 grid-rows-5 flex-grow">
+            <div className="grid grid-cols-12 grid-rows-5 flex-grow">
               {
                 playerData?.inventory.helmets.map(helmet => {
                   return (
@@ -84,32 +84,15 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData, setSelectedItemTo
                 })
               }
               {
-                playerData?.inventory.healing_potions.map(healing => {
+                playerData?.inventory.ingredients.map(ingredient => {
                   return (
-                    <div key={healing._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{ 'border': '3px ridge #000000' }}>
-                      <img src={healing.image} alt={healing.name} className="w-full h-auto" />
+                    <div key={ingredient._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{ 'border': '3px ridge #000000' }}>
+                      <img src={ingredient.image} alt={ingredient.name} className="w-full h-auto" onClick={() => setSelectedItemToSell?.(ingredient)}/>
                     </div>
                   )
                 })
               }
-              {
-                playerData?.inventory.antidote_potions.map(antidote => {
-                  return (
-                    <div key={antidote._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{ 'border': '3px ridge #000000' }}>
-                      <img src={antidote.image} alt={antidote.name} className="w-full h-auto" />
-                    </div>
-                  )
-                })
-              }
-              {
-                playerData?.inventory.enhancer_potions.map(enhancer => {
-                  return (
-                    <div key={enhancer._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{ 'border': '3px ridge #000000' }}>
-                      <img src={enhancer.image} alt={enhancer.name} className="w-full h-auto" />
-                    </div>
-                  )
-                })
-              }
+              
               {
                 Array.from({
                   length:

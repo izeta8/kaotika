@@ -7,10 +7,7 @@ interface CartProps {
   isOpen: boolean;
   onClose: () => void;
   cartItems: CartItem[];
-  clearCart: () => void;
-  increaseItem: (id: string) => void;
-  decreaseItem: (id: string) => void;
-  removeItem: (id: string) => void;
+  setItemsInCart: Function;
   confirmPurchase: Function;
 }
 
@@ -18,8 +15,34 @@ interface CartItem extends ItemData {
   quantity: number;
 }
 
-const Cart: React.FC<CartProps> = ({ isOpen, onClose, cartItems, clearCart, increaseItem, decreaseItem, removeItem, confirmPurchase }) => {
+const Cart: React.FC<CartProps> = ({ isOpen, onClose, cartItems, setItemsInCart, confirmPurchase }) => {
  
+  const increaseItem = (id: string) => {
+    setItemsInCart((prevItems: CartItem[]) =>
+      prevItems.map(item =>
+        item._id === id
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
+      )
+    );
+  };
+
+  const decreaseItem = (id: string) => {
+    setItemsInCart((prevItems: CartItem[]) =>
+      prevItems.map(item =>
+        item._id === id && item.quantity > 1
+          ? { ...item, quantity: item.quantity - 1 }
+          : item
+      )
+    );
+  };
+
+  const removeItem = (id: string) => {
+    setItemsInCart((prevItems: CartItem[]) => prevItems.filter(item => item._id !== id));
+  };
+
+  const clearCart = () => setItemsInCart([]);
+
   const handlePurchase = () => {
     confirmPurchase(cartItems);
     clearCart();
