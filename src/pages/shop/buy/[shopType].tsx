@@ -213,24 +213,22 @@ const Shop = () => {
 
     try {
 
-      if (!playerData?.email) {throw new Error("[Client Error] Playerdata state does not have a email currently!")}
+      if (!playerData?.email) {throw new Error("[handleConfirmBuy] playerData state does not have a email currently!")}
 
       const result = await purchaseProduct(playerData?.email, products);
       console.log(result); // logs the inventory and gold after the Promise resolves
+
       ////////////////////////////////////
-      if (result.success) {
-        // Update the playerData 
-        const updatedPlayerData = {
-          ...playerData,    // Spread all properties of playerData
-          gold: result.gold,        // Override the gold property
-          inventory: result.inventory // Override the inventory property
-        };
-        // Save the updated playerData to localStorage
-        // localStorage.setItem('playerData', JSON.stringify(updatedPlayerData));
+
+      // Update the player state.
+      const {success, updatedPlayerData} = result;
+
+      if (success && updatedPlayerData) {
         setPlayerData(updatedPlayerData);
       }
       ////////////////////////////////////
       setProductConfirm(null);
+
     } catch (error) {
       console.error('Error during purchase:', error);
     }
@@ -479,13 +477,12 @@ const purchaseProduct = async (playerEmail: string, products: Array<ItemData>) =
 
     if (!response.ok || !result.success) {
       // Handle the case where the purchase fails due to business logic (e.g., low level or insufficient funds)
-      console.log('Purchase failed:', result.error); 
-
-      return result;
+      console.log('Purchase failed:', result); 
+    } else {
+      // Handle the successful purchase case
+      console.log('Purchase successful:', result);
     }
-
-    // Handle the successful purchase case
-    console.log('Purchase successful:', result);
+    
     return result
 
   } catch (error) {

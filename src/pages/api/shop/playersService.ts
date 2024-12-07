@@ -10,16 +10,13 @@ export const fetchPlayer = async (connection: mongoose.Connection, playerEmail: 
       // Fetch data from the models
       const player = await PlayerModel.findOne({ email: playerEmail }).exec();
   
+      if (!player) {throw new Error('Error getting player from the database')}
+
       return {
         player
       };
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.error('Error fetching palyer:', error);
-        throw new Error(`Error fetching player: ${error.message}`);
-      } else {
-        console.error('Unexpected error type:', error);
-        throw new Error('An unexpected error occurred while fetching player');
-      }
+    } catch (error: any) {
+      console.log('Error: ' + error?.message);
+      throw error;
     }
   };
