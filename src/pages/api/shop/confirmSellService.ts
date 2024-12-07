@@ -9,7 +9,6 @@ export const processProductSell = async (connection, playerEmail, product, produ
   const PlayerModel = connection.model('Player', Player.schema);
 
   let player = await fetchPlayer(connection, playerEmail);
-  player = player.player;
 
   player.gold += productPrice;
 

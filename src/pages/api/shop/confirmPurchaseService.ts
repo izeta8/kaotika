@@ -14,8 +14,6 @@ export const processProductsPurchase = async (connection: Connection, playerEmai
 
     let player = await fetchPlayer(connection, playerEmail);
 
-    player = player.player; // Assuming fetchPlayer returns { player: {...} }
-
     // Calculate the total cost of all products
     const totalCost = calculateTotalCost(products);
 

@@ -12,9 +12,8 @@ export const fetchPlayer = async (connection: mongoose.Connection, playerEmail: 
   
       if (!player) {throw new Error('Error getting player from the database')}
 
-      return {
-        player
-      };
+      return player;
+      
     } catch (error: any) {
       console.log('Error: ' + error?.message);
       throw error;

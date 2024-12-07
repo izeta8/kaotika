@@ -23,9 +23,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const email = Array.isArray(playerEmail) ? playerEmail[0] : playerEmail;
 
     const player = await fetchPlayer(connection, email); // Pass the normalized email to the service
-    res.status(200).json(player);
+
+    res.status(200).json({
+      success: true,
+      player
+    });
+
   } catch (error: any) {
-    res.status(500).json({ message: 'Error fetching player', error: error.message });
+    
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+
   } finally {
     if (connection) {
       await closeDatabaseConnection(connection);
