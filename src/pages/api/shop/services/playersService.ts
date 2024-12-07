@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import Player from '../../../database/models/playerModel'
+import Player from '../../../../database/models/playerModel'
 
 export const fetchPlayer = async (connection: mongoose.Connection, playerEmail: string) => {
     try {

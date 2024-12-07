@@ -127,7 +127,7 @@ import { processProductsPurchase } from './confirmPurchaseService';
 import { json } from 'stream/consumers';
 
 // Mock the player service functions
-jest.mock('../shop/playersService', () => ({
+jest.mock('./playersService', () => ({
   fetchPlayer: jest.fn(),
   updatePlayer: jest.fn(),
 }));

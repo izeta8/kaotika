@@ -1,5 +1,5 @@
-import { fetchPlayer, updatePlayer } from '../shop/playersService';
-import Player from '../../../database/models/playerModel';
+import { fetchPlayer, updatePlayer } from './playersService';
+import Player from '../../../../database/models/playerModel';
 import { calculateTotalCost } from '@/helpers/shop_helpers/calculateTotalCost';
 import { hasEnoughGold } from '@/helpers/shop_helpers/hasEnoughGold';
 import { addToInventory } from '@/helpers/shop_helpers/addToInventory';

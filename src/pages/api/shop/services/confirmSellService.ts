@@ -1,5 +1,5 @@
-import { fetchPlayer } from '../shop/playersService';
-import Player from '../../../database/models/playerModel';
+import { fetchPlayer } from './playersService';
+import Player from '../../../../database/models/playerModel';
 
 export const processProductSell = async (connection, playerEmail, product, productPrice) => {
   if (!playerEmail || !product || !product.value || !product._id) {

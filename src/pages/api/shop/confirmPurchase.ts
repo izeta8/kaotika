@@ -1,5 +1,5 @@
 import { createDatabaseConnection, closeDatabaseConnection } from '@/database/connection';
-import { processProductsPurchase } from '../shop/confirmPurchaseService';
+import { processProductsPurchase } from './services/confirmPurchaseService';
 
 export default async function handler(req, res) {
   console.log('Received request body method:', req.body);

@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import mongoose from 'mongoose';
 import { createDatabaseConnection, closeDatabaseConnection } from '@/database/connection';
-import { fetchPlayer } from './playersService';
+import { fetchPlayer } from './services/playersService';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void> {
   const { playerEmail } = req.query; // Extract playerEmail from query parameters

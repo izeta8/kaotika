@@ -1,8 +1,8 @@
-import handler from '../../api/shop/confirmPurchase';
+import handler from './confirmPurchase';
 import { createDatabaseConnection, closeDatabaseConnection } from '@/database/connection';
-import { processProductsPurchase } from '../shop/confirmPurchaseService';
+import { processProductsPurchase } from './services/confirmPurchaseService';
 
-jest.mock('../shop/confirmPurchaseService', () => ({
+jest.mock('./services/confirmPurchaseService', () => ({
   processProductsPurchase: jest.fn(), //mock function 
 }));
 
