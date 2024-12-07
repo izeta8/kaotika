@@ -22,7 +22,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Normalize playerEmail to a string
     const email = Array.isArray(playerEmail) ? playerEmail[0] : playerEmail;
 
-    const player = await fetchPlayer(connection, email); // Pass the normalized email to the service
+    const player = await fetchPlayer(connection, email);
+
+    console.log("cual es el player?: " + JSON.stringify(player));
+    if (player?.player === null || player?.player === undefined) {
+      res.status(404).json({ message: `Player with email ${email} not found` });
+      return;
+    }
     res.status(200).json(player);
   } catch (error: any) {
     res.status(500).json({ message: 'Error fetching player', error: error.message });
