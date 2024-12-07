@@ -34,12 +34,12 @@ const Shop = () => {
   const [playerEmail, setPlayerEmail] = useState<string | null>(null);
   const { data: session } = useSession();
 
-  const [categoryData, setCategoryData] = useState<Array<ItemData>>([]);
-  const [productConfirm, setProductConfirm] = useState<object | null>(null);
+  const [categoryData, setCategoryData] = useState<ItemData[]>([]);
+  const [productConfirm, setProductConfirm] = useState<CartItem[] | null>(null);
   const [currentCategory, setCurrentCategory] = useState<ShopCategories | undefined>(undefined);
 
   const [itemModalShown, setItemModalShown] = useState(false);
-  const [modalItemData, setModalItemData] = useState<ItemData|undefined>();
+  const [modalItemData, setModalItemData] = useState<ItemData | undefined>();
 
   // ---- CART ----  //
   
@@ -62,15 +62,15 @@ const Shop = () => {
 
   // ---- SHOP ITEMS ----  //
 
-  const [helmets, setHelmets] = useState<Array<ItemData>>([]);
-  const [weapons, setWeapons] = useState<Array<ItemData>>([]);
-  const [armors, setArmors] = useState<Array<ItemData>>([]);
-  const [shields, setShields] = useState<Array<ItemData>>([]);
-  const [boots, setBoots] = useState<Array<ItemData>>([]);
-  const [rings, setRings] = useState<Array<ItemData>>([]);
+  const [helmets, setHelmets] = useState<ItemData[]>([]);
+  const [weapons, setWeapons] = useState<ItemData[]>([]);
+  const [armors, setArmors] = useState<ItemData[]>([]);
+  const [shields, setShields] = useState<ItemData[]>([]);
+  const [boots, setBoots] = useState<ItemData[]>([]);
+  const [rings, setRings] = useState<ItemData[]>([]);
 
-  const [ingredients, setIngredients] = useState<Array<ItemData>>([]);
-  const [containers, setContainers] = useState<Array<ItemData>>([]);
+  const [ingredients, setIngredients] = useState<ItemData[]>([]);
+  const [containers, setContainers] = useState<ItemData[]>([]);
 
   // ---- SHOP CATEGORIES VARIABLES FOR MAPPING  ----  //
 
@@ -146,7 +146,7 @@ const Shop = () => {
 
   useEffect(() => {
 
-    const currentRoute = router.query.shopType;
+    const currentRoute = Array.isArray(router.query.shopType) ? router.query.shopType[0] : router.query.shopType;
     if (!currentRoute) { return }
 
     // If the current route is not equipment or magical stuff, redirect to equipment.
@@ -199,7 +199,7 @@ const Shop = () => {
 
   // ---- BUY FUNCTIONS ---- //
 
-  const handleConfirmBuy = async (productConfirm) => {
+  const handleConfirmBuy = async (productConfirm: CartItem[]) => {
 
     const products = [];
     console.log('productConfirm before push:', JSON.stringify(productConfirm, null, 2));
