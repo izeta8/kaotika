@@ -30,7 +30,6 @@ const Shop = () => {
 
   const router = useRouter()
   const [loading, setLoading] = useState(true);
-  const [isCartOpen, setIsCartOpen] = useState(false);
   const [playerData, setPlayerData] = useState<Player | null>(null);
   const [playerEmail, setPlayerEmail] = useState<string | null>(null);
   const { data: session } = useSession();
@@ -41,6 +40,25 @@ const Shop = () => {
 
   const [itemModalShown, setItemModalShown] = useState(false);
   const [modalItemData, setModalItemData] = useState<ItemData|undefined>();
+
+  // ---- CART ----  //
+  
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
+  const [itemsInCart, setItemsInCart] = useState<CartItem[]>(() => {
+    if (typeof window !== 'undefined') {
+      const storedCart = localStorage.getItem('cart');
+      if (storedCart) {
+        try {
+          const parsedCart: CartItem[] = JSON.parse(storedCart);
+          return parsedCart;
+        } catch (error) {
+          console.error("Error al cargar el carrito desde localStorage:", error);
+        }
+      }
+    }
+    return [];
+  });
 
   // ---- SHOP ITEMS ----  //
 
@@ -53,7 +71,6 @@ const Shop = () => {
 
   const [ingredients, setIngredients] = useState<Array<ItemData>>([]);
   const [containers, setContainers] = useState<Array<ItemData>>([]);
-
 
   // ---- SHOP CATEGORIES VARIABLES FOR MAPPING  ----  //
 
@@ -93,6 +110,9 @@ const Shop = () => {
   // ---------------------- //
 
   ////////////////////////////////////////////////////////////////////////////////
+
+  // ---- FETCH PLAYER ---- //
+
   useEffect(() => {
     if (session?.user?.email) {
       setLoading(true);
@@ -122,6 +142,7 @@ const Shop = () => {
 
   ////////////////////////////////////////////////////////////////////////////////
 
+  // ---- LOAD ITEMS DATA ---- //
 
   useEffect(() => {
 
@@ -143,15 +164,15 @@ const Shop = () => {
 
   }, [router.query.shopType]);
 
-
   // Update 'categoryData' state (the displayed category) when the user changes.
   useEffect(() => {
     if (!currentCategory) { return }
-
     setCategoryData(shopCategories[currentCategory]);
-
   }, [currentCategory]);
 
+  ////////////////////////////////////////////////////////////////////////////////
+
+  // ---- MODALS STYLE BEHAVIOUR  ---- //
 
   // Disable scroll when the item modal shows.
   useEffect(() => {
@@ -174,38 +195,9 @@ const Shop = () => {
     };
   }, [isCartOpen]);
 
-  // ---- UTILITY ----  //
+  ////////////////////////////////////////////////////////////////////////////////
 
-  const loadLocalStorageIntoStates = (categoryObject: {state: string, setter: Function}): void => {
-
-    // Desestructurize the loop's current state name and setter.
-    const { state, setter } = categoryObject;
-
-    // If the state name or setter is null jump to next iteration
-    if (!state || !setter) { return }
-
-    // Get current iteration object's value from localstorage
-    const localStorageData = localStorage.getItem(state);
-
-    // If it exists, use its setter to set the localstorage's value into the state.
-    if (localStorageData) {
-      try {
-        const parsedData = JSON.parse(localStorageData); // Parse the JSON string
-        if (Array.isArray(parsedData)) {
-          setter(parsedData);
-        } else {
-          console.warn("Data in localStorage is not an array:", parsedData);
-          setter([]);
-        }
-      } catch (error) {
-        console.error("Failed to parse localStorage data:", error);
-        setter([]);
-      }
-    } else {
-      console.log("No data found in localStorage for key:", currentCategory);
-      setter([]);
-    }
-  }
+  // ---- BUY FUNCTIONS ---- //
 
   const handleConfirmBuy = async (productConfirm) => {
 
@@ -247,51 +239,9 @@ const Shop = () => {
     setProductConfirm(productConfirm);
   };
 
-  const purchaseProduct = async (playerEmail, products) => {
-    try {
-      const response = await fetch('/api/shop/confirmPurchase', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ playerEmail, products }),
-      });
+  ////////////////////////////////////////////////////////////////////////////////
 
-      const result = await response.json();
-
-      if (!response.ok || !result.success) {
-        // Handle the case where the purchase fails due to business logic (e.g., low level or insufficient funds)
-        console.log('Purchase failed:', result.error); 
-
-        return result;
-      }
-
-      // Handle the successful purchase case
-      console.log('Purchase successful:', result);
-      return result
-
-    } catch (error) {
-      console.error('Error during product purchase:', error);
-    }
-  };
-
-
-  //Cart funcions
-
-  const [itemsInCart, setItemsInCart] = useState<CartItem[]>(() => {
-    if (typeof window !== 'undefined') {
-      const storedCart = localStorage.getItem('cart');
-      if (storedCart) {
-        try {
-          const parsedCart: CartItem[] = JSON.parse(storedCart);
-          return parsedCart;
-        } catch (error) {
-          console.error("Error al cargar el carrito desde localStorage:", error);
-        }
-      }
-    }
-    return [];
-  });
+  // ---- CART FUNCTIONS ---- //
 
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(itemsInCart));
@@ -479,6 +429,64 @@ const isMagicalStuffShop = (router: any): boolean => {
   return currentShopType === "magical_stuff";
 }
 
+const loadLocalStorageIntoStates = (categoryObject: {state: string, setter: Function}): void => {
 
+  // Desestructurize the loop's current state name and setter.
+  const { state, setter } = categoryObject;
+
+  // If the state name or setter is null jump to next iteration
+  if (!state || !setter) { return }
+
+  // Get current iteration object's value from localstorage
+  const localStorageData = localStorage.getItem(state);
+
+  // If it exists, use its setter to set the localstorage's value into the state.
+  if (localStorageData) {
+    try {
+      const parsedData = JSON.parse(localStorageData); // Parse the JSON string
+      if (Array.isArray(parsedData)) {
+        setter(parsedData);
+      } else {
+        console.warn("Data in localStorage is not an array:", parsedData);
+        setter([]);
+      }
+    } catch (error) {
+      console.error("Failed to parse localStorage data:", error);
+      setter([]);
+    }
+  } else {
+    console.log("No data found in localStorage for key:", state);
+    setter([]);
+  }
+}
+
+const purchaseProduct = async (playerEmail: string, products: Array<ItemData>) => {
+
+  try {
+    const response = await fetch('/api/shop/confirmPurchase', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ playerEmail, products }),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      // Handle the case where the purchase fails due to business logic (e.g., low level or insufficient funds)
+      console.log('Purchase failed:', result.error); 
+
+      return result;
+    }
+
+    // Handle the successful purchase case
+    console.log('Purchase successful:', result);
+    return result
+
+  } catch (error) {
+    console.error('Error during product purchase:', error);
+  }
+};
 
 export default Shop;
