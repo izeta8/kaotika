@@ -1,10 +1,7 @@
 import Layout from "@/components/Layout";
-import Link from 'next/link';
-import { redirect } from "next/navigation";
 import { useRouter } from 'next/router'
 import React from "react";
-import { useSession, signOut } from 'next-auth/react';
-import { FaShoppingCart } from 'react-icons/fa';
+import { useSession } from 'next-auth/react';
 import Cart from "@/components/shop/Cart";
 import { useState, useEffect } from "react";
 import ShopPlayerInfo from "@/components/shop/ShopPlayerInfo";
@@ -127,10 +124,8 @@ const Shop = () => {
       fetch(`/api/shop/player?playerEmail=${playerEmail}`)
         .then(response => response.json())
         .then(data => {
-          console.log(`el player : `, data.player);
+          console.log(`Player Data: `, data.player);
           setPlayerData(data.player);
-          // localStorage.setItem('playerData', JSON.stringify( data ));
-          console.log(data.player, "is the data fetched");
           setLoading(false);
         })
         .catch(error => {
