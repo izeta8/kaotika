@@ -11,6 +11,10 @@ const playerSchema = new Schema({
      type: Object, 
     default: {} 
 },
+  isTest: {
+  type: Boolean, 
+  default: false
+  },
   equipment: {
      type: Object, 
     default: {} 

@@ -247,6 +247,7 @@ const Shop = () => {
   };
 
   const purchaseProduct = async (playerEmail, products) => {
+    console.log("la info: " + JSON.stringify({ playerEmail, products }))
     try {
       const response = await fetch('/api/shop/confirmPurchase', {
         method: 'POST',

@@ -3,6 +3,9 @@ import { incrementProductQuantity } from "./incrementProductQuantity";
 
 
 export const addToInventory = (playerInventory: Record<string, any[]>, products: Array<{ _id: string, type: string }>) => {
+  
+  console.log("the inventory: " + playerInventory);
+  console.log("the products of here " + JSON.stringify(products));
     products.forEach((product) => {
       
       const category = product.type + 's'; // Determine the category based on the product type
