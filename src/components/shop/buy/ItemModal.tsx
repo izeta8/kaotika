@@ -7,7 +7,7 @@ interface ItemModalProps {
   itemModalShown: boolean,
   setItemModalShown: Function,
   itemData: ItemData | undefined,
-  playerData: Player
+  playerData: Player | null
   isMagicalStuffShop: boolean
 } 
 
@@ -105,7 +105,7 @@ const UpperRow: React.FC<UpperRowProps> = ({name, isMagicalStuffShop}) => {
 
 interface LowerRowProps {
   itemData: ItemData,
-  playerData: Player,
+  playerData: Player | null,
   isMagicalStuffShop: boolean
 }
 
@@ -184,7 +184,7 @@ const LowerRow: React.FC<LowerRowProps> = ({itemData, playerData, isMagicalStuff
 
 
 // Function to render the modifiers of the modal
-const renderModifiers = (modifiers: Record<string, number>, playerData: any, itemType: string) => {
+const renderModifiers = (modifiers: Record<string, number>, playerData: Player | null, itemType: string) => {
 
   if (!modifiers) {return}
 
@@ -202,7 +202,7 @@ const renderModifiers = (modifiers: Record<string, number>, playerData: any, ite
 
       let valueDifference; 
        
-      if (playerData?.equipment && playerData?.modifiers) { 
+      if (playerData?.equipment) { 
         const equippedItem = playerData.equipment[itemType];
         if (equippedItem?.modifiers) {
           const playerValue = equippedItem.modifiers[attribute];
