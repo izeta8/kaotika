@@ -6,7 +6,8 @@ interface ShopHeaderProps {
   currentCategory: ShopCategories | undefined,
   setCurrentCategory: Function,
   cartItemCount: number,
-  isMagicalStuffShop: boolean 
+  isMagicalStuffShop: boolean,
+  isCartAnimating: boolean
 }
 
 // Shops item categories

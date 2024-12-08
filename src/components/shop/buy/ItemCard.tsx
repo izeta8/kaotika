@@ -9,7 +9,7 @@ type ItemCardProps = {
   setItemModalShown: Function,
   setModalItemData: Function,
   isMagicalStuffShop: boolean,
-  setCartAnimating: boolean,
+  setCartAnimating: Function,
   isOnCart: boolean
 } 
  

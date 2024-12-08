@@ -375,7 +375,8 @@ interface ShopContentProps {
   setProductConfirm: Function,
   setItemModalShown: Function,
   setModalItemData: Function,
-  cart: CartItem[]
+  cart: CartItem[],
+  setCartAnimating: Function
 }
 
 const ShopContent: React.FC<ShopContentProps> = ({ categoryData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, cart, setCartAnimating }) => {
@@ -408,7 +409,8 @@ interface ItemsListProps {
   setProductConfirm: Function,
   setItemModalShown: Function,
   setModalItemData: Function,
-  cart: CartItem[]
+  cart: CartItem[],
+  setCartAnimating: Function
 } 
 
 const ItemsList: React.FC<ItemsListProps> = ({ categoryData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, cart, setCartAnimating }) => {
