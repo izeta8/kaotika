@@ -4,7 +4,7 @@
 interface ItemDataContainerProps {
   value: number|undefined,
   min_lvl: number|undefined,
-  hasEnoughMoney: boolean,
+  hasEnoughMoney?: boolean,
 }
 
 interface ItemDataLabelProps {  
