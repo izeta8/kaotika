@@ -42,9 +42,11 @@ const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConf
   const magicalStuffTextGradient = "bg-gradient-to-b from-[#212532] via-[#9CB5EA] to-[#3A3C45]";
 
   // ---- USE EFFECTS ---- //
+  if (animatingItemId && cardRef.current) {
+    useEffect(() => {
 
-  useEffect(() => {
-    if (animatingItemId && cardRef.current) {
+      if(!cardRef.current) {return}
+        
       const cardRect = cardRef.current.getBoundingClientRect();
 
       // Calculate the translation values from the card to the fixed cart position
@@ -63,9 +65,9 @@ const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConf
           addToCart(itemData);
           setCartAnimating(false); // Reset the animation state
         }, 1000); // Duration of the scaling animation (adjust as needed)
-    }
-  }, [animatingItemId]);
-
+      
+    }, [animatingItemId]);
+  }
 
   // ---- UTILITY ---- //
 
