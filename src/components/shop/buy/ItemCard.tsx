@@ -1,5 +1,6 @@
 import ItemDataContainer from "./ItemDataContainer";
 import { ItemData } from "@/_common/interfaces/ItemData";
+import { useState, useRef, useEffect } from "react";
 
 type ItemCardProps = {
   itemData: ItemData, 
@@ -11,6 +12,10 @@ type ItemCardProps = {
 } 
  
 const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, isMagicalStuffShop }) => {
+
+  const [animatingItemId, setAnimatingItemId] = useState<string | null>(null);
+  const cardRef = useRef<HTMLDivElement | null>(null);
+  const cartPosition = { top: 20, left: window.innerWidth - 120 };
 
   if (!itemData) { return }
 
@@ -33,6 +38,22 @@ const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConf
   const equipmentTextGradient = "bg-gradient-to-b from-[#FFD0A0] via-[#EED1B4] to-[#B2AF9E]";
   const magicalStuffTextGradient = "bg-gradient-to-b from-[#212532] via-[#9CB5EA] to-[#3A3C45]";
 
+  // ---- USE EFFECTS ---- //
+  
+  useEffect(() => {
+    if (animatingItemId && cardRef.current) {
+      const cardRect = cardRef.current.getBoundingClientRect();
+
+      // Calculate the translation values from the card to the fixed cart position
+      const translateX = cartPosition.left - cardRect.left;
+      const translateY = cartPosition.top - cardRect.top;
+
+      // Set CSS custom properties for animation
+      document.documentElement.style.setProperty('--translate-x', `${translateX}px`);
+      document.documentElement.style.setProperty('--translate-y', `${translateY}px`);
+    }
+  }, [animatingItemId]);
+
 
   // ---- UTILITY ---- //
 
@@ -45,7 +66,21 @@ const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConf
     setProductConfirm(itemData);
   };
 
+  const addToCartWithAnimation = (item: ItemData) => {
+    setAnimatingItemId(item._id);
+  };
+
   return (
+
+    <div
+    ref={cardRef}
+    className={`item-card ${animatingItemId === itemData._id ? 'animate-to-cart' : ''}`}
+    onAnimationEnd={() => {
+      setAnimatingItemId(null);
+      addToCart(itemData);
+    }}
+    >
+    
     <div className="bg-slate-900 w-72 p-6 flex flex-col justify-center items-center relative z-10 select-none hover:cursor-pointer hover:-translate-y-4 transition-all" 
       style={{
         height: 420,
@@ -84,7 +119,7 @@ const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConf
         {/* BUY BUTTONS */}
         <div className="w-full flex flex-row gap-4">
           <CardButton onClick={(e) => {e.stopPropagation(); handleBuyClick()}} label="BUY" />
-          <CardButton onClick={(e) => {e.stopPropagation(); addToCart(itemData)}} label="ADD TO CART" />
+          <CardButton onClick={(e) => {e.stopPropagation(); addToCartWithAnimation(itemData)}} label="ADD TO CART" />
         </div>
 
       </div>
@@ -95,6 +130,7 @@ const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConf
         draggable={false}
       />
     </div>
+  </div>
   );
 
 } 
