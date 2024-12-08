@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from 'next/router';
 import { useState, useEffect } from "react";
 import Loading from "@/components/Loading";
+import ShopBackground from "@/components/shop/buy/ShopBackground";
 
 const ShopHome = () => {
 
@@ -69,7 +70,7 @@ const ShopHome = () => {
 
   return (
     <Layout>
-      <Background />
+      <ShopBackground />
        <div className="relative z-30 flex flex-row items-start justify-center h-screen bg-transparent pt-20 space-x-10 sm:space-x-20">
         <EquipmentShop />  
         <SellItem />
@@ -130,29 +131,6 @@ const SellItem = () => {
         draggable={false}
       />
     </Link>
-  );
-}
-
-const Background = () => {
-  return (
-    <>
-      <div
-        className='w-full h-full absolute top-0 opacity-20 z-10'
-        style={{
-          backgroundColor: '#191A1D',
-          backgroundImage: "url('/images/shop/background_pattern.png')",
-          backgroundRepeat: "repeat", 
-          backgroundPosition: "center", 
-          backgroundSize: '8%',
-        }}
-      />
-      <div
-        className='w-full h-full absolute top-0 z-0'
-        style={{
-          backgroundColor: '#191A1D',
-        }}
-      />
-    </>
   );
 }
 
