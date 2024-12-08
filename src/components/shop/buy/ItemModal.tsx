@@ -150,7 +150,7 @@ const LowerRow: React.FC<LowerRowProps> = ({itemData, playerData, isMagicalStuff
     {/* Image */}
     <div className="flex justify-center items-center flex-col gap-3">
       <img  
-        className={`h-56 drop-shadow-[0_10px_10px_rgba(0,0,0,0.45)] ${isMagicalStuffShop ? 'rounded-full border-3 border-[#1e1f23]' : null}`}
+        className={`h-56 drop-shadow-[0_10px_10px_rgba(0,0,0,0.45)] select-none ${isMagicalStuffShop ? 'rounded-full border-3 border-[#1e1f23]' : null}`}
         src={image}  
         draggable={false}
         onError={(e) => {

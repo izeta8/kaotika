@@ -59,13 +59,13 @@ const ItemDataLabel: React.FC<ItemDataLabelProps> = ({ image, data, title, hasEn
     >
       {image && (
         <img
-          className="rounded-full w-6 flex-shrink-0"
+          className="select-none rounded-full w-6 flex-shrink-0"
           src={image}
           alt="Item"
           draggable={false}
         />
       )}
-      <p className={`flex-grow ${fontSize} leading-4 text-center text-white/90 select-none`}>
+      <p className={`select-text flex-grow ${fontSize} leading-4 text-center text-white/90 select-none`}>
         {data}
       </p>
     </div>
