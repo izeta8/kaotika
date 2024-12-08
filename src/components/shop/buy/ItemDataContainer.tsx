@@ -48,8 +48,8 @@ const ItemDataLabel: React.FC<ItemDataLabelProps> = ({ image, data, title, hasEn
     hasEnoughMoney === undefined 
     ? 'bg-black/45'
     : hasEnoughMoney === true 
-    ? 'bg-green-950/70'
-    : 'bg-red-950/70'
+    ? 'bg-green-950/45'
+    : 'bg-red-950/45'
 
   return (
 
