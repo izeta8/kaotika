@@ -1,10 +1,7 @@
 import Layout from "@/components/Layout";
-import Link from 'next/link';
-import { redirect } from "next/navigation";
 import { useRouter } from 'next/router'
 import React from "react";
-import { useSession, signOut } from 'next-auth/react';
-import { FaShoppingCart } from 'react-icons/fa';
+import { useSession } from 'next-auth/react';
 import Cart from "@/components/shop/Cart";
 import { useState, useEffect } from "react";
 import ShopPlayerInfo from "@/components/shop/ShopPlayerInfo";
