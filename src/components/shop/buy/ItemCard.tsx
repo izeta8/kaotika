@@ -7,10 +7,11 @@ type ItemCardProps = {
   setProductConfirm: Function,
   setItemModalShown: Function,
   setModalItemData: Function,
-  isMagicalStuffShop: boolean
+  isMagicalStuffShop: boolean,
+  isOnCart: boolean
 } 
  
-const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, isMagicalStuffShop }) => {
+const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, isMagicalStuffShop, isOnCart }) => {
 
   if (!itemData) { return }
 
@@ -84,7 +85,7 @@ const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConf
         {/* BUY BUTTONS */}
         <div className="w-full flex flex-row gap-4">
           <CardButton onClick={(e) => {e.stopPropagation(); handleBuyClick()}} label="BUY" />
-          <CardButton onClick={(e) => {e.stopPropagation(); addToCart(itemData)}} label="ADD TO CART" />
+          <CardButton onClick={(e) => {e.stopPropagation(); addToCart(itemData)}} label="ADD TO CART" isOnCart={isOnCart} isMagicalStuffShop={isMagicalStuffShop} />
         </div>
 
       </div>
@@ -103,26 +104,43 @@ const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConf
 
 interface CardButtonProps {
   onClick: React.MouseEventHandler<HTMLButtonElement>,
-  label: string 
+  label: string,
+  isOnCart?: boolean
+  isMagicalStuffShop?: boolean
 }
 
-const CardButton: React.FC<CardButtonProps> = ({ onClick, label }) => {
+const CardButton: React.FC<CardButtonProps> = ({ onClick, label, isOnCart = false, isMagicalStuffShop = false }) => {
 
-  if (!label || !onClick) { return null; }
+  if (!label || !onClick) { return null }
 
   const fontSize = label.length > 8 ? 'text-md' : 'text-xl';
+
+  const blackBackground = "bg-[#1E1E1E] hover:bg-medievalSepia";
+  const sepiaBackground = "bg-medievalSepia";
+
+  const sepiaText = "text-white/90 hover:text-[#1E1E1E]";
+  const blackText = "text-[#1E1E1E]";
+
+  const backgroundClass = (isOnCart && !isMagicalStuffShop) ? sepiaBackground : blackBackground;
+  const textColorClass = (isOnCart && !isMagicalStuffShop) ? blackText : sepiaText;
+
+  let displayText = label;
+  // If is the equipment page and the item is on the cart change the text to "REMOVE CART".
+  if (label === "ADD TO CART" && isOnCart && !isMagicalStuffShop) {
+    displayText = "REMOVE CART";
+  }
 
   return (
     <button
       onClick={onClick}
-      className="bg-[#1E1E1E] leading-7 border rounded hover:bg-medievalSepia transition-all border-medievalSepia/60"
+      className={`${backgroundClass} leading-7 border rounded transition-all border-medievalSepia/60`}
     >
       <p
-        className={`${fontSize} py-2 px-4 text-white/90 hover:text-[#1E1E1E] transition-all duration-500 `}
-      >{label}</p>
+        className={`${fontSize} ${textColorClass} py-2 px-4 transition-all duration-500`}
+      >{displayText}</p>
     </button>
   )
 
 }
- 
+
 export default ItemCard;

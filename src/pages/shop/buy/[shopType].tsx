@@ -256,13 +256,23 @@ const Shop = () => {
 
   const addToCart = (item: ItemData) => {
     if (isEquipmentShop(router)) {
-      setItemsInCart(prevItems => {
-        if (prevItems.find(cartItem => cartItem._id === item._id)) {
-          return prevItems;
-        } else {
-          return [...prevItems, { ...item, quantity: 1 }];
-        }
-      });
+
+      if (!isItemOnCart(item, itemsInCart)) {
+        setItemsInCart(prevItems => {
+          if (prevItems.find(cartItem => cartItem._id === item._id)) {
+            return prevItems;
+          } else {
+            return [...prevItems, { ...item, quantity: 1 }];
+          }
+        });
+      } else {
+
+        let newCart = [...itemsInCart]; 
+        newCart = newCart.filter((cartItem) => cartItem._id !== item._id);
+        setItemsInCart(newCart);
+
+      }
+
     } else if (isMagicalStuffShop(router)) {
       setItemsInCart(prevItems => {
         const itemInCart = prevItems.find(cartItem => cartItem._id === item._id);
@@ -307,6 +317,7 @@ const Shop = () => {
               addToCart={addToCart}
               setItemModalShown={setItemModalShown}
               setModalItemData={setModalItemData}
+              cart={itemsInCart}
             />
             <ShopBackground />
           </div>
@@ -363,9 +374,10 @@ interface ShopContentProps {
   setProductConfirm: Function,
   setItemModalShown: Function,
   setModalItemData: Function,
+  cart: CartItem[]
 }
 
-const ShopContent: React.FC<ShopContentProps> = ({ categoryData, addToCart, setProductConfirm, setItemModalShown, setModalItemData }) => {
+const ShopContent: React.FC<ShopContentProps> = ({ categoryData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, cart }) => {
   return (
     <section className='w-full h-full relative z-30 flex justify-center items-center'>
 
@@ -376,6 +388,7 @@ const ShopContent: React.FC<ShopContentProps> = ({ categoryData, addToCart, setP
         addToCart={addToCart}
         setItemModalShown={setItemModalShown}
         setModalItemData={setModalItemData}
+        cart={cart}
       />
     
     </section>
@@ -388,14 +401,15 @@ const ShopContent: React.FC<ShopContentProps> = ({ categoryData, addToCart, setP
 // -------------------------- //
 
 interface ItemsListProps { 
-  categoryData: Array<ItemData>,
+  categoryData: ItemData[],
   addToCart: (item: ItemData) => void,
   setProductConfirm: Function,
   setItemModalShown: Function,
-  setModalItemData: Function 
+  setModalItemData: Function,
+  cart: CartItem[]
 } 
 
-const ItemsList: React.FC<ItemsListProps> = ({ categoryData, addToCart, setProductConfirm, setItemModalShown, setModalItemData }) => {
+const ItemsList: React.FC<ItemsListProps> = ({ categoryData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, cart }) => {
      
   const router = useRouter();
    
@@ -413,7 +427,9 @@ const ItemsList: React.FC<ItemsListProps> = ({ categoryData, addToCart, setProdu
           setProductConfirm={setProductConfirm}
           setItemModalShown={setItemModalShown}
           setModalItemData={setModalItemData} 
-          isMagicalStuffShop={isMagicalStuffShop(router)} />
+          isMagicalStuffShop={isMagicalStuffShop(router)} 
+          isOnCart={isItemOnCart(item, cart)}
+        />
       ))}
     </div>
   );
@@ -431,6 +447,10 @@ const isEquipmentShop = (router: any): boolean => {
 const isMagicalStuffShop = (router: any): boolean => {
   const currentShopType = router.query.shopType;
   return currentShopType === "magical_stuff";
+}
+
+const isItemOnCart = (item: ItemData, cart: CartItem[]): boolean => {
+  return cart.some((cartItem: CartItem) => cartItem._id === item._id);
 }
 
 const loadLocalStorageIntoStates = (categoryObject: {state: string, setter: Function}): void => {
