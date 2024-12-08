@@ -10,10 +10,11 @@ type ItemCardProps = {
   setModalItemData: Function,
   isMagicalStuffShop: boolean,
   setCartAnimating: Function,
-  isOnCart: boolean
+  isOnCart: boolean,
+  hasEnoughMoney: boolean
 } 
  
-const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, isMagicalStuffShop, setCartAnimating, isOnCart }) => {
+const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, isMagicalStuffShop, setCartAnimating, isOnCart, hasEnoughMoney }) => {
 
   const [animatingItemId, setAnimatingItemId] = useState<string | null>(null);
   const cardRef = useRef<HTMLDivElement | null>(null);
@@ -107,7 +108,7 @@ const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConf
       <div className="flex flex-col justify-center items-center gap-3 z-30">
 
         {/* GOLD & MIN. LEVEL */}
-        <ItemDataContainer value={value} min_lvl={min_lvl} />
+        <ItemDataContainer value={value} min_lvl={min_lvl} hasEnoughMoney={hasEnoughMoney} />
 
         {/* IMAGE  */}
         <img
@@ -130,7 +131,7 @@ const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConf
 
         {/* BUY BUTTONS */}
         <div className="w-full flex flex-row gap-4">
-          <CardButton onClick={(e) => {e.stopPropagation(); handleBuyClick()}} label="BUY" />
+          <CardButton onClick={(e) => {e.stopPropagation(); handleBuyClick()}} label="BUY" hasEnoughMoney={hasEnoughMoney}/>
           <CardButton onClick={(e) => {e.stopPropagation(); addToCartWithAnimation(itemData)}} label="ADD TO CART" isOnCart={isOnCart} isMagicalStuffShop={isMagicalStuffShop}/>
         </div>
 
@@ -153,19 +154,22 @@ interface CardButtonProps {
   onClick: React.MouseEventHandler<HTMLButtonElement>,
   label: string,
   isOnCart?: boolean
-  isMagicalStuffShop?: boolean
+  isMagicalStuffShop?: boolean,
+  hasEnoughMoney?: boolean,
 }
 
-const CardButton: React.FC<CardButtonProps> = ({ onClick, label, isOnCart = false, isMagicalStuffShop = false }) => {
+const CardButton: React.FC<CardButtonProps> = ({ onClick, label, isOnCart = false, isMagicalStuffShop = false, hasEnoughMoney=true }) => {
 
   if (!label || !onClick) { return null }
 
   const fontSize = label.length > 8 ? 'text-md' : 'text-xl';
 
-  const blackBackground = "bg-[#1E1E1E] hover:bg-medievalSepia";
+  const disabledButtonStyle = "opacity-50";
+
+  const blackBackground = `bg-[#1E1E1E] ${hasEnoughMoney ? 'hover:bg-medievalSepia' : null }`;
   const sepiaBackground = "bg-medievalSepia";
 
-  const sepiaText = "text-white/90 hover:text-[#1E1E1E]";
+  const sepiaText = `text-white/90 ${hasEnoughMoney ? 'hover:text-[#1E1E1E]' : null}`;
   const blackText = "text-[#1E1E1E]";
 
   const backgroundClass = (isOnCart && !isMagicalStuffShop) ? sepiaBackground : blackBackground;
@@ -180,7 +184,8 @@ const CardButton: React.FC<CardButtonProps> = ({ onClick, label, isOnCart = fals
   return (
     <button
       onClick={onClick}
-      className={`${backgroundClass} leading-7 border rounded transition-all border-medievalSepia/60`}
+      disabled={!hasEnoughMoney}
+      className={`${backgroundClass} ${!hasEnoughMoney ? disabledButtonStyle : null} leading-7 border rounded transition-all border-medievalSepia/60`}
     >
       <p
         className={`${fontSize} ${textColorClass} py-2 px-4 transition-all duration-500`}

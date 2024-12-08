@@ -316,6 +316,7 @@ const Shop = () => {
               setModalItemData={setModalItemData}
               cart={itemsInCart}
               setCartAnimating={setCartAnimating}
+              playerData={playerData}
             />
             <ShopBackground />
           </div>
@@ -373,10 +374,11 @@ interface ShopContentProps {
   setItemModalShown: Function,
   setModalItemData: Function,
   cart: CartItem[],
-  setCartAnimating: Function
+  setCartAnimating: Function,
+  playerData: Player | undefined
 }
 
-const ShopContent: React.FC<ShopContentProps> = ({ categoryData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, cart, setCartAnimating }) => {
+const ShopContent: React.FC<ShopContentProps> = ({ categoryData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, cart, setCartAnimating, playerData }) => {
   return (
     <section className='w-full h-full relative z-30 flex justify-center items-center'>
 
@@ -389,6 +391,7 @@ const ShopContent: React.FC<ShopContentProps> = ({ categoryData, addToCart, setP
         setModalItemData={setModalItemData}
         cart={cart}
         setCartAnimating={setCartAnimating}
+        playerData={playerData}
       />
     
     </section>
@@ -408,9 +411,10 @@ interface ItemsListProps {
   setModalItemData: Function,
   cart: CartItem[],
   setCartAnimating: Function
+  playerData: Player | undefined
 } 
 
-const ItemsList: React.FC<ItemsListProps> = ({ categoryData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, cart, setCartAnimating }) => {
+const ItemsList: React.FC<ItemsListProps> = ({ categoryData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, cart, setCartAnimating, playerData }) => {
      
   const router = useRouter();
    
@@ -431,6 +435,7 @@ const ItemsList: React.FC<ItemsListProps> = ({ categoryData, addToCart, setProdu
           isMagicalStuffShop={isMagicalStuffShop(router)}
           setCartAnimating={setCartAnimating} 
           isOnCart={isItemOnCart(item, cart)}
+          hasEnoughMoney={hasEnoughMoney(playerData, item)}
         />
       ))}
     </div>
@@ -453,6 +458,11 @@ const isMagicalStuffShop = (router: any): boolean => {
 
 const isItemOnCart = (item: ItemData, cart: CartItem[]): boolean => {
   return cart.some((cartItem: CartItem) => cartItem._id === item._id);
+}
+
+const hasEnoughMoney = (playerData: Player | undefined, item: ItemData) => {
+  if (!playerData?.gold || item?.value === undefined) {return false}
+  return playerData.gold >= item.value;
 }
 
 const loadLocalStorageIntoStates = (categoryObject: {state: string, setter: Function}): void => {
