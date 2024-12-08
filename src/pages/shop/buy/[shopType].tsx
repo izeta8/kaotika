@@ -426,7 +426,7 @@ const ItemsList: React.FC<ItemsListProps> = ({ categoryData, addToCart, setProdu
     <div className="w-11/12 my-10 grid grid-cols-5 gap-8 place-items-center">
       {categoryData.map((item: ItemData, index: number) => (
         <ItemCard 
-          key={index}
+          key={item._id}
           itemData={item}
           addToCart={addToCart}
           setProductConfirm={setProductConfirm}
