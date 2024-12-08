@@ -123,7 +123,7 @@ const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConf
 
         {/* ITEM NAME */}
         <p
-          className={`${nameFontSize} font-medium bg-clip-text text-transparent select-text text-center ${isMagicalStuffShop ? magicalStuffTextGradient : equipmentTextGradient}`}
+          className={`${nameFontSize} whitespace-nowrap font-medium bg-clip-text text-transparent select-text text-center ${isMagicalStuffShop ? magicalStuffTextGradient : equipmentTextGradient}`}
         >
           {name}
         </p>
