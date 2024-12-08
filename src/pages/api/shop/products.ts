@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { fetchAllProducts } from './productsService';
+import { fetchAllProducts } from './services/productsService';
 import mongoose from 'mongoose';
 import { createDatabaseConnection, closeDatabaseConnection } from '@/database/connection';
 

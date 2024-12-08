@@ -11,6 +11,10 @@ const playerSchema = new Schema({
      type: Object, 
     default: {} 
 },
+  testRunId: {
+  type: String, 
+  default: null
+  },
   equipment: {
      type: Object, 
     default: {} 

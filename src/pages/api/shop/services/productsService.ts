@@ -1,12 +1,12 @@
 import mongoose from 'mongoose';
-import  Ring  from '../../../database/models/ringModel';
-import  Armor  from '../../../database/models/armorModel';
-import  Artifact  from '../../../database/models/artifactModel';
-import  Boot  from '../../../database/models/bootModel';
-import  Helmet  from '../../../database/models/helmetModel';
-import  Ingredient  from '../../../database/models/ingredientModel';
-import  Shield  from '../../../database/models/shieldModel';
-import  Weapon  from '../../../database/models/weaponModel';
+import  Ring  from '../../../../database/models/ringModel';
+import  Armor  from '../../../../database/models/armorModel';
+import  Artifact  from '../../../../database/models/artifactModel';
+import  Boot  from '../../../../database/models/bootModel';
+import  Helmet  from '../../../../database/models/helmetModel';
+import  Ingredient  from '../../../../database/models/ingredientModel';
+import  Shield  from '../../../../database/models/shieldModel';
+import  Weapon  from '../../../../database/models/weaponModel';
 
 export const fetchAllProducts = async (connection: mongoose.Connection) => {
   try {
