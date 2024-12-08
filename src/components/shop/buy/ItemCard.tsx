@@ -78,6 +78,7 @@ const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConf
   };
 
   const addToCartWithAnimation = (item: ItemData) => {
+    if (isOnCart) {addToCart(itemData); return}
     setAnimatingItemId(item._id);
   };
 
