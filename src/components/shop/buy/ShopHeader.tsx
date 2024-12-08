@@ -13,7 +13,7 @@ interface ShopHeaderProps {
 const equipmentCategories = ["helmets", "weapons", "armors", "shields", "boots", "rings"];
 const magicalStuffCategories = ["ingredients", "containers"];
 
-const ShopHeader: React.FC<ShopHeaderProps> = ({ onCartClick, currentCategory, setCurrentCategory, cartItemCount, isMagicalStuffShop  }) => {
+const ShopHeader: React.FC<ShopHeaderProps> = ({ onCartClick, currentCategory, setCurrentCategory, cartItemCount, isMagicalStuffShop, isCartAnimating  }) => {
 
   if (!currentCategory) {return}
 
@@ -43,12 +43,17 @@ const ShopHeader: React.FC<ShopHeaderProps> = ({ onCartClick, currentCategory, s
         <div className="flex items-center">
           <button
             onClick={onCartClick}
-            className="relative px-8 py-6 rounded-full transition transform hover:scale-105 focus:outline-none"
+            className={`relative px-8 py-6 rounded-full transition transform focus:outline-none ${
+              isCartAnimating
+                ? 'scale-[1.4] opacity-90 duration-500 ease-in-out'
+                : 'hover:scale-105'
+            }`}
           >
             <img
               src="/images/shop/buy/Cart.png" 
-              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 " 
+              className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'
               draggable={false} 
+              
             />
              {/* Badge */}
              {cartItemCount > 0 && (

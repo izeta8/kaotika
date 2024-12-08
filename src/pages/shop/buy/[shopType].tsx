@@ -44,6 +44,7 @@ const Shop = () => {
   // ---- CART ----  //
   
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [cartAnimating, setCartAnimating] = useState(false);
 
   const [itemsInCart, setItemsInCart] = useState<CartItem[]>(() => {
     if (typeof window !== 'undefined') {
@@ -300,6 +301,7 @@ const Shop = () => {
               onCartClick={openCart} 
               cartItemCount={cartItemCount}
               isMagicalStuffShop={isMagicalStuffShop(router)}
+              isCartAnimating={cartAnimating}
             />
             <ShopContent 
               categoryData={categoryData}
@@ -307,6 +309,7 @@ const Shop = () => {
               addToCart={addToCart}
               setItemModalShown={setItemModalShown}
               setModalItemData={setModalItemData}
+              setCartAnimating={setCartAnimating}
             />
             <ShopBackground />
           </div>
@@ -365,7 +368,7 @@ interface ShopContentProps {
   setModalItemData: Function,
 }
 
-const ShopContent: React.FC<ShopContentProps> = ({ categoryData, addToCart, setProductConfirm, setItemModalShown, setModalItemData }) => {
+const ShopContent: React.FC<ShopContentProps> = ({ categoryData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, setCartAnimating }) => {
   return (
     <section className='w-full h-full relative z-30 flex justify-center items-center'>
 
@@ -376,6 +379,7 @@ const ShopContent: React.FC<ShopContentProps> = ({ categoryData, addToCart, setP
         addToCart={addToCart}
         setItemModalShown={setItemModalShown}
         setModalItemData={setModalItemData}
+        setCartAnimating={setCartAnimating}
       />
     
     </section>
@@ -395,7 +399,7 @@ interface ItemsListProps {
   setModalItemData: Function 
 } 
 
-const ItemsList: React.FC<ItemsListProps> = ({ categoryData, addToCart, setProductConfirm, setItemModalShown, setModalItemData }) => {
+const ItemsList: React.FC<ItemsListProps> = ({ categoryData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, setCartAnimating }) => {
      
   const router = useRouter();
    
@@ -413,7 +417,8 @@ const ItemsList: React.FC<ItemsListProps> = ({ categoryData, addToCart, setProdu
           setProductConfirm={setProductConfirm}
           setItemModalShown={setItemModalShown}
           setModalItemData={setModalItemData} 
-          isMagicalStuffShop={isMagicalStuffShop(router)} />
+          isMagicalStuffShop={isMagicalStuffShop(router)}
+          setCartAnimating={setCartAnimating} />
       ))}
     </div>
   );

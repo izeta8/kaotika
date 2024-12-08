@@ -8,10 +8,11 @@ type ItemCardProps = {
   setProductConfirm: Function,
   setItemModalShown: Function,
   setModalItemData: Function,
-  isMagicalStuffShop: boolean
+  isMagicalStuffShop: boolean,
+  setCardAnimating: boolean
 } 
  
-const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, isMagicalStuffShop }) => {
+const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, isMagicalStuffShop, setCartAnimating }) => {
 
   const [animatingItemId, setAnimatingItemId] = useState<string | null>(null);
   const cardRef = useRef<HTMLDivElement | null>(null);
@@ -39,7 +40,7 @@ const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConf
   const magicalStuffTextGradient = "bg-gradient-to-b from-[#212532] via-[#9CB5EA] to-[#3A3C45]";
 
   // ---- USE EFFECTS ---- //
-  
+
   useEffect(() => {
     if (animatingItemId && cardRef.current) {
       const cardRect = cardRef.current.getBoundingClientRect();
@@ -51,6 +52,15 @@ const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConf
       // Set CSS custom properties for animation
       document.documentElement.style.setProperty('--translate-x', `${translateX}px`);
       document.documentElement.style.setProperty('--translate-y', `${translateY}px`);
+
+      // Trigger the animation state
+      setCartAnimating(true);
+
+      setTimeout(() => {
+          // After scaling animation is complete, add the item to the cart
+          addToCart(itemData);
+          setCartAnimating(false); // Reset the animation state
+        }, 1000); // Duration of the scaling animation (adjust as needed)
     }
   }, [animatingItemId]);
 
@@ -77,7 +87,7 @@ const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConf
     className={`item-card ${animatingItemId === itemData._id ? 'animate-to-cart' : ''}`}
     onAnimationEnd={() => {
       setAnimatingItemId(null);
-      addToCart(itemData);
+      setCartAnimating(true)
     }}
     >
     
