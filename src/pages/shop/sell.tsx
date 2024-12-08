@@ -201,7 +201,12 @@ const Sell = () => {
 
           </div>
 
-          <div className="flex flex-row  place-content-end">
+          <div
+            className="flex flex-row justify-end items-center mt-12"
+            style={{
+              height: '20vh',
+            }}
+          >
             <SellerDialogueBox phrase={sellerDialogueMessage} />
           </div>
 
