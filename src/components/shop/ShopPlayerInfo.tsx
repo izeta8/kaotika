@@ -1,20 +1,31 @@
-import { ReactNode } from 'react';
+import { ReactNode, useState, useEffect } from 'react';
+import GoldDisplay from './GoldDisplay';
 
 interface promps {
-  gold: number|undefined;
-  level: number|undefined;
+  gold: number | undefined;
+  level: number | undefined;
 }
 
-const ShopPlayerInfo: React.FC<promps> = ({gold, level}) => {
+const ShopPlayerInfo: React.FC<promps> = ({ gold, level }) => {
+  const [displayGold, setDisplayGold] = useState<number>(gold || 0);
+
+  useEffect(() => {
+    if (gold !== undefined) {
+      setDisplayGold(gold);
+    }
+  }, [gold]);
 
   return (
     <InfoContainer>
-      {(gold !== undefined && gold !== null) && (<Info imagePath={"/images/icons/gold.png"} label={gold} />)}
-      {(level !== undefined && gold !== null) && (<Info imagePath={"/images/icons/level.png"} label={level} />)}
+      {(gold !== undefined && gold !== null) && (
+        <GoldDisplay gold={displayGold} />
+      )}
+      {(level !== undefined && level !== null) && (
+        <Info imagePath={"/images/icons/level.png"} label={level} />
+      )}
     </InfoContainer>
-  )
-
-}
+  );
+};
 
 const InfoContainer: React.FC<{children: ReactNode}> = ({children}) => {
 
@@ -45,7 +56,7 @@ const Info: React.FC<{imagePath: string, label: number}> = ({imagePath, label}) 
       />
 
       <p
-        className="text-3xl flex-grow leading-8 text-center"
+        className="text-5xl flex-grow leading-8 text-center"
       >
         {label}
       </p>
