@@ -16,6 +16,7 @@ import ShopBackground from "@/components/shop/buy/ShopBackground";
 import ItemCard from "@/components/shop/buy/ItemCard"; 
 import ShopHeader from "@/components/shop/buy/ShopHeader"; 
 import { Player } from "@/_common/interfaces/Player";
+import CartButton from "@/components/shop/buy/CartButton";
 
 export type ShopCategories = "helmets" | "weapons" | "armors" | "shields" | "boots" | "rings" | "ingredients" | "containers";
 
@@ -303,11 +304,9 @@ const Shop = () => {
             <ShopHeader 
               currentCategory={currentCategory}
               setCurrentCategory={setCurrentCategory}
-              onCartClick={openCart} 
-              cartItemCount={cartItemCount}
               isMagicalStuffShop={isMagicalStuffShop(router)}
-              isCartAnimating={cartAnimating}
             />
+            
             <ShopContent 
               categoryData={categoryData}
               setProductConfirm={setProductConfirm}
@@ -322,6 +321,13 @@ const Shop = () => {
           </div>
 
           <ShopPlayerInfo gold={playerData?.gold} level={playerData?.level}/>
+
+        {/* Cart Button Wrapper */}
+          <CartButton
+            cartItemCount={cartItemCount}
+            onCartClick={openCart}
+            isCartAnimating={cartAnimating}
+          />
           
           {/********** Modals ***********/}
 

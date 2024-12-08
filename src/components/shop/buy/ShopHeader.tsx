@@ -2,19 +2,16 @@ import { ShopCategories } from "@/pages/shop/buy/[shopType]";
 import Link from "next/link"; 
  
 interface ShopHeaderProps { 
-  onCartClick: React.MouseEventHandler<HTMLButtonElement>,
   currentCategory: ShopCategories | undefined,
   setCurrentCategory: Function,
-  cartItemCount: number,
   isMagicalStuffShop: boolean,
-  isCartAnimating: boolean
 }
 
 // Shops item categories
 const equipmentCategories = ["helmets", "weapons", "armors", "shields", "boots", "rings"];
 const magicalStuffCategories = ["ingredients", "containers"];
 
-const ShopHeader: React.FC<ShopHeaderProps> = ({ onCartClick, currentCategory, setCurrentCategory, cartItemCount, isMagicalStuffShop, isCartAnimating  }) => {
+const ShopHeader: React.FC<ShopHeaderProps> = ({ currentCategory, setCurrentCategory, isMagicalStuffShop }) => {
 
   if (!currentCategory) {return}
 
@@ -40,30 +37,6 @@ const ShopHeader: React.FC<ShopHeaderProps> = ({ onCartClick, currentCategory, s
           }
         </nav>
 
-        {/* Cart Button Section */}
-        <div className="flex items-center">
-          <button
-            onClick={onCartClick}
-            className={`relative px-8 py-6 rounded-full transition transform focus:outline-none ${
-              isCartAnimating
-                ? 'scale-[1.4] opacity-90 duration-500 ease-in-out'
-                : 'hover:scale-105'
-            }`}
-          >
-            <img
-              src="/images/shop/buy/Cart.png" 
-              className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'
-              draggable={false} 
-              
-            />
-             {/* Badge */}
-             {cartItemCount > 0 && (
-              <span className="absolute top-[-5px] right-0 inline-flex items-center justify-center w-7 h-7 text-4xl leading-none text-medievalSepia  transform translate-x-1/2 -translate-y-1/2">
-                {cartItemCount}
-              </span>
-            )}
-          </button>
-        </div>
 
       </div>
 
