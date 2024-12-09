@@ -30,12 +30,12 @@ const ItemModal: React.FC<ItemModalProps> = ({itemModalShown, setItemModalShown,
     
     <div 
       onClick={() => setItemModalShown(false)} 
-      className={`fixed flex justify-center items-center h-screen pb-28 mt-28 w-full top-0 left-0 bg-black/50 transition-all z-50 ${itemModalShown ? 'opacity-100' : 'opacity-0'} `} 
+      className={`fixed flex justify-center items-center h-screen pb-28 mt-28 w-full top-0 left-0 bg-black/50 transition-all z-50 ${itemModalShown ? 'animate-fadeIn' : 'opacity-0'} `} 
     > 
     
       <div 
         onClick={(e) => e.stopPropagation()}
-        className='relative flex justify-center items-center hover:cursor-default'
+        className={`relative flex justify-center items-center hover:cursor-default ${itemModalShown ? 'animate-slideIn' : null}`}
         style={{
           backgroundImage: modalBackgroundImage,
           backgroundPosition: "center",
@@ -47,7 +47,7 @@ const ItemModal: React.FC<ItemModalProps> = ({itemModalShown, setItemModalShown,
       >
          
         {/* Content Container */}
-        <div className="relative bg-red-500/0 w-3/4 h-3/5 py-3 flex flex-col gap-3">
+        <div className={`relative bg-red-500/0 w-3/4 h-3/5 py-3 flex flex-col gap-3`}>
 
           {/* Close Button */}
           <CloseButton setItemModalShown={setItemModalShown} />
