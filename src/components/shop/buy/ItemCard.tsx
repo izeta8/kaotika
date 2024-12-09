@@ -12,7 +12,30 @@ type ItemCardProps = {
   setCartAnimating: Function,
   isOnCart: boolean,
   hasEnoughMoney: boolean
-} 
+}
+
+//********** TAILWIND CSS *************/
+const shrinkToCartStyles = `
+  @keyframes shrinkToCart {
+    0% {
+      transform: scale(1) translate(0, 0);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(0.5) translate(var(--translate-x), var(--translate-y));
+      opacity: 0;
+    }
+  }
+
+  .item-card {
+    position: relative;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  .animate-to-cart {
+    animation: shrinkToCart 0.7s ease forwards;
+  }
+`;
  
 const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, isMagicalStuffShop, setCartAnimating, isOnCart, hasEnoughMoney }) => {
 
@@ -86,6 +109,11 @@ const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConf
 
   return (
 
+    <>
+    <style>
+      {shrinkToCartStyles}
+    </style>
+    
     <div
     ref={cardRef}
     className={`item-card ${animatingItemId === itemData._id ? 'animate-to-cart' : ''}`}
@@ -145,8 +173,8 @@ const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConf
       />
     </div>
   </div>
+  </>
   );
-
 } 
 
 // -----  CARD BUTTON  ----- //
