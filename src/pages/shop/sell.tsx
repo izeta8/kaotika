@@ -32,6 +32,7 @@ const Sell = () => {
   const [playerData, setPlayerData] = useState<Player>();
   const [productConfirm, setProductConfirm] = useState<object | null>(null);
   const [selectedItemToSell, setSelectedItemToSell] = useState< Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield >();
+  const [hoverItemToSell, setHoverItemToSell] = useState< Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield >();
   const [sellerDialogueMessage, setSellerDialogueMessage] = useState<string>(MESSAGES.WELCOME);
 
 
@@ -183,8 +184,8 @@ const Sell = () => {
       <div className="flex text-medievalSepia bg-cover bg-no-repeat bg-center min-h-screen" style={{ backgroundImage: 'url(/images/shop/background_sell_shop.jpg)' }}>
 
         <div className="flex-col w-1/2">
-          <PlayerInventorySellShop playerData={playerData} setSelectedItemToSell={setSelectedItemToSell} />
-          <SellShopObjectDetails item={selectedItemToSell} />
+          <PlayerInventorySellShop playerData={playerData} setSelectedItemToSell={setSelectedItemToSell} setHoverItemToSell={setHoverItemToSell}/>
+          <SellShopObjectDetails item={selectedItemToSell} hover={hoverItemToSell} setSelectedItemToSell={setSelectedItemToSell}/>
         </div>
 
         <div className="flex flex-col w-1/2">
@@ -201,32 +202,32 @@ const Sell = () => {
 
           </div>
 
-{/* Container for the Dialogue Box */}
-<div
-  className="absolute top-[300px] right-0 mt-12 mr-8"
-  style={{
-    height: 'auto', // Allow dynamic height for the dialogue box
-  }}
->
-  <SellerDialogueBox phrase={sellerDialogueMessage} />
-</div>
+        {/* Container for the Dialogue Box */}
+        <div
+          className="absolute top-[300px] right-0 mt-12 mr-8"
+          style={{
+            height: 'auto', // Allow dynamic height for the dialogue box
+          }}
+        >
+          <SellerDialogueBox phrase={sellerDialogueMessage} />
+        </div>
 
-{/* Container for Buttons and Player Info */}
-<div
-  className="flex flex-row justify-center items-center"
-  style={{
-    marginTop: '60vh', // Push the buttons down to 60% of the viewport height
-    marginLeft: '-500px',
-  }}
->
-  <div className="px-6">
-    <KaotikaButton text="KEEP IT" handleClick={handleResetSelectedItemToSell} />
-  </div>
-  <div className="px-6">
-    <KaotikaButton text="SELL IT" handleClick={handleSellClick} />
-  </div>
-  <ShopPlayerInfo gold={playerData?.gold!} level={playerData?.level!} />
-</div>
+        {/* Container for Buttons and Player Info */}
+        <div
+          className="flex flex-row justify-center items-center"
+          style={{
+            marginTop: '60vh', // Push the buttons down to 60% of the viewport height
+            marginLeft: '-500px',
+          }}
+        >
+          <div className="px-6">
+            <KaotikaButton text="KEEP IT" handleClick={handleResetSelectedItemToSell} />
+          </div>
+          <div className="px-6">
+            <KaotikaButton text="SELL IT" handleClick={handleSellClick} />
+          </div>
+          <ShopPlayerInfo gold={playerData?.gold!} level={playerData?.level!} />
+        </div>
 
 
         </div>
