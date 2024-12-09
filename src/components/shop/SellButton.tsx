@@ -14,31 +14,31 @@ const SellButton: React.FC<SellButtonProps> = ({
 }) => {
   // Inject the border animation styles directly in the component
   const borderAnimationStyle = `
-    @keyframes borderMovement {
-      0% {
-        border-color: red;
-      }
-      25% {
-        border-color: orange;
-      }
-      50% {
-        border-color: yellow;
-      }
-      75% {
-        border-color: green;
-      }
-      100% {
-        border-color: blue;
-      }
-    }
-    .animate-borderMovement {
-      animation: borderMovement 1.5s linear infinite;
-    }
+@keyframes borderMovement {
+  0% {
+    border-color: #704214; /* Dark sepia */
+  }
+  25% {
+    border-color: #a67c52; /* Warm brown */
+  }
+  50% {
+    border-color: #d2b48c; /* Tan (parchment-like) */
+  }
+  75% {
+    border-color: #c2b280; /* Muted gold */
+  }
+  100% {
+    border-color: #9c661f; /* Burnt orange */
+  }
+}
+.animate-borderMovement {
+  animation: borderMovement 1.5s linear infinite;
+}
   `;
 
   // Tailwind class for dynamic styling based on selection
   const buttonClass = isSelected
-    ? 'bg-gradient-to-r from-transparent via-red-900 to-transparent border-4 border-transparent animate-borderMovement transform scale-100 transition-all duration-300 hover:scale-110'
+    ? 'bg-gradient-to-r from-transparent via-[#704214] to-transparent border-4 border-transparent animate-borderMovement transform scale-100 transition-all duration-300 hover:scale-110'
     : 'bg-gradient-to-r from-transparent via-gray-800 to-transparent border-4 border-transparent cursor-not-allowed opacity-50';
 
   return (

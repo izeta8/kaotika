@@ -15,6 +15,9 @@ interface ItemModalProps {
 const equipmentTextGradient = "bg-gradient-to-b from-[#FFD0A0] via-[#EED1B4] to-[#B2AF9E]"; 
 const magicalStuffTextGradient = "bg-gradient-to-b from-[#212532] via-[#9CB5EA] to-[#3A3C45]"; 
 
+const redColor = "text-[#e8513c]";
+const greenColor = "text-[#7cc74e]";
+
 const ItemModal: React.FC<ItemModalProps> = ({itemModalShown, setItemModalShown, itemData, playerData, isMagicalStuffShop}) => {
    
   if (!itemData) {return}
@@ -115,7 +118,7 @@ const LowerRow: React.FC<LowerRowProps> = ({itemData, playerData, isMagicalStuff
     
   const hasModifiers = () => Object.values(modifiers).some(value => value !== 0);
   const hasEffects = () => effects && effects.length>0;
-
+  
   return (
     <div className="grid grid-cols-3 h-full bg-orange-300/0">
 
@@ -125,19 +128,19 @@ const LowerRow: React.FC<LowerRowProps> = ({itemData, playerData, isMagicalStuff
         {!isMagicalStuffShop ? 
           // EQUIPMENT MODAL 
           <div>
-            {!hasModifiers ?
+            {!hasModifiers() ?
               <p className={`text-[#EED1B4] text-3xl italic`}>This item does not have any modifier.</p> 
             :
               renderModifiers(modifiers, playerData, type) 
             }
             {(defense || base_percentage) && <hr className="w-5/6 mt-3 mb-1 border-medievalSepia opacity-30"/> }
-            {defense && <p className="text-[#EED1B4] text-3xl">{`Defense: ${defense}`}</p>}
-            {base_percentage && <p className="text-[#EED1B4] text-3xl">{`Base Percentage: ${base_percentage}`}</p>}
+            {renderAttribute(defense, playerData, type, "defense")}
+            {renderAttribute(base_percentage, playerData, type, "base_percentage")}
           </div>
           :
           // SHOP MODAL 
           <div>
-            {!hasEffects ?
+            {!hasEffects() ?
               <p className={`text-[#EED1B4] text-3xl italic`}>This item does not have any effect.</p> 
             :
               renderEffects(effects, type)
@@ -170,11 +173,8 @@ const LowerRow: React.FC<LowerRowProps> = ({itemData, playerData, isMagicalStuff
         {`"${description}"`}
       </p>
     </div>
-
   </div>
-
   )
-
 }
 
 
@@ -183,13 +183,53 @@ const LowerRow: React.FC<LowerRowProps> = ({itemData, playerData, isMagicalStuff
 // ----------------------- //
 
 
+// Attributes: Defense or Base Percentage.
+const renderAttribute = (itemAttribute: number | undefined, playerData: Player | null, itemType: string, attributeType: string) => {
+
+  // If item attribute has no value do not render anything.
+  if (!itemAttribute) return
+
+  let valueDifference; 
+       
+  if (playerData?.equipment) { 
+    const equippedItem = playerData.equipment[itemType];
+    if (equippedItem[attributeType]) {
+      const playerValue = equippedItem[attributeType];
+      valueDifference = itemAttribute - playerValue;
+    }
+  }
+
+  return (
+    <>
+      {/* Item value */}
+      <p className="text-[#EED1B4] text-3xl">{`${capitalizeFirstLetter(attributeType)}: ${itemAttribute}`}
+
+        {/* Difference */}
+        {valueDifference !== undefined && valueDifference !== null && (
+          valueDifference !== 0 ?
+            <span
+              className={`italic" ${valueDifference>0 ? greenColor : redColor}`}
+            >
+              {` (${valueDifference > 0 ? '+' : ''}${valueDifference})`}
+            </span>
+          :
+          <span
+              className={`italic text-gray-300 opacity-60`}
+            >
+              {` (same)`}
+            </span>
+        )}
+
+      </p>
+    </>
+  )
+
+}
+
 // Function to render the modifiers of the modal
 const renderModifiers = (modifiers: Record<string, number>, playerData: Player | null, itemType: string) => {
 
   if (!modifiers) {return}
-
-  const redColor = "text-[#e8513c]";
-  const greenColor = "text-[#7cc74e]";
 
   return Object.entries(modifiers)
     .map(([key, value]) => {
@@ -241,7 +281,7 @@ const renderModifiers = (modifiers: Record<string, number>, playerData: Player |
                   className={`${valueDifference > 0 ? greenColor : redColor} text-2xl italic`}
                   key={`${attribute}-valueDifference`}
                 >
-                  {`(${valueDifference > 0 ? '+' : ''}${valueDifference})`}
+                  {` (${valueDifference > 0 ? '+' : ''}${valueDifference})`}
                 </span>
               )
             )}
