@@ -62,9 +62,9 @@ const HeaderLink: React.FC<HeaderLinkProps> = ({ category, currentCategory, setC
   const isSelected = currentCategory === category;
 
   // Set the styles tabs.
-  const commonStyles = "text-3xl mx-6 font-medium text-white hover:cursor-pointer transition-all duration-200";
+  const commonStyles = "text-3xl mx-6 font-medium hover:cursor-pointer transition-all duration-200";
   const selectedTabStyle = `${commonStyles} underline text-medievalSepia`;
-  const unselectedTabStyle = `${commonStyles} hover:underline hover:text-medievalSepia`;
+  const unselectedTabStyle = `${commonStyles} hover:underline text-white hover:text-medievalSepia`;
 
   return (
     <span onClick={() => setCurrentCategory(category)} className={isSelected ? selectedTabStyle : unselectedTabStyle}>{label}</span>

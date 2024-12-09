@@ -21,6 +21,7 @@ export const processProductsPurchase = async (connection, playerEmail, products)
 
   console.log("el player que me interesa: " + player);
 
+
   // Calculate the total cost of all products
   const totalCost = calculateTotalCost(products);
 
