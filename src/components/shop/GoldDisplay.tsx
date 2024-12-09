@@ -19,16 +19,18 @@ const GoldDisplay: React.FC<GoldDisplayProps> = ({ gold }) => {
   }, [gold]);
 
   const startAnimation = (start: number, end: number, type: "increase" | "decrease") => {
-    const step = type === "increase" ? 1 : -1;
-    const interval = 20; // Adjust for smoother or faster animation
+    const difference = Math.abs(end - start);
+    const step = difference < 10 ? (type === "increase" ? 0.1 : -0.1) : (type === "increase" ? 1 : -1);
+    const interval = difference < 10 ? 50 : 20; 
     let current = start;
 
     const intervalId = setInterval(() => {
       current += step;
-      setDisplayGold(current);
+      setDisplayGold(Number(current.toFixed(1))); 
 
       if ((step > 0 && current >= end) || (step < 0 && current <= end)) {
         clearInterval(intervalId);
+        setDisplayGold(end); 
         setAnimationType(null);
       }
     }, interval);
