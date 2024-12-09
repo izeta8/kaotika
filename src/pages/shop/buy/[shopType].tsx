@@ -363,6 +363,7 @@ const Shop = () => {
                 cartItems={itemsInCart}
                 setItemsInCart={setItemsInCart}
                 confirmPurchase={handleConfirmBuy}
+                playerData={playerData}
               />
             </div>
           )}
