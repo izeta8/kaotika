@@ -32,7 +32,7 @@ const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConf
 
   if (!name) { return }
 
-  const nameFontSize = name.length > 15 ? 'text-3xl' : 'text-4xl';
+  const displayName = name.length>=18 ? name.substring(0, 15) + '...' : name;
 
   const backgroundPath = isMagicalStuffShop ?
     "url('/images/shop/buy/magic_stuff_card_background.png')" :
@@ -122,16 +122,16 @@ const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConf
             e.currentTarget.title = "Image not found"
           }}
         />
-
         {/* ITEM NAME */}
         <p
-          className={`${nameFontSize} whitespace-nowrap font-medium bg-clip-text text-transparent select-text text-center ${isMagicalStuffShop ? magicalStuffTextGradient : equipmentTextGradient}`}
+          style={{fontSize: 42}}
+          className={`whitespace-nowrap font-medium bg-clip-text text-transparent select-text text-center ${isMagicalStuffShop ? magicalStuffTextGradient : equipmentTextGradient}`}
         >
-          {name}
+          {displayName}
         </p>
 
         {/* BUY BUTTONS */}
-        <div className="w-full flex flex-row gap-4">
+        <div className="w-full flex flex-row gap-4 justify-center">
           <CardButton onClick={(e) => {e.stopPropagation(); handleBuyClick()}} label="BUY" hasEnoughMoney={hasEnoughMoney}/>
           <CardButton onClick={(e) => {e.stopPropagation(); addToCartWithAnimation(itemData)}} label="ADD TO CART" isOnCart={isOnCart} isMagicalStuffShop={isMagicalStuffShop}/>
         </div>
