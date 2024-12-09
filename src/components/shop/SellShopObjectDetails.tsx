@@ -24,15 +24,6 @@ const SellShopObjectDetails: React.FC<Promps> = ({ item, hover, setSelectedItemT
                 className="flex flex-col text-medievalSepia bg-cover bg-no-repeat bg-center w-2"
                 style={{ backgroundImage: 'url(/images/shop/shop_item_details.png)', width: '656px', height: '353px' }}
             >
-                 {/* Close Button (X) */}
-                 <button
-                    onClick={handleClose}
-                    className="absolute top-2 left-0 text-white text-3xl font-bold p-2 bg-black bg-opacity-50 rounded-full"
-                    style={{ cursor: 'pointer' }}
-                >
-                    X
-                </button>
-
                 <h2 className="text-4xl px-6 mt-10 text-center place-self-center">{item.name}</h2>
 
                 <div className="flex flex-row text-medievalSepia place-self-center">
