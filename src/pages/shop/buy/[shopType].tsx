@@ -381,7 +381,7 @@ interface ShopContentProps {
   setModalItemData: Function,
   cart: CartItem[],
   setCartAnimating: Function,
-  playerData: Player | undefined
+  playerData: Player | null
 }
 
 const ShopContent: React.FC<ShopContentProps> = ({ categoryData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, cart, setCartAnimating, playerData }) => {
@@ -417,7 +417,7 @@ interface ItemsListProps {
   setModalItemData: Function,
   cart: CartItem[],
   setCartAnimating: Function
-  playerData: Player | undefined
+  playerData: Player | null
 } 
 
 const ItemsList: React.FC<ItemsListProps> = ({ categoryData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, cart, setCartAnimating, playerData }) => {
@@ -466,7 +466,7 @@ const isItemOnCart = (item: ItemData, cart: CartItem[]): boolean => {
   return cart.some((cartItem: CartItem) => cartItem._id === item._id);
 }
 
-const hasEnoughMoney = (playerData: Player | undefined, item: ItemData) => {
+const hasEnoughMoney = (playerData: Player | null, item: ItemData) => {
   if (!playerData?.gold || item?.value === undefined) {return false}
   return playerData.gold >= item.value;
 }
