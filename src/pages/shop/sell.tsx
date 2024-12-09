@@ -201,24 +201,32 @@ const Sell = () => {
 
           </div>
 
-          <div
-            className="flex flex-row justify-end items-center mt-12"
-            style={{
-              height: '20vh',
-            }}
-          >
-            <SellerDialogueBox phrase={sellerDialogueMessage} />
-          </div>
+{/* Container for the Dialogue Box */}
+<div
+  className="absolute top-[300px] right-0 mt-12 mr-8"
+  style={{
+    height: 'auto', // Allow dynamic height for the dialogue box
+  }}
+>
+  <SellerDialogueBox phrase={sellerDialogueMessage} />
+</div>
 
-          <div className="flex flex-row items-center">
-            <div className="mt-20 px-6">
-              <KaotikaButton text="KEEP IT" handleClick={handleResetSelectedItemToSell} />
-            </div>
-            <div className="mt-20 px-6">
-              <KaotikaButton text="SELL IT" handleClick={handleSellClick} />
-            </div>
-            <ShopPlayerInfo gold={playerData?.gold!} level={playerData?.level!} />
-          </div>
+{/* Container for Buttons and Player Info */}
+<div
+  className="flex flex-row justify-center items-center"
+  style={{
+    marginTop: '60vh', // Push the buttons down to 60% of the viewport height
+    marginLeft: '-500px',
+  }}
+>
+  <div className="px-6">
+    <KaotikaButton text="KEEP IT" handleClick={handleResetSelectedItemToSell} />
+  </div>
+  <div className="px-6">
+    <KaotikaButton text="SELL IT" handleClick={handleSellClick} />
+  </div>
+  <ShopPlayerInfo gold={playerData?.gold!} level={playerData?.level!} />
+</div>
 
 
         </div>
