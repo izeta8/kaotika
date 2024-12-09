@@ -125,7 +125,7 @@ const LowerRow: React.FC<LowerRowProps> = ({itemData, playerData, isMagicalStuff
         {!isMagicalStuffShop ? 
           // EQUIPMENT MODAL 
           <div>
-            {!hasModifiers ?
+            {!hasModifiers() ?
               <p className={`text-[#EED1B4] text-3xl italic`}>This item does not have any modifier.</p> 
             :
               renderModifiers(modifiers, playerData, type) 
@@ -137,7 +137,7 @@ const LowerRow: React.FC<LowerRowProps> = ({itemData, playerData, isMagicalStuff
           :
           // SHOP MODAL 
           <div>
-            {!hasEffects ?
+            {!hasEffects() ?
               <p className={`text-[#EED1B4] text-3xl italic`}>This item does not have any effect.</p> 
             :
               renderEffects(effects, type)
