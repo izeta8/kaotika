@@ -1,10 +1,10 @@
 interface Promps {
     item: any;
     hover: any;
-    setSelectedItemToSell: (item: any) => void; // Pass this function to clear the item
+    setSelectedItemToSell: (item: any) => void;
 }
 
-const SellShopObjectDetails: React.FC<Promps> = ({ item, hover, setSelectedItemToSell }) => {
+const SellShopObjectDetails: React.FC<Promps> = ({ item, hover }) => {
 
     if (!item && !hover) {
         return <></>;
@@ -13,10 +13,6 @@ const SellShopObjectDetails: React.FC<Promps> = ({ item, hover, setSelectedItemT
     if (!item && hover) {
         item = hover;
     }
-
-    const handleClose = () => {
-        setSelectedItemToSell(null); // Set the item to null when closed
-    };
 
     return (
         <div className="ml-10 relative"> {/* Ensure the container has relative positioning */}
