@@ -184,7 +184,7 @@ const Sell = () => {
       <div className="flex text-medievalSepia bg-cover bg-no-repeat bg-center min-h-screen" style={{ backgroundImage: 'url(/images/shop/background_sell_shop.jpg)' }}>
 
         <div className="flex-col w-1/2">
-          <PlayerInventorySellShop playerData={playerData} setSelectedItemToSell={setSelectedItemToSell} setHoverItemToSell={setHoverItemToSell}/>
+          <PlayerInventorySellShop playerData={playerData} setSelectedItemToSell={setSelectedItemToSell} setHoverItemToSell={setHoverItemToSell} selectedItemToSell={selectedItemToSell}/>
           <SellShopObjectDetails item={selectedItemToSell} hover={hoverItemToSell} setSelectedItemToSell={setSelectedItemToSell}/>
         </div>
 

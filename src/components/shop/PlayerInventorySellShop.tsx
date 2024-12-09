@@ -16,9 +16,33 @@ interface Props {
     setHoverItemToSell?: (item: Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield | Ingredient | null) => void;
   }
 
-const PlayerInventorySellShop: React.FC<Props> = ({playerData, setSelectedItemToSell, setHoverItemToSell}) => {
+const PlayerInventorySellShop: React.FC<Props> = ({playerData, setSelectedItemToSell, setHoverItemToSell, selectedItemToSell}) => {
 
   const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null); // Track timeout for hover
+
+  // Define custom keyframes for glowing border effect
+  const borderAnimationStyle = `
+    @keyframes borderMovement {
+      0% {
+        border-color: red;
+      }
+      25% {
+        border-color: orange;
+      }
+      50% {
+        border-color: yellow;
+      }
+      75% {
+        border-color: green;
+      }
+      100% {
+        border-color: blue;
+      }
+    }
+    .animate-borderMovement {
+      animation: borderMovement 1.5s linear infinite;
+    }
+  `;
 
   const handleMouseEnter = (item: Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield | Ingredient | null) => {
     if (hoverTimeout) clearTimeout(hoverTimeout); // Clear previous timeout
@@ -34,15 +58,28 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData, setSelectedItemTo
     }
     setHoverItemToSell?.(null); // Remove hover item immediately
   };
+
+  // Tailwind class logic to add animation to the selected item
+  const getItemClass = (item: Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield | Ingredient) => {
+    return item === selectedItemToSell
+      ? "border-4 animate-borderMovement transform scale-90 transition-all duration-300"
+      : "border-3 border-black"; // Default border when not selected
+  };
+
+
        
         return (
         <div className="w-10/12 p-4">
+        {/* Inject the custom animation style for snake-like border effect */}
+        <style>{borderAnimationStyle}</style>
           <div className="w-full h-full bg-black/70">
             <div className="grid grid-cols-12 grid-rows-5 flex-grow">
               {
                 playerData?.inventory.helmets.map(helmet => {
                   return (
-                    <div key={helmet._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{ 'border': '3px ridge #000000' }}>
+                    <div key={helmet._id} className={`flex justify-center items-center aspect-square ${getItemClass(
+                      helmet
+                    )}`} >
                       <img src={helmet.image} alt={helmet.name} className="w-full h-auto" 
                       onClick={() => setSelectedItemToSell?.(helmet)}
                       onMouseEnter={() => handleMouseEnter(helmet)} 
@@ -55,7 +92,9 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData, setSelectedItemTo
               {
                 playerData?.inventory.weapons.map(weapon => {
                   return (
-                    <div key={weapon._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{ 'border': '3px ridge #000000' }}>
+                    <div key={weapon._id} className={`flex justify-center items-center bg-black/30 aspect-square ${getItemClass(
+                      weapon
+                    )}`} >
                       <img src={weapon.image} alt={weapon.name} className="w-full h-auto" 
                       onClick={() => setSelectedItemToSell?.(weapon)}
                       onMouseEnter={() => handleMouseEnter(weapon)} 
@@ -68,7 +107,9 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData, setSelectedItemTo
               {
                 playerData?.inventory.armors.map(armor => {
                   return (
-                    <div key={armor._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{ 'border': '3px ridge #000000' }}>
+                    <div key={armor._id} className={`flex justify-center items-center bg-black/30 aspect-square ${getItemClass(
+                      armor
+                    )}`} >
                       <img src={armor.image} alt={armor.name} className="w-full h-auto" 
                       onClick={() => setSelectedItemToSell?.(armor)}
                       onMouseEnter={() => handleMouseEnter(armor)} 
@@ -81,7 +122,9 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData, setSelectedItemTo
               {
                 playerData?.inventory.shields.map(shield => {
                   return (
-                    <div key={shield._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{ 'border': '3px ridge #000000' }}>
+                    <div key={shield._id} className={`flex justify-center items-center bg-black/30 aspect-square ${getItemClass(
+                      shield
+                    )}`} >
                       <img src={shield.image} alt={shield.name} className="w-full h-auto" 
                       onClick={() => setSelectedItemToSell?.(shield)} 
                       onMouseEnter={() => handleMouseEnter(shield)} 
@@ -94,7 +137,9 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData, setSelectedItemTo
               {
                 playerData?.inventory.artifacts.map(artifact => {
                   return (
-                    <div key={artifact._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{ 'border': '3px ridge #000000' }}>
+                    <div key={artifact._id} className={`flex justify-center items-center bg-black/30 aspect-square ${getItemClass(
+                      artifact
+                    )}`} >
                       <img src={artifact.image} alt={artifact.name} className="w-full h-auto" 
                       onClick={() => setSelectedItemToSell?.(artifact)} 
                       onMouseEnter={() => handleMouseEnter(artifact)} 
@@ -107,7 +152,9 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData, setSelectedItemTo
               {
                 playerData?.inventory.boots.map(boot => {
                   return (
-                    <div key={boot._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{ 'border': '3px ridge #000000' }}>
+                    <div key={boot._id} className={`flex justify-center items-center bg-black/30 aspect-square ${getItemClass(
+                      boot
+                    )}`} >
                       <img src={boot.image} alt={boot.name} className="w-full h-auto" 
                       onClick={() => setSelectedItemToSell?.(boot)} 
                       onMouseEnter={() => handleMouseEnter(boot)} 
@@ -120,7 +167,9 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData, setSelectedItemTo
               {
                 playerData?.inventory.rings.map(ring => {
                   return (
-                    <div key={ring._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{ 'border': '3px ridge #000000' }}>
+                    <div key={ring._id} className={`flex justify-center items-center bg-black/30 aspect-square ${getItemClass(
+                      ring
+                    )}`} >
                       <img src={ring.image} alt={ring.name} className="w-full h-auto" 
                       onClick={() => setSelectedItemToSell?.(ring)} 
                       onMouseEnter={() => handleMouseEnter(ring)} 
@@ -133,7 +182,9 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData, setSelectedItemTo
               {
                 playerData?.inventory.ingredients.map(ingredient => {
                   return (
-                    <div key={ingredient._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{ 'border': '3px ridge #000000' }}>
+                    <div key={ingredient._id} className={`flex justify-center items-center bg-black/30 aspect-square ${getItemClass(
+                      ingredient
+                    )}`} >
                       <img src={ingredient.image} alt={ingredient.name} className="w-full h-auto" 
                       onClick={() => setSelectedItemToSell?.(ingredient)}
                       onMouseEnter={() => handleMouseEnter(ingredient)} 
