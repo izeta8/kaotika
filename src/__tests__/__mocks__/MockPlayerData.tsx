@@ -220,13 +220,13 @@ export const mockPlayerData: any = {
         }
     },
 
-    "_id": "66dec7e0c23791be382fa672",
+    "_id": "35yhys434shshhgf",
     "name": "Mikel Lopez Diaz",
     "nickname": "Gastino Il Bitwise",
     "email": "mikel.lopez@ikasle.aeg.eus",
     "avatar": "https://lh3.googleusercontent.com/a/ACg8ocL1dzYBw_ARRY4QY0kQeVgo0FtuGYRvFFEgP2MM8u5ASK5GlpBo=s96-c",
     "classroom_Id": "23525",
-    "level": 17,
+    "level": 13,
     "experience": 28200,
     "is_active": true,
     "profile": {
@@ -268,7 +268,7 @@ export const mockPlayerData: any = {
         ]
     },
     "tasks": [],
-    "gold": 1599,
+    "gold": 1329,
     "created_date": "2024-09-09T10:03:12.124Z",
     "inventory": {
 
