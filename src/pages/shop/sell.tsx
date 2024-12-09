@@ -21,6 +21,7 @@ import { Shield } from "@/_common/interfaces/Shield";
 import { Weapon } from "@/_common/interfaces/Weapon";
 import { MESSAGES } from "@/constants/shop/constants_messages";
 import Confirm from "@/components/shop/Confirm";
+import SellButton from "@/components/shop/sellButton";
 
 
 const Sell = () => {
@@ -31,8 +32,8 @@ const Sell = () => {
   const [playerEmail, setPlayerEmail] = useState<string | null>(null);
   const [playerData, setPlayerData] = useState<Player>();
   const [productConfirm, setProductConfirm] = useState<object | null>(null);
-  const [selectedItemToSell, setSelectedItemToSell] = useState< Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield >();
-  const [hoverItemToSell, setHoverItemToSell] = useState< Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield >();
+  const [selectedItemToSell, setSelectedItemToSell] = useState< Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield | null >(null);
+  const [hoverItemToSell, setHoverItemToSell] = useState< Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield | null >(null);
   const [sellerDialogueMessage, setSellerDialogueMessage] = useState<string>(MESSAGES.WELCOME);
 
 
@@ -221,10 +222,18 @@ const Sell = () => {
           }}
         >
           <div className="px-6">
-            <KaotikaButton text="KEEP IT" handleClick={handleResetSelectedItemToSell} />
+          <SellButton
+          text="KEEP IT"
+          handleClick={handleResetSelectedItemToSell}
+          isSelected={selectedItemToSell !== null} // Enable if an item is selected
+        />
           </div>
           <div className="px-6">
-            <KaotikaButton text="SELL IT" handleClick={handleSellClick} />
+          <SellButton
+          text="SELL IT"
+          handleClick={handleSellClick}
+          isSelected={selectedItemToSell !== null} // Enable if an item is selected
+        />
           </div>
           <ShopPlayerInfo gold={playerData?.gold!} level={playerData?.level!} />
         </div>
