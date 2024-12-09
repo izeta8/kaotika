@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaTimes, FaPlus, FaMinus } from 'react-icons/fa';
 import { ItemData } from "@/_common/interfaces/ItemData";
 import { MouseEventHandler } from "react";
+import { Player } from "@/_common/interfaces/Player";
 
 interface CartProps {
   isOpen: boolean;
@@ -9,13 +10,14 @@ interface CartProps {
   cartItems: CartItem[];
   setItemsInCart: Function;
   confirmPurchase: Function;
+  playerData: Player
 }
 
 interface CartItem extends ItemData {
   quantity: number;
 }
 
-const Cart: React.FC<CartProps> = ({ isOpen, onClose, cartItems, setItemsInCart, confirmPurchase }) => {
+const Cart: React.FC<CartProps> = ({ isOpen, onClose, cartItems, setItemsInCart, confirmPurchase, playerData}) => {
  
   const increaseItem = (id: string) => {
     setItemsInCart((prevItems: CartItem[]) =>
@@ -45,7 +47,9 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose, cartItems, setItemsInCart,
 
   const handlePurchase = () => {
     confirmPurchase(cartItems);
-    clearCart();
+    if(total <= playerData.gold){
+      clearCart();
+    }
     onClose();
   };
 
