@@ -12,7 +12,7 @@ import { useState } from "react";
 
 interface Props {
     playerData?: Player;
-    setSelectedItemToSell?: (item: Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield | Ingredient) => void;
+    setSelectedItemToSell?: (item: Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield | Ingredient | null) => void;
     setHoverItemToSell?: (item: Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield | Ingredient | null) => void;
   }
 
@@ -43,6 +43,19 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData, setSelectedItemTo
       animation: borderMovement 1.5s linear infinite;
     }
   `;
+
+  const handleItemClick = (
+    item: Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield | Ingredient 
+  ) => {
+    if (selectedItemToSell === item) {
+      // Deselect the item if it is already selected
+      setSelectedItemToSell?.(null);
+      setHoverItemToSell?.(null);
+    } else {
+      // Otherwise, select the new item
+      setSelectedItemToSell?.(item);
+    }
+  };
 
   const handleMouseEnter = (item: Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield | Ingredient | null) => {
     if (hoverTimeout) clearTimeout(hoverTimeout); // Clear previous timeout
@@ -81,7 +94,7 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData, setSelectedItemTo
                       helmet
                     )}`} >
                       <img src={helmet.image} alt={helmet.name} className="w-full h-auto" 
-                      onClick={() => setSelectedItemToSell?.(helmet)}
+                      onClick={() => handleItemClick(helmet)}
                       onMouseEnter={() => handleMouseEnter(helmet)} 
                       onMouseLeave={() => handleMouseLeave()} 
                       />
@@ -96,7 +109,7 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData, setSelectedItemTo
                       weapon
                     )}`} >
                       <img src={weapon.image} alt={weapon.name} className="w-full h-auto" 
-                      onClick={() => setSelectedItemToSell?.(weapon)}
+                      onClick={() => handleItemClick(weapon)}
                       onMouseEnter={() => handleMouseEnter(weapon)} 
                       onMouseLeave={() => handleMouseLeave()} 
                       />
@@ -111,7 +124,7 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData, setSelectedItemTo
                       armor
                     )}`} >
                       <img src={armor.image} alt={armor.name} className="w-full h-auto" 
-                      onClick={() => setSelectedItemToSell?.(armor)}
+                      onClick={() => handleItemClick(armor)}
                       onMouseEnter={() => handleMouseEnter(armor)} 
                       onMouseLeave={() => handleMouseLeave()} 
                       />
@@ -126,7 +139,7 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData, setSelectedItemTo
                       shield
                     )}`} >
                       <img src={shield.image} alt={shield.name} className="w-full h-auto" 
-                      onClick={() => setSelectedItemToSell?.(shield)} 
+                      onClick={() => handleItemClick(shield)} 
                       onMouseEnter={() => handleMouseEnter(shield)} 
                       onMouseLeave={() => handleMouseLeave()} 
                       />
@@ -141,7 +154,7 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData, setSelectedItemTo
                       artifact
                     )}`} >
                       <img src={artifact.image} alt={artifact.name} className="w-full h-auto" 
-                      onClick={() => setSelectedItemToSell?.(artifact)} 
+                      onClick={() => handleItemClick(artifact)}
                       onMouseEnter={() => handleMouseEnter(artifact)} 
                       onMouseLeave={() => handleMouseLeave()}  
                       />
@@ -156,7 +169,7 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData, setSelectedItemTo
                       boot
                     )}`} >
                       <img src={boot.image} alt={boot.name} className="w-full h-auto" 
-                      onClick={() => setSelectedItemToSell?.(boot)} 
+                      onClick={() => handleItemClick(boot)} 
                       onMouseEnter={() => handleMouseEnter(boot)} 
                       onMouseLeave={() => handleMouseLeave()} 
                       />
@@ -171,7 +184,7 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData, setSelectedItemTo
                       ring
                     )}`} >
                       <img src={ring.image} alt={ring.name} className="w-full h-auto" 
-                      onClick={() => setSelectedItemToSell?.(ring)} 
+                      onClick={() => handleItemClick(ring)}
                       onMouseEnter={() => handleMouseEnter(ring)} 
                       onMouseLeave={() => handleMouseLeave()} 
                       />
@@ -186,7 +199,7 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData, setSelectedItemTo
                       ingredient
                     )}`} >
                       <img src={ingredient.image} alt={ingredient.name} className="w-full h-auto" 
-                      onClick={() => setSelectedItemToSell?.(ingredient)}
+                      onClick={() => handleItemClick(ingredient)}
                       onMouseEnter={() => handleMouseEnter(ingredient)} 
                       onMouseLeave={() => handleMouseLeave()}  
                       />
