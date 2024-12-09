@@ -10,7 +10,7 @@ interface CartProps {
   cartItems: CartItem[];
   setItemsInCart: Function;
   confirmPurchase: Function;
-  playerData: Player
+  playerData: Player | null
 }
 
 interface CartItem extends ItemData {
@@ -47,7 +47,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose, cartItems, setItemsInCart,
 
   const handlePurchase = () => {
     confirmPurchase(cartItems);
-    if(total <= playerData.gold){
+    if (playerData && total <= playerData.gold){
       clearCart();
     }
     onClose();
