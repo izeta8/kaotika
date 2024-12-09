@@ -301,6 +301,7 @@ const Shop = () => {
         <div className="relative -mt-2 min-h-screen">
            
           <div className={`relative transition-all min-h-screen duration-200 ${itemModalShown || productConfirm ? 'blur-sm' : 'blur-none'}`}> 
+            
             <ShopHeader 
               currentCategory={currentCategory}
               setCurrentCategory={setCurrentCategory}
@@ -318,6 +319,13 @@ const Shop = () => {
               playerData={playerData}
             />
             <ShopBackground />
+
+            {/* Print image of the modal background to load it instantly. */}
+            {isMagicalStuffShop(router) ? 
+              <img src="/images/shop/buy/magical_stuff_modal_background.webp"></img>
+              :
+              <img src="/images/shop/buy/equipment_modal_background.webp"></img>
+            }
           </div>
 
           <ShopPlayerInfo gold={playerData?.gold} level={playerData?.level}/>
