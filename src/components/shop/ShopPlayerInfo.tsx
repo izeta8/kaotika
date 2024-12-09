@@ -56,7 +56,7 @@ const Info: React.FC<{imagePath: string, label: number}> = ({imagePath, label}) 
       />
 
       <p
-        className="text-5xl flex-grow leading-8 text-center"
+        className="text-4xl pb-2  flex-grow text-center"
       >
         {label}
       </p>

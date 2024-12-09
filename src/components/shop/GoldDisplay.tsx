@@ -48,7 +48,7 @@ const GoldDisplay: React.FC<GoldDisplayProps> = ({ gold }) => {
       />
       
       {/* Animated Gold Value */}
-      <p className="text-5xl flex-grow leading-8 text-center">{displayGold}</p>
+      <p className="text-4xl pb-2 flex-grow text-center">{displayGold}</p>
     </div>
   );
 
