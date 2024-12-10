@@ -115,10 +115,7 @@ interface LowerRowProps {
 const LowerRow: React.FC<LowerRowProps> = ({itemData, playerData, isMagicalStuffShop}) => {
   
   const {description, type, value, modifiers, effects, min_lvl, image, base_percentage, defense} = itemData;
-    
-  const hasModifiers = () => Object.values(modifiers).some(value => value !== 0);
-  const hasEffects = () => effects && effects.length>0;
-  
+      
   return (
     <div className="grid grid-cols-3 h-full bg-orange-300/0">
 
@@ -128,23 +125,12 @@ const LowerRow: React.FC<LowerRowProps> = ({itemData, playerData, isMagicalStuff
         {!isMagicalStuffShop ? 
           // EQUIPMENT MODAL 
           <div>
-            {!hasModifiers() ?
-              <p className={`text-[#EED1B4] text-3xl italic`}>This item does not have any modifier.</p> 
-            :
-              renderModifiers(modifiers, playerData, type) 
-            }
-            {(defense || base_percentage) && <hr className="w-5/6 mt-3 mb-1 border-medievalSepia opacity-30"/> }
-            {renderAttribute(defense, playerData, type, "defense")}
-            {renderAttribute(base_percentage, playerData, type, "base_percentage")}
+            {renderEquipmentItemData(modifiers, defense, base_percentage, playerData, type)} 
           </div>
           :
           // SHOP MODAL 
           <div>
-            {!hasEffects() ?
-              <p className={`text-[#EED1B4] text-3xl italic`}>This item does not have any effect.</p> 
-            :
-              renderEffects(effects, type)
-            }
+            {renderEffects(effects, type)}
           </div>
         }
 
@@ -182,6 +168,49 @@ const LowerRow: React.FC<LowerRowProps> = ({itemData, playerData, isMagicalStuff
 // -----   RENDER   -----  //
 // ----------------------- //
 
+export const renderEffects = (effects: Array<string> | undefined, itemType: string) => {
+
+  if (!(effects && effects.length>0)) {
+    return <p className={`text-[#EED1B4] text-3xl italic`}>This item does not have any effect.</p>;
+  }
+
+  if (itemType !== "ingredient") { return }
+
+  return (
+    
+    effects.map(effect => {
+      const effectName = capitalizeFirstLetter(effect);
+
+      return (<p  
+        key={`${effect}-p`}
+        className="text-[#9CB5EA] text-3xl"
+        >
+          {effectName}
+        </p>
+      )
+    })
+  );  
+}
+
+export const renderEquipmentItemData = (
+    modifiers: Record<string, number>, 
+    defense: number | undefined, 
+    base_percentage: number | undefined, 
+    playerData: Player | null, 
+    itemType: string
+  ) => {
+  
+  return (
+    <>
+      {renderModifiers(modifiers, playerData, itemType) }
+      {(defense || base_percentage) && <hr className="w-5/6 mt-3 mb-1 border-medievalSepia opacity-30"/> }
+      {renderAttribute(defense, playerData, itemType, "defense")}
+      {renderAttribute(base_percentage, playerData, itemType, "base_percentage")}
+    </>
+  )
+
+}
+
 
 // Attributes: Defense or Base Percentage.
 const renderAttribute = (itemAttribute: number | undefined, playerData: Player | null, itemType: string, attributeType: string) => {
@@ -215,9 +244,9 @@ const renderAttribute = (itemAttribute: number | undefined, playerData: Player |
           :
           <span
               className={`italic text-gray-300 opacity-60`}
-            >
-              {` (same)`}
-            </span>
+          >
+            {` (same)`}
+          </span>
         )}
 
       </p>
@@ -229,7 +258,13 @@ const renderAttribute = (itemAttribute: number | undefined, playerData: Player |
 // Function to render the modifiers of the modal
 const renderModifiers = (modifiers: Record<string, number>, playerData: Player | null, itemType: string) => {
 
+  const hasModifiers = () => Object.values(modifiers).some(value => value !== 0);
+
   if (!modifiers) {return}
+
+  if (!hasModifiers()) {
+    return <p className={`text-[#EED1B4] text-3xl italic`}>This item does not have any modifier.</p> ;
+  }
 
   return Object.entries(modifiers)
     .map(([key, value]) => {
@@ -293,26 +328,6 @@ const renderModifiers = (modifiers: Record<string, number>, playerData: Player |
       return;
     });
 };
-
-const renderEffects = (effects: Array<string>, itemType: string) => {
-
-  if (itemType !== "ingredient") { return }
-
-  return (
-    
-    effects.map(effect => {
-      const effectName = capitalizeFirstLetter(effect);
-
-      return (<p  
-        key={`${effect}-p`}
-        className="text-[#9CB5EA] text-3xl"
-        >
-          {effectName}
-        </p>
-      )
-    })
-  );  
-}
 
 // ------------------------ //
 // -----   UTILITY   -----  //

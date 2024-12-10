@@ -10,6 +10,8 @@ import { CartItem } from "@/_common/interfaces/CartItem";
 import Loading from "@/components/Loading";
 
 // Shop Components
+import { renderEquipmentItemData, renderEffects } from "@/components/shop/buy/ItemModal";
+import { Info } from "@/components/shop/ShopPlayerInfo";
 import Confirm from "@/components/shop/Confirm";
 import ItemModal from "@/components/shop/buy/ItemModal";
 import ShopBackground from "@/components/shop/buy/ShopBackground";
