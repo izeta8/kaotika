@@ -2,7 +2,6 @@ import { Player } from "@/_common/interfaces/Player";
 import Layout from "@/components/Layout";
 import PlayerInventorySellShop from "@/components/shop/PlayerInventorySellShop";
 import Link from 'next/link';
-import player from "./FakeTestPlayer";
 import SellShopObjectDetails from "@/components/shop/SellShopObjectDetails";
 import { SellerDialogueBox, createItemSellPriceMessage } from "@/components/shop/SellerDialgueBox";
 import { Button } from "@nextui-org/button";
