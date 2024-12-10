@@ -25,29 +25,27 @@ export const SellerDialogueBox: React.FC<Prompts> = ({ phrase }) => {
   // Use the phrase as a key to force re-render on change
   return (
     <div
-      key={phrase} // Unique key based on the phrase to reset the animation
+      key={phrase} 
       className="flex justify-center items-center text-medievalSepia bg-cover bg-no-repeat bg-center"
       style={{
         width: '525px',
-        height: `${boxHeight}px`, // Dynamic height based on content
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
-        transition: 'height 0.3s ease-in-out', // Smooth height transition
+        height: `${boxHeight}px`, 
+        transition: 'height 0.3s ease-in-out', 
       }}
     >
       <div
         className={`text-4xl pl-8 pr-8 mb-4 ${
           isCentered ? 'text-center' : 'text-left'
-        } text-white font-bold`} // Bigger text size and bold
+        } text-white font-bold`} 
         style={{
-          whiteSpace: 'normal', // Ensure the text wraps correctly
-          wordWrap: 'break-word', // Handle word breaking if necessary
-          wordBreak: 'break-word', // Prevent overflow by breaking long words
-          display: 'inline-block', // Keep the words in one block
-          width: '100%', // Ensure words wrap correctly and keep the text aligned
-          minHeight: '100px', // Fix the minimum height so layout doesn’t shift
-          textAlign: isCentered ? 'center' : 'left', // Dynamically change alignment
-          textShadow: '2px 2px 10px rgba(0, 0, 0, 0.6)', // Text shadow for better visibility
-          color: 'rgba(191, 142, 89, 1)',
+          whiteSpace: 'normal', 
+          wordWrap: 'break-word', 
+          wordBreak: 'break-word', 
+          display: 'inline-block',
+          width: '100%', 
+          minHeight: '100px', 
+          textAlign: isCentered ? 'center' : 'left', 
+          color: 'rgba(191, 142, 89, 1)', 
         }}
       >
         {/* Render the visible words with CSS animation */}
@@ -59,6 +57,7 @@ export const SellerDialogueBox: React.FC<Prompts> = ({ phrase }) => {
               animation: `fadeIn 0.3s ease-in-out forwards`,
               animationDelay: `${index * 0.1}s`, // Delay for each word
               marginRight: '8px', // Consistent space between words
+              textShadow: '4px 4px 10px rgba(0, 0, 0, 0.75)', // Stronger shadow effect
             }}
           >
             {word}
@@ -88,7 +87,6 @@ export const SellerDialogueBox: React.FC<Prompts> = ({ phrase }) => {
   );
 };
 
-
 // The function to create the seller's message
 export function createItemSellPriceMessage(message: string, itemName: string, itemValue: number): string {
   let returnMessage = message;
@@ -96,6 +94,8 @@ export function createItemSellPriceMessage(message: string, itemName: string, it
   returnMessage = returnMessage.replace("{price}", itemValue.toString());
   return returnMessage;
 }
+
+
 
 
 
