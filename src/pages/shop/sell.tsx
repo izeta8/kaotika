@@ -100,6 +100,10 @@ const Sell = () => {
     }
   }, [playerEmail]);
 
+  useEffect(()=> {
+    setSellerDialogueMessage(MESSAGES.WELCOME)
+  },[]);
+
   const handleConfirmSell = async (productConfirm) => {
     if (!productConfirm) return;
 
@@ -167,7 +171,11 @@ const Sell = () => {
   //####################################################################################################
   //####################################################################################################
   const handleResetSelectedItemToSell = () => {
-    setSelectedItemToSell(undefined);
+    
+    setProductConfirm(null);
+    setSellerDialogueMessage(MESSAGES.ITEM_SELL_CANCEL)
+    setSelectedItemToSell(null);
+    
   }
 
   //####################################################################################################
