@@ -21,7 +21,7 @@ const ShopHeader: React.FC<ShopHeaderProps> = ({ currentCategory, setCurrentCate
 
         {/* Return Button Section */}
         <div className="flex items-center">
-          <Link href={'/shop/shopHome'}>
+          <Link href={'/shop'}>
             <span className='text-4xl mx-6 hover:underline hover:cursor-pointer text-medievalSepia'> &lt; Return</span>
           </Link>
         </div>

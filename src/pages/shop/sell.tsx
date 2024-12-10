@@ -203,7 +203,7 @@ const Sell = () => {
 
             {/* Botón de Return */}
             <Link
-              href="/shop/shopHome"
+              href="/shop"
               className=" bg-darkSepia w-full text-black text-3xl py-2 px-4 mb-4 mt-4 mr-8 rounded hover:bg-medievalSepia text-center transition max-w-64 max-h-24"
             >
               Return to Home
