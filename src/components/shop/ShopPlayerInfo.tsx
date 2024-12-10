@@ -45,7 +45,7 @@ const InfoContainer: React.FC<{children: ReactNode}> = ({children}) => {
 
 }
 
-const Info: React.FC<{imagePath: string, label: number}> = ({imagePath, label}) => {
+export const Info: React.FC<{imagePath: string, label: number}> = ({imagePath, label}) => {
 
   return (
     <div className="w-3/5 border border-medievalSepia rounded-md px-2 py-1 flex flex-row gap-3 justify-center align-middle bg-black/30">
