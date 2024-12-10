@@ -61,7 +61,7 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData, setSelectedItemTo
     if (hoverTimeout) clearTimeout(hoverTimeout); // Clear previous timeout
     const timeout = setTimeout(() => {
       setHoverItemToSell?.(item); // Set the hover item after 1 second
-    }, 500); 
+    }, 200); 
     setHoverTimeout(timeout);
   };
 
