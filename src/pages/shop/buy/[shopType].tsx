@@ -417,7 +417,7 @@ const ShopContent: React.FC<ShopContentProps> = ({ categoryData, addToCart, setP
   const router = useRouter();
 
   return (
-    <section className='w-full h-full relative z-30 flex justify-center items-center'>
+    <section className='w-full h-full relative z-30 flex justify-center items-center mb-8'>
 
       <div className="w-11/12 flex flex-row flex-wrap">
 
