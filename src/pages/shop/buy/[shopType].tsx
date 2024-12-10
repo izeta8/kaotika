@@ -41,8 +41,10 @@ const Shop = () => {
   const [itemModalShown, setItemModalShown] = useState(false);
   const [modalItemData, setModalItemData] = useState<ItemData | undefined>();
 
-  // ---- CART ----  //
+  const [hoveredCard, setHoveredCard] = useState<ItemData|undefined>(undefined);
   
+  // ---- CART ----  //
+
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [cartAnimating, setCartAnimating] = useState(false);
 
@@ -118,7 +120,7 @@ const Shop = () => {
     setPlayerEmail('ander.zubizarreta@ikasle.aeg.eus');
     // if (session?.user?.email) {
     //   setLoading(true);
-      // setPlayerEmail(session.user.email); 
+      // setPlayerEmail(session.user.email);
     // }
   }, [session]);
 
@@ -159,7 +161,7 @@ const Shop = () => {
     // Load the local storage data into the states
     const currentShopType = isMagicalStuffShop(router) ? magicalStuffStateSetters : equipmentStateSetters;
     currentShopType.forEach(categoryObject => loadLocalStorageIntoStates(categoryObject));
-    
+
     // Set each shop type's default categories
     const defaultCategory = isMagicalStuffShop(router) ? magicalStuffCategories[0] : equipmentCategories[0];
     setCurrentCategory(defaultCategory);
@@ -221,7 +223,7 @@ const Shop = () => {
       console.log(result); // logs the inventory and gold after the Promise resolves
       ////////////////////////////////////
       if (result.success) {
-        // Update the playerData 
+        // Update the playerData
         const updatedPlayerData = {
           ...playerData,    // Spread all properties of playerData
           gold: result.gold,        // Override the gold property
@@ -263,13 +265,13 @@ const Shop = () => {
     if (isEquipmentShop(router)) {
 
       setItemsInCart(prevItems => {
-        return !isInCart 
+        return !isInCart
           ? [...prevItems, { ...item, quantity: 1 }] // If is not in the cart, the item is added to the array and put the quantity attribute
-          : prevItems.filter((cartItem) => cartItem._id !== item._id); // If is in the cart, remove from the array. 
+          : prevItems.filter((cartItem) => cartItem._id !== item._id); // If is in the cart, remove from the array.
       });
 
     }
-    
+
     if (isMagicalStuffShop(router)) {
 
       setItemsInCart(prevItems => {
@@ -290,6 +292,16 @@ const Shop = () => {
 
   const cartItemCount = itemsInCart.reduce((acc, item) => acc + item.quantity, 0);
 
+  ////////////////////////////////////////////////////////////////////////////////
+
+  // Update Item Preview (Left Column)
+
+  const handleCardHover = (itemData: ItemData | undefined) => {
+    setHoveredCard(itemData);
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
+
   // ---- RENDER ----  //
 
   if (loading) {
@@ -297,20 +309,21 @@ const Shop = () => {
   }
 
   return (
- 
+
       <Layout>
 
         <div className="relative -mt-2 min-h-screen">
-           
-          <div className={`relative transition-all min-h-screen duration-200 ${itemModalShown || productConfirm ? 'blur-sm' : 'blur-none'}`}> 
-            
-            <ShopHeader 
+
+          {/* <div className={`relative transition-all min-h-screen duration-200 ${itemModalShown || productConfirm ? 'blur-sm' : 'blur-none'}`}>  */}
+          <div className={`relative transition-all min-h-screen duration-200`}>
+
+            <ShopHeader
               currentCategory={currentCategory}
               setCurrentCategory={setCurrentCategory}
               isMagicalStuffShop={isMagicalStuffShop(router)}
             />
-            
-            <ShopContent 
+
+            <ShopContent
               categoryData={categoryData}
               setProductConfirm={setProductConfirm}
               addToCart={addToCart}
@@ -318,31 +331,33 @@ const Shop = () => {
               setModalItemData={setModalItemData}
               cart={itemsInCart}
               setCartAnimating={setCartAnimating}
-              playerData={playerData}
+              playerData={playerData} 
+              hoveredCard={hoveredCard} 
+              handleCardHover={handleCardHover}
+              
             />
             <ShopBackground />
 
             {/* Print image of the modal background to load it instantly. */}
-            {isMagicalStuffShop(router) ? 
+            {isMagicalStuffShop(router) ?
               <img src="/images/shop/buy/magical_stuff_modal_background.webp"></img>
               :
               <img src="/images/shop/buy/equipment_modal_background.webp"></img>
             }
+
           </div>
 
-          <ShopPlayerInfo gold={playerData?.gold} level={playerData?.level}/>
-
-        {/* Cart Button Wrapper */}
+          {/* Cart Button Wrapper */}
           <CartButton
             cartItemCount={cartItemCount}
             onCartClick={openCart}
             isCartAnimating={cartAnimating}
           />
-          
+
           {/********** Modals ***********/}
 
           {itemModalShown && (
-            <ItemModal 
+            <ItemModal
               playerData={playerData}
               itemModalShown={itemModalShown}
               setItemModalShown={setItemModalShown}
@@ -384,7 +399,7 @@ const Shop = () => {
 // -----   SHOP CONTENT   ----- //
 // ---------------------------- //
 
-interface ShopContentProps { 
+interface ShopContentProps {
   categoryData: Array<ItemData>,
   addToCart: (item: ItemData) => void,
   setProductConfirm: Function,
@@ -392,25 +407,108 @@ interface ShopContentProps {
   setModalItemData: Function,
   cart: CartItem[],
   setCartAnimating: Function,
-  playerData: Player | null
+  playerData: Player | null,
+  hoveredCard: ItemData | undefined,
+  handleCardHover: Function
 }
 
-const ShopContent: React.FC<ShopContentProps> = ({ categoryData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, cart, setCartAnimating, playerData }) => {
+const ShopContent: React.FC<ShopContentProps> = ({ categoryData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, cart, setCartAnimating, playerData, hoveredCard, handleCardHover }) => {
+ 
+  const router = useRouter();
+
   return (
     <section className='w-full h-full relative z-30 flex justify-center items-center'>
 
-      {/* FILTER AND SORT BY */}
-      <ItemsList 
-        categoryData={categoryData}
-        setProductConfirm={setProductConfirm}
-        addToCart={addToCart}
-        setItemModalShown={setItemModalShown}
-        setModalItemData={setModalItemData}
-        cart={cart}
-        setCartAnimating={setCartAnimating}
-        playerData={playerData}
-      />
-    
+      <div className="w-11/12 flex flex-row flex-wrap">
+
+
+        {/* UPPER ROW: Filter and Sort By */}
+        <div className="w-full mb-3 bg-slate-800/10 flex flex-row justify-center items-center">
+          <p>FILTROS</p>
+          <input type="text" placeholder="Filter" className="text-black text-3xl p-1" />
+          <button className="text-black text-3xl p-1 border border-sepia bg-slate-500">Sort By</button>
+        </div>
+
+        {/* LOWER ROW: Filter and Sort By */}
+        <div className="relative w-full bg-blue-800/0 grid grid-cols-[350px_1fr]">
+
+          {/* LEFT COLUMN: Items Preview */}
+          <div className="w-[350px] px-3 bg-orange-500/0 relative">
+
+            {/* Items Preview Column */}
+            <div
+                className="sticky top-60 w-full h-[85vh] bg-red-700/0 flex items-center flex-col gap-5"
+              >
+
+                <div className="w-full h-4/6 bg-[#1E1E1E] border-sepia border-2 p-5 rounded-sm flex items-center flex-col">
+
+                  {hoveredCard?.name && (
+                    <h2
+                      className="text-4xl text-center underline text-medievalSepia pt-5 animate-fadeIn"
+                    >
+                      {hoveredCard?.name}
+                    </h2>
+                  )}
+
+                  <div className="flex items-center flex-grow">
+                    
+                    {hoveredCard ? 
+
+                      !isMagicalStuffShop(router) ? 
+                        // EQUIPMENT MODAL 
+                        <div className="animate-fadeIn">
+                          {renderEquipmentItemData(hoveredCard?.modifiers, hoveredCard?.defense, hoveredCard?.base_percentage, playerData, hoveredCard.type)} 
+                        </div>
+                        :
+                        // SHOP MODAL 
+                        <div>
+                          {renderEffects(hoveredCard?.effects, hoveredCard?.type)}
+                        </div>
+
+                    : 
+                      <p className="text-4xl text-medievalSepia text-center italic text-balance animate-fadeIn">Hover an item to see its stats.</p>   
+                    }
+
+                  </div>
+
+                </div>
+
+                <div
+                  className="w-full flex flex-row gap-4 justify-center items-center"
+                >
+                  <Info imagePath={"/images/icons/level.png"} label={11} />
+                  <Info imagePath={"/images/icons/level.png"} label={11} />
+                </div>
+
+          
+
+            </div>
+
+          </div>
+
+          {/* RIGHT COLUMN: Shop */}
+          <div>
+            <div className="px-10 flex justify-center">
+              {/* Items list */}
+              <ItemsList
+                categoryData={categoryData}
+                setProductConfirm={setProductConfirm}
+                addToCart={addToCart}
+                setItemModalShown={setItemModalShown}
+                setModalItemData={setModalItemData}
+                cart={cart}
+                setCartAnimating={setCartAnimating}
+                playerData={playerData}
+                handleCardHover={handleCardHover}
+              />
+            </div>
+          </div>  
+
+        </div>
+
+      </div>
+
+
     </section>
   );
 };
@@ -420,7 +518,7 @@ const ShopContent: React.FC<ShopContentProps> = ({ categoryData, addToCart, setP
 // -----   ITEMS GRID   ----- //
 // -------------------------- //
 
-interface ItemsListProps { 
+interface ItemsListProps {
   categoryData: ItemData[],
   addToCart: (item: ItemData) => void,
   setProductConfirm: Function,
@@ -428,31 +526,33 @@ interface ItemsListProps {
   setModalItemData: Function,
   cart: CartItem[],
   setCartAnimating: Function
-  playerData: Player | null
-} 
+  playerData: Player | null,
+  handleCardHover: Function
+}
 
-const ItemsList: React.FC<ItemsListProps> = ({ categoryData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, cart, setCartAnimating, playerData }) => {
-     
+const ItemsList: React.FC<ItemsListProps> = ({ categoryData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, cart, setCartAnimating, playerData, handleCardHover }) => {
+
   const router = useRouter();
-   
+
   if (categoryData.length === 0) {
-    return <h2 className="text-4xl m-10 text-medievalSepia">There are no available items in this category</h2>;
+    return <h2 className="text-4xl m-10 text-medievalSepia mt-5">There are no available items in this category</h2>;
   }
 
   return (
-    <div className="w-11/12 my-10 grid grid-cols-5 gap-8 place-items-center">
+    <div className="w-full grid grid-cols-4 gap-8 place-items-center">
       {categoryData.map((item: ItemData, index: number) => (
-        <ItemCard 
+        <ItemCard
           key={item._id}
           itemData={item}
           addToCart={addToCart}
           setProductConfirm={setProductConfirm}
           setItemModalShown={setItemModalShown}
-          setModalItemData={setModalItemData} 
+          setModalItemData={setModalItemData}
           isMagicalStuffShop={isMagicalStuffShop(router)}
-          setCartAnimating={setCartAnimating} 
+          setCartAnimating={setCartAnimating}
           isOnCart={isItemOnCart(item, cart)}
           hasEnoughMoney={hasEnoughMoney(playerData, item)}
+          handleCardHover={handleCardHover}
         />
       ))}
     </div>

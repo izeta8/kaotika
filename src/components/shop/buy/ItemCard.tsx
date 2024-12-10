@@ -11,10 +11,11 @@ type ItemCardProps = {
   isMagicalStuffShop: boolean,
   setCartAnimating: Function,
   isOnCart: boolean,
-  hasEnoughMoney: boolean
+  hasEnoughMoney: boolean,
+  handleCardHover: Function
 } 
  
-const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, isMagicalStuffShop, setCartAnimating, isOnCart, hasEnoughMoney }) => {
+const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, isMagicalStuffShop, setCartAnimating, isOnCart, hasEnoughMoney, handleCardHover }) => {
 
   const [animatingItemId, setAnimatingItemId] = useState<string | null>(null);
   const cardRef = useRef<HTMLDivElement | null>(null);
@@ -22,7 +23,7 @@ const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConf
 
   if (!itemData) { return }
 
-  const { _id, name, description, type, value, modifiers, min_lvl, image, base_percentage, defense, isUnique } = itemData;
+  const { name, value, min_lvl, image, isUnique } = itemData;
 
   // If the item does not have value, we do not want to show it in the shop.
   if (!value || value === 0 ) { return }
@@ -87,12 +88,14 @@ const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConf
   return (
 
     <div
-    ref={cardRef}
-    className={`item-card ${animatingItemId === itemData._id ? 'animate-to-cart' : ''}`}
-    onAnimationEnd={() => {
-      setAnimatingItemId(null);
-      setCartAnimating(true)
-    }}
+      ref={cardRef}
+      className={` item-card ${animatingItemId === itemData._id ? 'animate-to-cart' : ''}`}
+      onAnimationEnd={() => {
+        setAnimatingItemId(null);
+        setCartAnimating(true)
+      }}
+      onMouseEnter={() => handleCardHover(itemData)}
+      onMouseLeave={() => handleCardHover(undefined)}
     >
     
     <div className="bg-slate-900 w-72 p-6 flex flex-col justify-center items-center relative z-10 select-none hover:cursor-pointer hover:-translate-y-4 transition-all" 
