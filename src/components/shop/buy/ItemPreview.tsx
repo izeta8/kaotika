@@ -20,17 +20,17 @@ const ItemPreview: React.FC<ItemPreviewProps> = ({hoveredCard, isMagicalStuffSho
         className="sticky top-60 w-full h-[85vh] bg-red-700/0 flex items-center flex-col gap-5"
       >
 
-        <div className="w-full h-4/6 bg-[#1E1E1E] border-sepia border-2 p-5 rounded-sm flex items-center flex-col">
+        <div className={`w-full h-4/6 bg-[#1E1E1E] border-sepia border-2 p-5 rounded-sm flex items-center flex-col ${isMagicalStuffShop ? "justify-center gap-8" : null}`}>
 
           {hoveredCard?.name && (
             <h2
-              className="text-4xl text-center underline text-medievalSepia pt-10 animate-fadeIn"
+              className={`text-4xl text-center underline text-medievalSepia animate-fadeIn ${!isMagicalStuffShop ? "pt-10" : null}`}
             >
               {hoveredCard?.name}
             </h2>
           )}
 
-          <div className="flex items-center flex-grow">
+          <div className={`flex items-center ${!isMagicalStuffShop ? "flex-grow" : null}`}>
             
             {hoveredCard ? 
 
@@ -42,7 +42,7 @@ const ItemPreview: React.FC<ItemPreviewProps> = ({hoveredCard, isMagicalStuffSho
                 </div>
                 :
                 // SHOP MODAL 
-                <div>
+                <div className="animate-fadeIn text-[#EED1B4]">
                   {renderEffects(hoveredCard?.effects, hoveredCard?.type)}
                 </div>
 

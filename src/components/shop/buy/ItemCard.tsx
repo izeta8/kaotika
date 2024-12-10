@@ -39,8 +39,8 @@ const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConf
     "url('/images/shop/buy/magic_stuff_card_background.png')" :
     "url('/images/shop/buy/equipment_card_background.png')";
 
-  const equipmentTextGradient = "bg-gradient-to-b from-[#FFD0A0] via-[#EED1B4] to-[#B2AF9E]";
-  const magicalStuffTextGradient = "bg-gradient-to-b from-[#212532] via-[#9CB5EA] to-[#3A3C45]";
+  const equipmentTextGradient = "bg-gradient-to-b from-[#FFD0A0] via-[#EED1B4] to-[#B2AF9E] bg-clip-text text-transparent ";
+  const magicalStuffTextGradient = "bg-gradient-to-b from-[#212532] via-[#9CB5EA] to-[#3A3C45] bg-clip-text text-transparent ";
 
   // ---- USE EFFECTS ---- //
     useEffect(() => {
@@ -133,7 +133,10 @@ const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConf
         {/* ITEM NAME */}
         <p
           style={{fontSize: 42}}
-          className={`whitespace-nowrap font-medium bg-clip-text text-transparent select-text text-center ${isMagicalStuffShop ? magicalStuffTextGradient : equipmentTextGradient}`}
+          className={`
+              whitespace-nowrap font-medium select-text text-center ${isMagicalStuffShop ? "text-[#bccff6]" : equipmentTextGradient}
+              [filter:drop-shadow(0px_2px_0_rgba(0,0,0,0.3))_drop-shadow(0px_1px_0_rgba(0,0,0,0.3))_drop-shadow(0px_-1px_0_rgba(0,0,0,0.3))_drop-shadow(0px_0px_2px_rgba(0,0,0,.5))]
+              `}
         >
           {displayName}
         </p>

@@ -12,8 +12,8 @@ interface ItemModalProps {
 } 
 
 // Style variables 
-const equipmentTextGradient = "bg-gradient-to-b from-[#FFD0A0] via-[#EED1B4] to-[#B2AF9E]"; 
-const magicalStuffTextGradient = "bg-gradient-to-b from-[#212532] via-[#9CB5EA] to-[#3A3C45]"; 
+const equipmentTextGradient = "bg-gradient-to-b from-[#FFD0A0] via-[#EED1B4] to-[#B2AF9E] bg-clip-text text-transparent"; 
+const magicalStuffTextGradient = "bg-gradient-to-b from-[#212532] via-[#9CB5EA] to-[#3A3C45] bg-clip-text text-transparent"; 
 
 const redColor = "text-[#e8513c]";
 const greenColor = "text-[#7cc74e]";
@@ -96,7 +96,7 @@ const UpperRow: React.FC<UpperRowProps> = ({name, isMagicalStuffShop}) => {
 
   return (
     <div className="bg-blue-500/0 ">
-      <h2 className={`text-7xl py-2 bg-clip-text text-transparent select-text text-center ${isMagicalStuffShop ? magicalStuffTextGradient : equipmentTextGradient}`}>
+      <h2 className={`text-7xl py-2 select-text text-center ${isMagicalStuffShop ? magicalStuffTextGradient : equipmentTextGradient}`}>
         {name}
       </h2>
     </div>
@@ -128,8 +128,8 @@ const LowerRow: React.FC<LowerRowProps> = ({itemData, playerData, isMagicalStuff
             {renderEquipmentItemData(modifiers, defense, base_percentage, playerData, type)} 
           </div>
           :
-          // SHOP MODAL 
-          <div>
+          // MAGICAL STUFF MODAL 
+          <div className="text-[#9CB5EA] ">
             {renderEffects(effects, type)}
           </div>
         }
@@ -154,7 +154,7 @@ const LowerRow: React.FC<LowerRowProps> = ({itemData, playerData, isMagicalStuff
     {/* Description */}
     <div className="flex justify-center items-center bg">
       <p
-        className={`text-4xl italic text-balance py-2 bg-clip-text text-transparent select-text text-center ${isMagicalStuffShop ? magicalStuffTextGradient : equipmentTextGradient}`}
+        className={`text-4xl italic text-balance py-2 select-text text-center ${isMagicalStuffShop ? "text-[#9CB5EA]" : equipmentTextGradient}`}
       >
         {`"${description}"`}
       </p>
@@ -171,7 +171,7 @@ const LowerRow: React.FC<LowerRowProps> = ({itemData, playerData, isMagicalStuff
 export const renderEffects = (effects: Array<string> | undefined, itemType: string) => {
 
   if (!(effects && effects.length>0)) {
-    return <p className={`text-[#EED1B4] text-3xl italic`}>This item does not have any effect.</p>;
+    return <p className={`text-3xl italic`}>This item does not have any effect.</p>;
   }
 
   if (itemType !== "ingredient") { return }
@@ -181,9 +181,10 @@ export const renderEffects = (effects: Array<string> | undefined, itemType: stri
     effects.map(effect => {
       const effectName = capitalizeFirstLetter(effect);
 
-      return (<p  
-        key={`${effect}-p`}
-        className="text-[#9CB5EA] text-3xl"
+      return (
+        <p  
+          key={`${effect}-p`}
+          className="text-4xl text-center"
         >
           {effectName}
         </p>
