@@ -80,6 +80,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose, cartItems, setItemsInCart,
 
                 return (
                   <ItemRow 
+                    key={item._id}
                     item={item}
                     isItemIngredient={isItemIngredient}
                     decreaseItem={decreaseItem}
@@ -117,10 +118,10 @@ const ItemRow: React.FC<ItemRowProps> = ({item, isItemIngredient, decreaseItem, 
   
   const {image, name, _id, value, quantity} = item;
 
-  if (value===undefined || value === null) {return}
+   if (value === undefined || value === null) { return null; }
 
   return (
-    <div key={item._id} className="flex justify-between items-center border-b border-gray-700 pb-4">
+    <div className="flex justify-between items-center border-b border-gray-700 pb-4">
       <div className="flex items-center space-x-4">
         <img
           src={`https://kaotika.vercel.app${image}`}
@@ -142,6 +143,7 @@ const ItemRow: React.FC<ItemRowProps> = ({item, isItemIngredient, decreaseItem, 
               <button
                 onClick={() => decreaseItem(_id)}
                 className="px-3 py-2 bg-gray-600 text-white rounded hover:bg-gray-500 text-2xl"
+                 aria-label="Decrease quantity"
               >
                 <FaMinus />
               </button>
@@ -149,6 +151,7 @@ const ItemRow: React.FC<ItemRowProps> = ({item, isItemIngredient, decreaseItem, 
               <button
                 onClick={() => increaseItem(_id)}
                 className="px-3 py-2 bg-gray-600 text-white rounded hover:bg-gray-500 text-2xl"
+                aria-label="Increase quantity"
               >
                 <FaPlus />
               </button>
@@ -167,6 +170,7 @@ const ItemRow: React.FC<ItemRowProps> = ({item, isItemIngredient, decreaseItem, 
           <button
             onClick={() => removeItem(_id)}
             className="text-yellow-600 hover:text-yellow-700"
+            aria-label={`RemoveItem`} 
           >
             <FaTimes size={28} />
           </button>
@@ -189,6 +193,7 @@ const CloseButton: React.FC<CloseButtonProps> = ({onClick}) => {
     <button
       onClick={onClick}
       className="absolute top-6 right-6 text-gray-400 hover:text-gray-100"
+      aria-label="CloseItem"
     >
       <FaTimes size={36} />
     </button>
