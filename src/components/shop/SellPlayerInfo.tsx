@@ -6,7 +6,7 @@ interface promps {
   level: number | undefined;
 }
 
-const ShopPlayerInfo: React.FC<promps> = ({ gold, level }) => {
+const SellPlayerInfo: React.FC<promps> = ({ gold, level }) => {
   const [displayGold, setDisplayGold] = useState<number>(gold || 0);
 
   useEffect(() => {
@@ -53,6 +53,7 @@ export const LevelDisplay: React.FC<{level: number}> = ({level}) => {
       <img
         className="w-11 rounded-full flex-shrink-0"
         src={"/images/icons/level.png"}
+        draggable={false}
       />
 
       <p
@@ -66,4 +67,4 @@ export const LevelDisplay: React.FC<{level: number}> = ({level}) => {
 
 }
 
-export default ShopPlayerInfo;
+export default SellPlayerInfo;

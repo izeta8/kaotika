@@ -4,15 +4,12 @@ import React from "react";
 import { useSession } from 'next-auth/react';
 import Cart from "@/components/shop/Cart";
 import { useState, useEffect } from "react";
-import ShopPlayerInfo from "@/components/shop/ShopPlayerInfo";
 import { ItemData } from "@/_common/interfaces/ItemData";
 import { CartItem } from "@/_common/interfaces/CartItem";
 import Loading from "@/components/Loading";
 
 // Shop Components
-import GoldDisplay from "@/components/shop/GoldDisplay";
 import { renderEquipmentItemData, renderEffects } from "@/components/shop/buy/ItemModal";
-import { LevelDisplay } from "@/components/shop/ShopPlayerInfo";
 import Confirm from "@/components/shop/Confirm";
 import ItemModal from "@/components/shop/buy/ItemModal";
 import ShopBackground from "@/components/shop/buy/ShopBackground";
@@ -20,6 +17,7 @@ import ItemCard from "@/components/shop/buy/ItemCard";
 import ShopHeader from "@/components/shop/buy/ShopHeader"; 
 import { Player } from "@/_common/interfaces/Player";
 import CartButton from "@/components/shop/buy/CartButton";
+import ItemPreview from "@/components/shop/buy/ItemPreview";
 
 export type ShopCategories = "helmets" | "weapons" | "armors" | "shields" | "boots" | "rings" | "ingredients" | "containers";
 
@@ -436,55 +434,14 @@ const ShopContent: React.FC<ShopContentProps> = ({ categoryData, addToCart, setP
 
           {/* LEFT COLUMN: Items Preview */}
           <div className="w-[350px] px-3 bg-orange-500/0 relative">
-
-            {/* Items Preview Column */}
-            <div
-                className="sticky top-60 w-full h-[85vh] bg-red-700/0 flex items-center flex-col gap-5"
-              >
-
-                <div className="w-full h-4/6 bg-[#1E1E1E] border-sepia border-2 p-5 rounded-sm flex items-center flex-col">
-
-                  {hoveredCard?.name && (
-                    <h2
-                      className="text-4xl text-center underline text-medievalSepia pt-5 animate-fadeIn"
-                    >
-                      {hoveredCard?.name}
-                    </h2>
-                  )}
-
-                  <div className="flex items-center flex-grow">
-                    
-                    {hoveredCard ? 
-
-                      !isMagicalStuffShop(router) ? 
-                        // EQUIPMENT MODAL 
-                        <div className="animate-fadeIn">
-                          {renderEquipmentItemData(hoveredCard?.modifiers, hoveredCard?.defense, hoveredCard?.base_percentage, playerData, hoveredCard.type)} 
-                        </div>
-                        :
-                        // SHOP MODAL 
-                        <div>
-                          {renderEffects(hoveredCard?.effects, hoveredCard?.type)}
-                        </div>
-
-                    : 
-                      <p className="text-4xl text-medievalSepia text-center italic text-balance animate-fadeIn">Hover an item to see its stats.</p>   
-                    }
-
-                  </div>
-
-                </div>
-
-                <div
-                  className="w-full flex flex-row gap-4 justify-center items-center"
-                >
-                  {playerData?.level && (<LevelDisplay level={playerData?.level} />)}
-                  {playerData?.gold && (<GoldDisplay gold={playerData?.gold} />)}
-                </div>
-
-
-            </div>
-
+          
+            <ItemPreview 
+              hoveredCard={hoveredCard}
+              isMagicalStuffShop={isMagicalStuffShop(router)}
+              renderEquipmentItemData={renderEquipmentItemData}
+              renderEffects={renderEffects}
+              playerData={playerData}                          
+            />
           </div>
 
           {/* RIGHT COLUMN: Shop */}
