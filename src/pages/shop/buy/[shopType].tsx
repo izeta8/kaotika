@@ -10,8 +10,9 @@ import { CartItem } from "@/_common/interfaces/CartItem";
 import Loading from "@/components/Loading";
 
 // Shop Components
+import GoldDisplay from "@/components/shop/GoldDisplay";
 import { renderEquipmentItemData, renderEffects } from "@/components/shop/buy/ItemModal";
-import { Info } from "@/components/shop/ShopPlayerInfo";
+import { LevelDisplay } from "@/components/shop/ShopPlayerInfo";
 import Confirm from "@/components/shop/Confirm";
 import ItemModal from "@/components/shop/buy/ItemModal";
 import ShopBackground from "@/components/shop/buy/ShopBackground";
@@ -477,11 +478,10 @@ const ShopContent: React.FC<ShopContentProps> = ({ categoryData, addToCart, setP
                 <div
                   className="w-full flex flex-row gap-4 justify-center items-center"
                 >
-                  <Info imagePath={"/images/icons/level.png"} label={11} />
-                  <Info imagePath={"/images/icons/level.png"} label={11} />
+                  {playerData?.level && (<LevelDisplay level={playerData?.level} />)}
+                  {playerData?.gold && (<GoldDisplay gold={playerData?.gold} />)}
                 </div>
 
-          
 
             </div>
 

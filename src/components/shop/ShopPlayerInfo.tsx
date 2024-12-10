@@ -21,7 +21,7 @@ const ShopPlayerInfo: React.FC<promps> = ({ gold, level }) => {
         <GoldDisplay gold={displayGold} />
       )}
       {(level !== undefined && level !== null) && (
-        <Info imagePath={"/images/icons/level.png"} label={level} />
+        <LevelDisplay level={level} />
       )}
     </InfoContainer>
   );
@@ -45,20 +45,20 @@ const InfoContainer: React.FC<{children: ReactNode}> = ({children}) => {
 
 }
 
-export const Info: React.FC<{imagePath: string, label: number}> = ({imagePath, label}) => {
+export const LevelDisplay: React.FC<{level: number}> = ({level}) => {
 
   return (
     <div className="w-3/5 border border-medievalSepia rounded-md px-2 py-1 flex flex-row gap-3 justify-center align-middle bg-black/30">
 
       <img
         className="w-11 rounded-full flex-shrink-0"
-        src={imagePath}
+        src={"/images/icons/level.png"}
       />
 
       <p
         className="text-4xl pb-2  flex-grow text-center"
       >
-        {label}
+        {level}
       </p>
 
     </div>
