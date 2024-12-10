@@ -430,19 +430,23 @@ const ShopContent: React.FC<ShopContentProps> = ({ categoryData, addToCart, setP
         </div>
 
         {/* LOWER ROW: Filter and Sort By */}
-        <div className="relative w-full bg-blue-800/0 grid grid-cols-[350px_1fr]">
+        <div className={`relative w-full bg-blue-800/0 grid ${categoryData.length > 0 ? "grid-cols-[350px_1fr]" : "grid-cols-1"}`}>
 
-          {/* LEFT COLUMN: Items Preview */}
-          <div className="w-[350px] px-3 bg-orange-500/0 relative">
-          
-            <ItemPreview 
-              hoveredCard={hoveredCard}
-              isMagicalStuffShop={isMagicalStuffShop(router)}
-              renderEquipmentItemData={renderEquipmentItemData}
-              renderEffects={renderEffects}
-              playerData={playerData}                          
-            />
-          </div>
+          {categoryData.length > 0 && (
+            <>
+              {/* LEFT COLUMN: Items Preview */}
+              <div className="w-[350px] px-3 bg-orange-500/0 relative">
+                        
+              <ItemPreview 
+                hoveredCard={hoveredCard}
+                isMagicalStuffShop={isMagicalStuffShop(router)}
+                renderEquipmentItemData={renderEquipmentItemData}
+                renderEffects={renderEffects}
+                playerData={playerData}                          
+                />
+              </div>
+            </>
+          )}
 
           {/* RIGHT COLUMN: Shop */}
           <div>
