@@ -424,9 +424,10 @@ const ShopContent: React.FC<ShopContentProps> = ({ categoryData, addToCart, setP
 
         {/* UPPER ROW: Filter and Sort By */}
         <div className="w-full mb-3 bg-slate-800/10 flex flex-row justify-center items-center">
-          <p>FILTROS</p>
+          {/* <p>FILTROS</p>
           <input type="text" placeholder="Filter" className="text-black text-3xl p-1" />
-          <button className="text-black text-3xl p-1 border border-sepia bg-slate-500">Sort By</button>
+          <button className="text-black text-3xl p-1 border border-sepia bg-slate-500">Sort By</button> */}
+          <div className="h-8"></div> 
         </div>
 
         {/* LOWER ROW: Filter and Sort By */}
