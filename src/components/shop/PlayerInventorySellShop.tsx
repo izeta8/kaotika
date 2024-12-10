@@ -11,12 +11,12 @@ import { GRID_NUMBER } from "@/constants/constants";
 import { useState } from "react";
 
 interface Props {
-    playerData?: Player;
-    setSelectedItemToSell?: (item: Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield | Ingredient | null) => void;
-    setHoverItemToSell?: (item: Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield | Ingredient | null) => void;
-  }
+  playerData?: Player;
+  setSelectedItemToSell?: (item: Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield | Ingredient | null) => void;
+  setHoverItemToSell?: (item: Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield | Ingredient | null) => void;
+}
 
-const PlayerInventorySellShop: React.FC<Props> = ({playerData, setSelectedItemToSell, setHoverItemToSell, selectedItemToSell}) => {
+const PlayerInventorySellShop: React.FC<Props> = ({ playerData, setSelectedItemToSell, setHoverItemToSell, selectedItemToSell }) => {
 
   const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null); // Track timeout for hover
 
@@ -47,7 +47,7 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData, setSelectedItemTo
   `;
 
   const handleItemClick = (
-    item: Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield | Ingredient 
+    item: Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield | Ingredient
   ) => {
     if (selectedItemToSell === item) {
       // Deselect the item if it is already selected
@@ -63,7 +63,7 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData, setSelectedItemTo
     if (hoverTimeout) clearTimeout(hoverTimeout); // Clear previous timeout
     const timeout = setTimeout(() => {
       setHoverItemToSell?.(item); // Set the hover item after 1 second
-    }, 200); 
+    }, 200);
     setHoverTimeout(timeout);
   };
 
@@ -82,158 +82,170 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData, setSelectedItemTo
   };
 
 
-       
-        return (
-        <div className="w-10/12 p-4">
-        {/* Inject the custom animation style for snake-like border effect */}
-        <style>{borderAnimationStyle}</style>
-          <div className="w-full h-full bg-black/70">
-            <div className="grid grid-cols-12 grid-rows-5 flex-grow">
-              {
-                playerData?.inventory.helmets.map(helmet => {
-                  return (
-                    <div key={helmet._id} className={`flex justify-center items-center aspect-square ${getItemClass(
-                      helmet
-                    )}`} >
-                      <img src={helmet.image} alt={helmet.name} className="w-full h-auto" 
-                      onClick={() => handleItemClick(helmet)}
-                      onMouseEnter={() => handleMouseEnter(helmet)} 
-                      onMouseLeave={() => handleMouseLeave()} 
-                      />
-                    </div>
-                  )
-                })
-              }
-              {
-                playerData?.inventory.weapons.map(weapon => {
-                  return (
-                    <div key={weapon._id} className={`flex justify-center items-center bg-black/30 aspect-square ${getItemClass(
-                      weapon
-                    )}`} >
-                      <img src={weapon.image} alt={weapon.name} className="w-full h-auto" 
-                      onClick={() => handleItemClick(weapon)}
-                      onMouseEnter={() => handleMouseEnter(weapon)} 
-                      onMouseLeave={() => handleMouseLeave()} 
-                      />
-                    </div>
-                  )
-                })
-              }
-              {
-                playerData?.inventory.armors.map(armor => {
-                  return (
-                    <div key={armor._id} className={`flex justify-center items-center bg-black/30 aspect-square ${getItemClass(
-                      armor
-                    )}`} >
-                      <img src={armor.image} alt={armor.name} className="w-full h-auto" 
-                      onClick={() => handleItemClick(armor)}
-                      onMouseEnter={() => handleMouseEnter(armor)} 
-                      onMouseLeave={() => handleMouseLeave()} 
-                      />
-                    </div>
-                  )
-                })
-              }
-              {
-                playerData?.inventory.shields.map(shield => {
-                  return (
-                    <div key={shield._id} className={`flex justify-center items-center bg-black/30 aspect-square ${getItemClass(
-                      shield
-                    )}`} >
-                      <img src={shield.image} alt={shield.name} className="w-full h-auto" 
-                      onClick={() => handleItemClick(shield)} 
-                      onMouseEnter={() => handleMouseEnter(shield)} 
-                      onMouseLeave={() => handleMouseLeave()} 
-                      />
-                    </div>
-                  )
-                })
-              }
-              {
-                playerData?.inventory.artifacts.map(artifact => {
-                  return (
-                    <div key={artifact._id} className={`flex justify-center items-center bg-black/30 aspect-square ${getItemClass(
-                      artifact
-                    )}`} >
-                      <img src={artifact.image} alt={artifact.name} className="w-full h-auto" 
-                      onClick={() => handleItemClick(artifact)}
-                      onMouseEnter={() => handleMouseEnter(artifact)} 
-                      onMouseLeave={() => handleMouseLeave()}  
-                      />
-                    </div>
-                  )
-                })
-              }
-              {
-                playerData?.inventory.boots.map(boot => {
-                  return (
-                    <div key={boot._id} className={`flex justify-center items-center bg-black/30 aspect-square ${getItemClass(
-                      boot
-                    )}`} >
-                      <img src={boot.image} alt={boot.name} className="w-full h-auto" 
-                      onClick={() => handleItemClick(boot)} 
-                      onMouseEnter={() => handleMouseEnter(boot)} 
-                      onMouseLeave={() => handleMouseLeave()} 
-                      />
-                    </div>
-                  )
-                })
-              }
-              {
-                playerData?.inventory.rings.map(ring => {
-                  return (
-                    <div key={ring._id} className={`flex justify-center items-center bg-black/30 aspect-square ${getItemClass(
-                      ring
-                    )}`} >
-                      <img src={ring.image} alt={ring.name} className="w-full h-auto" 
-                      onClick={() => handleItemClick(ring)}
-                      onMouseEnter={() => handleMouseEnter(ring)} 
-                      onMouseLeave={() => handleMouseLeave()} 
-                      />
-                    </div>
-                  )
-                })
-              }
-              {
-                playerData?.inventory.ingredients.map(ingredient => {
-                  return (
-                    <div key={ingredient._id} className={`flex justify-center items-center bg-black/30 aspect-square ${getItemClass(
-                      ingredient
-                    )}`} >
-                      <img src={ingredient.image} alt={ingredient.name} className="w-full h-auto" 
-                      onClick={() => handleItemClick(ingredient)}
-                      onMouseEnter={() => handleMouseEnter(ingredient)} 
-                      onMouseLeave={() => handleMouseLeave()}  
-                      />
-                    </div>
-                  )
-                })
-              }
-              
-              {
-                Array.from({
-                  length:
-                    GRID_NUMBER_INVENTORY_SELL_SHOP
-                    - playerData?.inventory.helmets.length!!
-                    - playerData?.inventory.weapons.length!!
-                    - playerData?.inventory.armors.length!!
-                    - playerData?.inventory.shields.length!!
-                    - playerData?.inventory.artifacts.length!!
-                    - playerData?.inventory.boots.length!!
-                    - playerData?.inventory.rings.length!!
-                    - playerData?.inventory.ingredients.length!!
-                    - playerData?.inventory.healing_potions.length!!
-                    - playerData?.inventory.antidote_potions.length!!
-                    - playerData?.inventory.enhancer_potions.length!!
-                }).map((element, index) => <div key={index} className="flex justify-center items-center bg-black/30 aspect-square" style={{ 'border': '3px ridge #000000' }}></div>)
-              }
+
+  return (
+    <div className="w-10/12 p-4">
+      {/* Inject the custom animation style for snake-like border effect */}
+      <style>{borderAnimationStyle}</style>
+      <div className="w-full h-full bg-black/70">
+        <div className="grid grid-cols-12 grid-rows-5 flex-grow">
+          {
+            playerData?.inventory.helmets.map(helmet => {
+              return (
+                <div key={helmet._id} className={`flex justify-center items-center aspect-square ${getItemClass(
+                  helmet
+                )}`} >
+                  <img src={helmet.image} alt={helmet.name} className="w-full h-auto"
+                    onClick={() => handleItemClick(helmet)}
+                    onMouseEnter={() => handleMouseEnter(helmet)}
+                    onMouseLeave={() => handleMouseLeave()}
+                  />
+                </div>
+              )
+            })
+          }
+          {
+            playerData?.inventory.weapons.map(weapon => {
+              return (
+                <div key={weapon._id} className={`flex justify-center items-center bg-black/30 aspect-square ${getItemClass(
+                  weapon
+                )}`} >
+                  <img src={weapon.image} alt={weapon.name} className="w-full h-auto"
+                    onClick={() => handleItemClick(weapon)}
+                    onMouseEnter={() => handleMouseEnter(weapon)}
+                    onMouseLeave={() => handleMouseLeave()}
+                  />
+                </div>
+              )
+            })
+          }
+          {
+            playerData?.inventory.armors.map(armor => {
+              return (
+                <div key={armor._id} className={`flex justify-center items-center bg-black/30 aspect-square ${getItemClass(
+                  armor
+                )}`} >
+                  <img src={armor.image} alt={armor.name} className="w-full h-auto"
+                    onClick={() => handleItemClick(armor)}
+                    onMouseEnter={() => handleMouseEnter(armor)}
+                    onMouseLeave={() => handleMouseLeave()}
+                  />
+                </div>
+              )
+            })
+          }
+          {
+            playerData?.inventory.shields.map(shield => {
+              return (
+                <div key={shield._id} className={`flex justify-center items-center bg-black/30 aspect-square ${getItemClass(
+                  shield
+                )}`} >
+                  <img src={shield.image} alt={shield.name} className="w-full h-auto"
+                    onClick={() => handleItemClick(shield)}
+                    onMouseEnter={() => handleMouseEnter(shield)}
+                    onMouseLeave={() => handleMouseLeave()}
+                  />
+                </div>
+              )
+            })
+          }
+          {
+            playerData?.inventory.artifacts.map(artifact => {
+              return (
+                <div key={artifact._id} className={`flex justify-center items-center bg-black/30 aspect-square ${getItemClass(
+                  artifact
+                )}`} >
+                  <img src={artifact.image} alt={artifact.name} className="w-full h-auto"
+                    onClick={() => handleItemClick(artifact)}
+                    onMouseEnter={() => handleMouseEnter(artifact)}
+                    onMouseLeave={() => handleMouseLeave()}
+                  />
+                </div>
+              )
+            })
+          }
+          {
+            playerData?.inventory.boots.map(boot => {
+              return (
+                <div key={boot._id} className={`flex justify-center items-center bg-black/30 aspect-square ${getItemClass(
+                  boot
+                )}`} >
+                  <img src={boot.image} alt={boot.name} className="w-full h-auto"
+                    onClick={() => handleItemClick(boot)}
+                    onMouseEnter={() => handleMouseEnter(boot)}
+                    onMouseLeave={() => handleMouseLeave()}
+                  />
+                </div>
+              )
+            })
+          }
+          {
+            playerData?.inventory.rings.map(ring => {
+              return (
+                <div key={ring._id} className={`flex justify-center items-center bg-black/30 aspect-square ${getItemClass(
+                  ring
+                )}`} >
+                  <img src={ring.image} alt={ring.name} className="w-full h-auto"
+                    onClick={() => handleItemClick(ring)}
+                    onMouseEnter={() => handleMouseEnter(ring)}
+                    onMouseLeave={() => handleMouseLeave()}
+                  />
+                </div>
+              )
+            })
+          }
+          {
+            playerData?.inventory.ingredients.map(ingredient => {
+              return (
+                <div
+                key={ingredient._id}
+                className={`relative flex justify-center items-center bg-black/30 aspect-square ${getItemClass(
+                  ingredient
+                )}`}
+              >
+                <img
+                  src={ingredient.image}
+                  alt={ingredient.name}
+                  className="w-full h-auto"
+                  onClick={() => handleItemClick(ingredient)}
+                  onMouseEnter={() => handleMouseEnter(ingredient)}
+                  onMouseLeave={() => handleMouseLeave()}
+                  draggable={false}
+                />
+                <span className="absolute bottom-0 right-0 text-white text-5xl" onClick={() => handleItemClick(ingredient)}
+                  onMouseEnter={() => handleMouseEnter(ingredient)}
+                  onMouseLeave={() => handleMouseLeave()}>
+                  {ingredient.quantity}
+                </span>
+              </div>
+            )
+            })
+          }
+
+          {
+            Array.from({
+              length:
+                GRID_NUMBER_INVENTORY_SELL_SHOP
+                - playerData?.inventory.helmets.length!!
+                - playerData?.inventory.weapons.length!!
+                - playerData?.inventory.armors.length!!
+                - playerData?.inventory.shields.length!!
+                - playerData?.inventory.artifacts.length!!
+                - playerData?.inventory.boots.length!!
+                - playerData?.inventory.rings.length!!
+                - playerData?.inventory.ingredients.length!!
+                - playerData?.inventory.healing_potions.length!!
+                - playerData?.inventory.antidote_potions.length!!
+                - playerData?.inventory.enhancer_potions.length!!
+            }).map((element, index) => <div key={index} className="flex justify-center items-center bg-black/30 aspect-square" style={{ 'border': '3px ridge #000000' }}></div>)
+          }
 
 
-            </div>
-          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 }
 
 
-export default  PlayerInventorySellShop;
+export default PlayerInventorySellShop;
