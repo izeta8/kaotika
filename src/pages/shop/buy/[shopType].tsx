@@ -340,9 +340,9 @@ const Shop = () => {
 
             {/* Print image of the modal background to load it instantly. */}
             {isMagicalStuffShop(router) ?
-              <img src="/images/shop/buy/magical_stuff_modal_background.webp"></img>
+              <img className="w-0" src="/images/shop/buy/magical_stuff_modal_background.webp"></img>
               :
-              <img src="/images/shop/buy/equipment_modal_background.webp"></img>
+              <img className="w-0" src="/images/shop/buy/equipment_modal_background.webp"></img>
             }
 
           </div>
