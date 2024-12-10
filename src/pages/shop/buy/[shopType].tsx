@@ -242,6 +242,78 @@ const Shop = () => {
 
   ////////////////////////////////////////////////////////////////////////////////
 
+  // Remove owned items from the shop.
+
+  const removeOwnedItems = () => {
+
+    if (!playerData) {return}
+
+    const itemTypes = [
+      {category: "helmet", setter: setHelmets},
+      {category: "weapon", setter: setWeapons},
+      {category: "armor", setter: setArmors},
+      {category: "shield", setter: setShields},
+      {category: "boot", setter: setBoots},
+      {category: "ring", setter: setRings},
+    ];
+
+    itemTypes.forEach((categoryObject: {category: string, setter: Function}):void => {
+
+      const playerItems: string[] = [];
+      
+      const {category, setter} = categoryObject;
+
+      // Add equipped item to array.
+      const equippedItem = playerData?.equipment[category];
+      if (equippedItem) {
+        playerItems.push(equippedItem._id);
+      }
+
+      // Add inventory items to array.
+      const inventoryItems = playerData?.inventory[`${category}s`];
+      if (inventoryItems && inventoryItems.length>0) {
+        const inventoryIds = inventoryItems
+          .filter((item:any) => item && item._id)
+          .map((item:any) => item._id);
+        playerItems.push(...inventoryIds);
+      }
+
+      // I use set just because it is more efficient with large objects.
+      const playerItemsSet = new Set(playerItems);
+
+      // Remove the owned items of the current category from the state and localstorage.
+      setter((prevItems: ItemData[]) => {
+        const filteredItems = prevItems.filter(item => !playerItemsSet.has(item._id));
+
+        // Update localStorage
+        try {
+          localStorage.setItem(
+            `${category}s`,
+            JSON.stringify(filteredItems)
+          );
+        } catch (error) {
+          console.error(`Failed to update localStorage for ${category}s:`, error);
+        }
+
+        return filteredItems;
+      });
+    })
+  }
+
+  useEffect(() => {
+    removeOwnedItems();
+  }, [playerData?.equipment, playerData?.inventory]);
+
+  // When we change a category state value, update the current displayed data.
+  useEffect(() => {
+    if (currentCategory) {
+      setCategoryData(shopCategories[currentCategory]);
+    }
+  }, [helmets, weapons, armors, shields, boots, rings]);
+
+
+  ////////////////////////////////////////////////////////////////////////////////
+
   // ---- CART FUNCTIONS ---- //
 
   useEffect(() => {
