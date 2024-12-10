@@ -416,7 +416,7 @@ const ShopContent: React.FC<ShopContentProps> = ({ categoryData, addToCart, setP
   const router = useRouter();
 
   return (
-    <section className='w-full h-full relative z-30 flex justify-center items-center mb-8'>
+    <section className='w-full h-full relative z-30 flex justify-center items-center mb-8  animate-fadeIn'>
 
       <div className="w-11/12 flex flex-row flex-wrap">
 
@@ -497,7 +497,7 @@ const ItemsList: React.FC<ItemsListProps> = ({ categoryData, addToCart, setProdu
   const router = useRouter();
 
   if (categoryData.length === 0) {
-    return <h2 className="text-4xl m-10 text-medievalSepia mt-5">There are no available items in this category</h2>;
+    return <h2 className="text-4xl m-10 text-medievalSepia mt-5 animate-fadeIn">There are no available items in this category</h2>;
   }
 
   return (
