@@ -127,8 +127,8 @@ const Shop = () => {
       fetch(`/api/shop/player?playerEmail=${playerEmail}`)
         .then(response => response.json())
         .then(data => {
-          console.log(`el player : `, data.player);
-          setPlayerData(data.player);
+          console.log(`el player cliente : `, data);
+          setPlayerData(data);
           // localStorage.setItem('playerData', JSON.stringify( data ));
           console.log(data.player, "is the data fetched");
           setLoading(false);
