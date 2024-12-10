@@ -586,13 +586,14 @@ const purchaseProduct = async (playerEmail: string, products: Array<ItemData>) =
 
     if (!response.ok || !result.success) {
       // Handle the case where the purchase fails due to business logic (e.g., low level or insufficient funds)
-      console.log('Purchase failed:', result.error); 
+      console.log('Purchase failed:', result.message); 
 
       return result;
     }
 
     // Handle the successful purchase case
     console.log('Purchase successful:', result);
+    
     return result
 
   } catch (error) {
