@@ -36,54 +36,6 @@ const GoldDisplay: React.FC<GoldDisplayProps> = ({ gold }) => {
     }, interval);
   };
 
-  //********************* TAILWIND CSS *************************/
-
-  const customStyles = `
-    @tailwind base;
-    @tailwind components;
-    @tailwind utilities;
-
-    @layer utilities {
-      @keyframes goldIncrease {
-        0% {
-          transform: scale(1);
-          color: #fff;
-        }
-        50% {
-          transform: scale(1.2);
-          color: #4caf50;
-        }
-        100% {
-          transform: scale(1);
-          color: #fff;
-        }
-      }
-
-      @keyframes goldDecrease {
-        0% {
-          transform: scale(1);
-          color: #fff;
-        }
-        50% {
-          transform: scale(1.2);
-          color: #f44336;
-        }
-        100% {
-          transform: scale(1);
-          color: #fff;
-        }
-      }
-
-      .animate-gold-increase {
-        animation: goldIncrease 0.5s ease-in-out;
-      }
-
-      .animate-gold-decrease {
-        animation: goldDecrease 0.5s ease-in-out;
-      }
-    }
-  `;
-
   return (
     <>
       <style jsx>{customStyles}</style>
@@ -106,5 +58,55 @@ const GoldDisplay: React.FC<GoldDisplayProps> = ({ gold }) => {
   );
 };
 
+
+
 export default GoldDisplay;
+
+ //********************* ANIMATION CSS *************************/
+
+ const customStyles = `
+ @tailwind base;
+ @tailwind components;
+ @tailwind utilities;
+
+ @layer utilities {
+   @keyframes goldIncrease {
+     0% {
+       transform: scale(1);
+       color: #fff;
+     }
+     50% {
+       transform: scale(1.2);
+       color: #4caf50;
+     }
+     100% {
+       transform: scale(1);
+       color: #fff;
+     }
+   }
+
+   @keyframes goldDecrease {
+     0% {
+       transform: scale(1);
+       color: #fff;
+     }
+     50% {
+       transform: scale(1.2);
+       color: #f44336;
+     }
+     100% {
+       transform: scale(1);
+       color: #fff;
+     }
+   }
+
+   .animate-gold-increase {
+     animation: goldIncrease 0.5s ease-in-out;
+   }
+
+   .animate-gold-decrease {
+     animation: goldDecrease 0.5s ease-in-out;
+   }
+ }
+`;
 
