@@ -20,7 +20,7 @@ import { Shield } from "@/_common/interfaces/Shield";
 import { Weapon } from "@/_common/interfaces/Weapon";
 import { MESSAGES } from "@/constants/shop/constants_messages";
 import Confirm from "@/components/shop/Confirm";
-import SellButton from "@/components/shop/SellButton";
+import SellScreenButton from "@/components/shop/SellScreenButton";
 
 
 const Sell = () => {
@@ -230,14 +230,14 @@ const Sell = () => {
           }}
         >
           <div className="px-6">
-          <SellButton
+          <SellScreenButton
           text="KEEP IT"
           handleClick={handleResetSelectedItemToSell}
           isSelected={selectedItemToSell !== null} // Enable if an item is selected
         />
           </div>
           <div className="px-6">
-          <SellButton
+          <SellScreenButton
           text="SELL IT"
           handleClick={handleSellClick}
           isSelected={selectedItemToSell !== null} // Enable if an item is selected

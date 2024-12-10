@@ -7,7 +7,7 @@ interface SellButtonProps {
   isSelected: boolean; // Flag to determine whether an item is selected
 }
 
-const SellButton: React.FC<SellButtonProps> = ({
+const SellScreenButton: React.FC<SellButtonProps> = ({
   text,
   handleClick,
   isSelected,
@@ -38,8 +38,8 @@ const SellButton: React.FC<SellButtonProps> = ({
 
   // Tailwind class for dynamic styling based on selection
   const buttonClass = isSelected
-    ? 'bg-gradient-to-r from-transparent via-[#704214] to-transparent border-4 border-transparent animate-borderMovement transform scale-100 transition-all duration-300 hover:scale-110'
-    : 'bg-gradient-to-r from-transparent via-gray-800 to-transparent border-4 border-transparent cursor-not-allowed opacity-50';
+    ? 'from-transparent bg-darkSepia hover:bg-medievalSepia to-transparent border-4 border-transparent transform scale-100 transition-all duration-300 hover:scale-110'
+    : 'from-transparent bg-medievalSepia to-transparent border-4 border-transparent cursor-not-allowed opacity-50';
 
   return (
     <div>
@@ -47,7 +47,7 @@ const SellButton: React.FC<SellButtonProps> = ({
       <style>{borderAnimationStyle}</style>
       
       <button
-      className={`px-12 py-6 text-2xl font-bold text-medievalSepia rounded-full ${buttonClass}`}
+      className={`px-12 py-6 text-2xl rounded-full text-black ${buttonClass}`}
       onClick={isSelected ? handleClick : undefined} // Only enable the click if an item is selected
       disabled={!isSelected} // Disable the button if no item is selected
     >
@@ -57,5 +57,5 @@ const SellButton: React.FC<SellButtonProps> = ({
   );
 };
 
-export default SellButton;
+export default SellScreenButton;
 
