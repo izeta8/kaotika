@@ -94,12 +94,6 @@ const Shop = () => {
     { state: "shields", setter: setShields },
     { state: "boots", setter: setBoots },
     { state: "rings", setter: setRings },
-    { state: "helmets", setter: setHelmets },
-    { state: "weapons", setter: setWeapons },
-    { state: "armors", setter: setArmors },
-    { state: "shields", setter: setShields },
-    { state: "boots", setter: setBoots },
-    { state: "rings", setter: setRings },
   ];
 
   const magicalStuffStateSetters = [
