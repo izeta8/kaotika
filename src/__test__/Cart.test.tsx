@@ -1,61 +1,134 @@
-import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import * as React from 'react';
 import Cart from '../components/shop/Cart';
-import { ItemData } from '@/_common/interfaces/ItemData';
+import React from "react";
+import { render, screen, fireEvent } from "@testing-library/react";
+import { Player } from "@/_common/interfaces/Player";
 import { CartItem } from '@/_common/interfaces/CartItem';
-import Player from '@/database/models/playerModel';
 
+describe("Cart Component", () => {
+  let mockOnClose: jest.Mock;
+  let mockSetItemsInCart: jest.Mock;
+  let mockConfirmPurchase: jest.Mock;
+  let playerData: Player;
 
+  beforeEach(() => {
+    mockOnClose = jest.fn();
+    mockSetItemsInCart = jest.fn();
+    mockConfirmPurchase = jest.fn();
 
-const mockCartItems = [
-    { _id: '1', name: 'Helmet', image: 'helmet.png', value: 500, quantity: 1, type: 'Helmet' },
-    { _id: '2', name: 'Shield', image: 'shield.png', value: 300, quantity: 2, type: 'Shield' },
-  ];
-
-  const mockPlayerData = { gold: 1000 };
-
-describe('Cart Component', () => {
-  // Test: Render cart with correct data
-  test('renders Cart with correct data', () => {
-    const setItemsInCart = jest.fn((items: CartItem[]) => {});
-    const confirmPurchase = jest.fn((items: CartItem[]) => {});
-    const onClose = jest.fn();
-
-    render(
-      <Cart
-        isOpen={true}
-        onClose={onClose}
-        cartItems={mockCartItems}
-        setItemsInCart={setItemsInCart}
-        confirmPurchase={confirmPurchase}
-        playerData={mockPlayerData}
-      />
-    );
-
-    // Check that all cart items are rendered
-    expect(screen.getByText('Helmet')).toBeInTheDocument();
-    expect(screen.getByText('Shield')).toBeInTheDocument();
-
-    // Check item prices and quantities
-    expect(screen.getByText('500')).toBeInTheDocument(); 
-    expect(screen.getByText('600')).toBeInTheDocument(); 
-
-    // Check total price
-    expect(screen.getByText('Total:')).toBeInTheDocument();
-    expect(screen.getByText('1100')).toBeInTheDocument(); 
+    playerData = {
+      gold: 1000,
+    } as Player; 
   });
+
+  const renderCart = (props?: Partial<React.ComponentProps<typeof Cart>>) => {
+    const defaultProps = {
+      isOpen: true,
+      onClose: mockOnClose,
+      cartItems: [
+        {
+          _id: "item1",
+          name: "Sword",
+          value: 100,
+          type: "weapon",
+          image: "/images/shop/items/sword.png",
+          quantity: 1,
+        },
+        {
+          _id: "item2",
+          name: "Herb",
+          value: 10,
+          type: "ingredient",
+          image: "/images/shop/items/herb.png",
+          quantity: 3,
+        },
+      ] as CartItem[],
+      setItemsInCart: mockSetItemsInCart,
+      confirmPurchase: mockConfirmPurchase,
+      playerData: playerData,
+    };
+
+    return render(<Cart {...defaultProps} {...props} />);
+  };
+
+  test("Does not render anything if isOpen is false", () => {
+    renderCart({ isOpen: false });
+    expect(screen.queryByText(/Your Cart/i)).not.toBeInTheDocument();
+  });
+
+  test("Displays the title and contents of the cart", () => {
+    renderCart();
+    expect(screen.getByText("Your Cart")).toBeInTheDocument();
+
+    expect(screen.getByText("Sword")).toBeInTheDocument();
+    expect(screen.getByText("Herb")).toBeInTheDocument();
+
+    expect(screen.getByText("100")).toBeInTheDocument();
+    expect(screen.getByText("30")).toBeInTheDocument();
+  });
+
+  test("The total is calculated correctly", () => {
+    renderCart();
+
+    expect(screen.getByText("Total:")).toBeInTheDocument();
+    expect(screen.getByText("130")).toBeInTheDocument();
+  });
+
+  test("Close the cart by clicking the close button.", () => {
+    renderCart();
+    const closeButton = screen.getByRole("button", { name: /CloseItem/ });
+    fireEvent.click(closeButton);
+    expect(mockOnClose).toHaveBeenCalled();
+  });
+
+  test("Increasing and decreasing the number of ingredient items", () => {
+    renderCart();
+
+    const incrementButton = screen.getByRole("button", { name: /increase quantity/i });
+    const decrementButton = screen.getByRole("button", { name: /decrease quantity/i });
+  
+    fireEvent.click(incrementButton);
+    expect(mockSetItemsInCart).toHaveBeenCalledWith(expect.any(Function));
+  
+    fireEvent.click(decrementButton);
+    expect(mockSetItemsInCart).toHaveBeenCalledWith(expect.any(Function));
+  });
+
+  test("Remove item from cart", () => {
+    renderCart();
+    const removeButtons = screen.getAllByRole("button", { name: "RemoveItem" });
+    expect(removeButtons.length).toBe(2);
+
+    // Removemos el primer ítem
+    fireEvent.click(removeButtons[0]);
+    expect(mockSetItemsInCart).toHaveBeenCalledWith(expect.any(Function));
+  });
+
+  test("Confirm purchase calls confirmPurchase and closes the cart.", () => {
+    renderCart();
+    const proceedButton = screen.getByText("Proceed to Checkout");
+    fireEvent.click(proceedButton);
+
+    // As the total (130) is less than playerData.gold (1000), clear the cart and close it.
+    expect(mockConfirmPurchase).toHaveBeenCalled();
+    expect(mockOnClose).toHaveBeenCalled();
+    expect(mockSetItemsInCart).toHaveBeenCalledWith([]);
+  });
+
+  test("If the total is greater than the available gold it does not clean the cart.", () => {
+    const playerWithLessGold = { gold: 50 } as Player;
+    renderCart({ playerData: playerWithLessGold });
+
+    const proceedButton = screen.getByText("Proceed to Checkout");
+    fireEvent.click(proceedButton);
+
+    // Call confirmPurchase, but do not clear the cart as total > gold
+    expect(mockConfirmPurchase).toHaveBeenCalled();
+    expect(mockSetItemsInCart).not.toHaveBeenCalledWith([]); 
+    expect(mockOnClose).toHaveBeenCalled();
+  });
+
 });
 
 
 
-
-//Añadir producto al carrito
-/*- Al hacer click en ADD TO Cart, el producto debe aparecer en el carrito.*/
-
-/*- El total acumulado debe actualizarse correctamente*/
-
-//Eliminar producto del carrito
-/*- Al hacer click en el boton "Remove" de un producto, debe eliminarse del carrito. */
-
-/*- El total acumulado debe reflejar el cambio*/
