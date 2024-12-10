@@ -11,33 +11,11 @@ type ItemCardProps = {
   isMagicalStuffShop: boolean,
   setCartAnimating: Function,
   isOnCart: boolean,
-  hasEnoughMoney: boolean
-}
-
-//********** TAILWIND CSS *************/
-const shrinkToCartStyles = `
-  @keyframes shrinkToCart {
-    0% {
-      transform: scale(1) translate(0, 0);
-      opacity: 1;
-    }
-    100% {
-      transform: scale(0.5) translate(var(--translate-x), var(--translate-y));
-      opacity: 0;
-    }
-  }
-
-  .item-card {
-    position: relative;
-    transition: transform 0.3s ease, opacity 0.3s ease;
-  }
-
-  .animate-to-cart {
-    animation: shrinkToCart 0.7s ease forwards;
-  }
-`;
+  hasEnoughMoney: boolean,
+  handleCardHover: Function
+} 
  
-const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, isMagicalStuffShop, setCartAnimating, isOnCart, hasEnoughMoney }) => {
+const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, isMagicalStuffShop, setCartAnimating, isOnCart, hasEnoughMoney, handleCardHover }) => {
 
   const [animatingItemId, setAnimatingItemId] = useState<string | null>(null);
   const cardRef = useRef<HTMLDivElement | null>(null);
@@ -45,7 +23,7 @@ const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConf
 
   if (!itemData) { return }
 
-  const { _id, name, description, type, value, modifiers, min_lvl, image, base_percentage, defense, isUnique } = itemData;
+  const { name, value, min_lvl, image, isUnique } = itemData;
 
   // If the item does not have value, we do not want to show it in the shop.
   if (!value || value === 0 ) { return }
@@ -61,8 +39,8 @@ const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConf
     "url('/images/shop/buy/magic_stuff_card_background.png')" :
     "url('/images/shop/buy/equipment_card_background.png')";
 
-  const equipmentTextGradient = "bg-gradient-to-b from-[#FFD0A0] via-[#EED1B4] to-[#B2AF9E]";
-  const magicalStuffTextGradient = "bg-gradient-to-b from-[#212532] via-[#9CB5EA] to-[#3A3C45]";
+  const equipmentTextGradient = "bg-gradient-to-b from-[#FFD0A0] via-[#EED1B4] to-[#B2AF9E] bg-clip-text text-transparent ";
+  const magicalStuffTextGradient = "bg-gradient-to-b from-[#212532] via-[#9CB5EA] to-[#3A3C45] bg-clip-text text-transparent ";
 
   // ---- USE EFFECTS ---- //
     useEffect(() => {
@@ -115,12 +93,14 @@ const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConf
     </style>
     
     <div
-    ref={cardRef}
-    className={`item-card ${animatingItemId === itemData._id ? 'animate-to-cart' : ''}`}
-    onAnimationEnd={() => {
-      setAnimatingItemId(null);
-      setCartAnimating(true)
-    }}
+      ref={cardRef}
+      className={` item-card ${animatingItemId === itemData._id ? 'animate-to-cart' : ''}`}
+      onAnimationEnd={() => {
+        setAnimatingItemId(null);
+        setCartAnimating(true)
+      }}
+      onMouseEnter={() => handleCardHover(itemData)}
+      onMouseLeave={() => handleCardHover(undefined)}
     >
     
     <div className="bg-slate-900 w-72 p-6 flex flex-col justify-center items-center relative z-10 select-none hover:cursor-pointer hover:-translate-y-4 transition-all" 
@@ -153,7 +133,10 @@ const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConf
         {/* ITEM NAME */}
         <p
           style={{fontSize: 42}}
-          className={`whitespace-nowrap font-medium bg-clip-text text-transparent select-text text-center ${isMagicalStuffShop ? magicalStuffTextGradient : equipmentTextGradient}`}
+          className={`
+              whitespace-nowrap font-medium select-text text-center ${isMagicalStuffShop ? "text-[#bccff6]" : equipmentTextGradient}
+              [filter:drop-shadow(0px_2px_0_rgba(0,0,0,0.3))_drop-shadow(0px_1px_0_rgba(0,0,0,0.3))_drop-shadow(0px_-1px_0_rgba(0,0,0,0.3))_drop-shadow(0px_0px_2px_rgba(0,0,0,.5))]
+              `}
         >
           {displayName}
         </p>
@@ -223,5 +206,28 @@ const CardButton: React.FC<CardButtonProps> = ({ onClick, label, isOnCart = fals
   )
 
 }
+
+//********** TAILWIND CSS *************/
+const shrinkToCartStyles = `
+  @keyframes shrinkToCart {
+    0% {
+      transform: scale(1) translate(0, 0);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(0.5) translate(var(--translate-x), var(--translate-y));
+      opacity: 0;
+    }
+  }
+
+  .item-card {
+    position: relative;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  .animate-to-cart {
+    animation: shrinkToCart 0.7s ease forwards;
+  }
+`;
 
 export default ItemCard;

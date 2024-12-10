@@ -2,12 +2,11 @@ import { Player } from "@/_common/interfaces/Player";
 import Layout from "@/components/Layout";
 import PlayerInventorySellShop from "@/components/shop/PlayerInventorySellShop";
 import Link from 'next/link';
-import player from "./FakeTestPlayer";
 import SellShopObjectDetails from "@/components/shop/SellShopObjectDetails";
 import { SellerDialogueBox, createItemSellPriceMessage } from "@/components/shop/SellerDialgueBox";
 import { Button } from "@nextui-org/button";
 import KaotikaButton from "@/components/KaotikaButton";
-import ShopPlayerInfo from "@/components/shop/ShopPlayerInfo";
+import SellPlayerInfo from "@/components/shop/SellPlayerInfo";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import Loading from "@/components/Loading";
@@ -204,7 +203,7 @@ const Sell = () => {
 
             {/* Botón de Return */}
             <Link
-              href="/shop/shopHome"
+              href="/shop"
               className=" bg-darkSepia w-full text-black text-3xl py-2 px-4 mb-4 mt-4 mr-8 rounded hover:bg-medievalSepia text-center transition max-w-64 max-h-24"
             >
               Return to Home
@@ -244,7 +243,7 @@ const Sell = () => {
           isSelected={selectedItemToSell !== null} // Enable if an item is selected
         />
           </div>
-          <ShopPlayerInfo gold={playerData?.gold!} level={playerData?.level!} />
+          <SellPlayerInfo gold={playerData?.gold!} level={playerData?.level!} />
         </div>
 
 

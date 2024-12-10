@@ -4,12 +4,12 @@ import React from "react";
 import { useSession } from 'next-auth/react';
 import Cart from "@/components/shop/Cart";
 import { useState, useEffect } from "react";
-import ShopPlayerInfo from "@/components/shop/ShopPlayerInfo";
 import { ItemData } from "@/_common/interfaces/ItemData";
 import { CartItem } from "@/_common/interfaces/CartItem";
 import Loading from "@/components/Loading";
 
 // Shop Components
+import { renderEquipmentItemData, renderEffects } from "@/components/shop/buy/ItemModal";
 import Confirm from "@/components/shop/Confirm";
 import ItemModal from "@/components/shop/buy/ItemModal";
 import ShopBackground from "@/components/shop/buy/ShopBackground";
@@ -17,6 +17,7 @@ import ItemCard from "@/components/shop/buy/ItemCard";
 import ShopHeader from "@/components/shop/buy/ShopHeader"; 
 import { Player } from "@/_common/interfaces/Player";
 import CartButton from "@/components/shop/buy/CartButton";
+import ItemPreview from "@/components/shop/buy/ItemPreview";
 
 export type ShopCategories = "helmets" | "weapons" | "armors" | "shields" | "boots" | "rings" | "ingredients" | "containers";
 
@@ -39,8 +40,10 @@ const Shop = () => {
   const [itemModalShown, setItemModalShown] = useState(false);
   const [modalItemData, setModalItemData] = useState<ItemData | undefined>();
 
-  // ---- CART ----  //
+  const [hoveredCard, setHoveredCard] = useState<ItemData|undefined>(undefined);
   
+  // ---- CART ----  //
+
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [cartAnimating, setCartAnimating] = useState(false);
 
@@ -116,7 +119,7 @@ const Shop = () => {
     setPlayerEmail('ander.zubizarreta@ikasle.aeg.eus');
     // if (session?.user?.email) {
     //   setLoading(true);
-      // setPlayerEmail(session.user.email); 
+      // setPlayerEmail(session.user.email);
     // }
   }, [session]);
 
@@ -156,7 +159,7 @@ const Shop = () => {
     // Load the local storage data into the states
     const currentShopType = isMagicalStuffShop(router) ? magicalStuffStateSetters : equipmentStateSetters;
     currentShopType.forEach(categoryObject => loadLocalStorageIntoStates(categoryObject));
-    
+
     // Set each shop type's default categories
     const defaultCategory = isMagicalStuffShop(router) ? magicalStuffCategories[0] : equipmentCategories[0];
     setCurrentCategory(defaultCategory);
@@ -218,7 +221,7 @@ const Shop = () => {
       console.log(result); // logs the inventory and gold after the Promise resolves
       ////////////////////////////////////
       if (result.success) {
-        // Update the playerData 
+        // Update the playerData
         const updatedPlayerData = {
           ...playerData,    // Spread all properties of playerData
           gold: result.gold,        // Override the gold property
@@ -260,13 +263,13 @@ const Shop = () => {
     if (isEquipmentShop(router)) {
 
       setItemsInCart(prevItems => {
-        return !isInCart 
+        return !isInCart
           ? [...prevItems, { ...item, quantity: 1 }] // If is not in the cart, the item is added to the array and put the quantity attribute
-          : prevItems.filter((cartItem) => cartItem._id !== item._id); // If is in the cart, remove from the array. 
+          : prevItems.filter((cartItem) => cartItem._id !== item._id); // If is in the cart, remove from the array.
       });
 
     }
-    
+
     if (isMagicalStuffShop(router)) {
 
       setItemsInCart(prevItems => {
@@ -287,6 +290,16 @@ const Shop = () => {
 
   const cartItemCount = itemsInCart.reduce((acc, item) => acc + item.quantity, 0);
 
+  ////////////////////////////////////////////////////////////////////////////////
+
+  // Update Item Preview (Left Column)
+
+  const handleCardHover = (itemData: ItemData | undefined) => {
+    setHoveredCard(itemData);
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
+
   // ---- RENDER ----  //
 
   if (loading) {
@@ -294,20 +307,21 @@ const Shop = () => {
   }
 
   return (
- 
+
       <Layout>
 
         <div className="relative -mt-2 min-h-screen">
-           
-          <div className={`relative transition-all min-h-screen duration-200 ${itemModalShown || productConfirm ? 'blur-sm' : 'blur-none'}`}> 
-            
-            <ShopHeader 
+
+          {/* <div className={`relative transition-all min-h-screen duration-200 ${itemModalShown || productConfirm ? 'blur-sm' : 'blur-none'}`}>  */}
+          <div className={`relative transition-all min-h-screen duration-200`}>
+
+            <ShopHeader
               currentCategory={currentCategory}
               setCurrentCategory={setCurrentCategory}
               isMagicalStuffShop={isMagicalStuffShop(router)}
             />
-            
-            <ShopContent 
+
+            <ShopContent
               categoryData={categoryData}
               setProductConfirm={setProductConfirm}
               addToCart={addToCart}
@@ -315,31 +329,33 @@ const Shop = () => {
               setModalItemData={setModalItemData}
               cart={itemsInCart}
               setCartAnimating={setCartAnimating}
-              playerData={playerData}
+              playerData={playerData} 
+              hoveredCard={hoveredCard} 
+              handleCardHover={handleCardHover}
+              
             />
             <ShopBackground />
 
             {/* Print image of the modal background to load it instantly. */}
-            {isMagicalStuffShop(router) ? 
-              <img src="/images/shop/buy/magical_stuff_modal_background.webp"></img>
+            {isMagicalStuffShop(router) ?
+              <img className="w-0" src="/images/shop/buy/magical_stuff_modal_background.webp"></img>
               :
-              <img src="/images/shop/buy/equipment_modal_background.webp"></img>
+              <img className="w-0" src="/images/shop/buy/equipment_modal_background.webp"></img>
             }
+
           </div>
 
-          <ShopPlayerInfo gold={playerData?.gold} level={playerData?.level}/>
-
-        {/* Cart Button Wrapper */}
+          {/* Cart Button Wrapper */}
           <CartButton
             cartItemCount={cartItemCount}
             onCartClick={openCart}
             isCartAnimating={cartAnimating}
           />
-          
+
           {/********** Modals ***********/}
 
           {itemModalShown && (
-            <ItemModal 
+            <ItemModal
               playerData={playerData}
               itemModalShown={itemModalShown}
               setItemModalShown={setItemModalShown}
@@ -381,7 +397,7 @@ const Shop = () => {
 // -----   SHOP CONTENT   ----- //
 // ---------------------------- //
 
-interface ShopContentProps { 
+interface ShopContentProps {
   categoryData: Array<ItemData>,
   addToCart: (item: ItemData) => void,
   setProductConfirm: Function,
@@ -389,25 +405,71 @@ interface ShopContentProps {
   setModalItemData: Function,
   cart: CartItem[],
   setCartAnimating: Function,
-  playerData: Player | null
+  playerData: Player | null,
+  hoveredCard: ItemData | undefined,
+  handleCardHover: Function
 }
 
-const ShopContent: React.FC<ShopContentProps> = ({ categoryData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, cart, setCartAnimating, playerData }) => {
-  return (
-    <section className='w-full h-full relative z-30 flex justify-center items-center'>
+const ShopContent: React.FC<ShopContentProps> = ({ categoryData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, cart, setCartAnimating, playerData, hoveredCard, handleCardHover }) => {
+ 
+  const router = useRouter();
 
-      {/* FILTER AND SORT BY */}
-      <ItemsList 
-        categoryData={categoryData}
-        setProductConfirm={setProductConfirm}
-        addToCart={addToCart}
-        setItemModalShown={setItemModalShown}
-        setModalItemData={setModalItemData}
-        cart={cart}
-        setCartAnimating={setCartAnimating}
-        playerData={playerData}
-      />
-    
+  return (
+    <section className='w-full h-full relative z-30 flex justify-center items-center mb-8'>
+
+      <div className="w-11/12 flex flex-row flex-wrap">
+
+
+        {/* UPPER ROW: Filter and Sort By */}
+        <div className="w-full mb-3 bg-slate-800/10 flex flex-row justify-center items-center">
+          {/* <p>FILTROS</p>
+          <input type="text" placeholder="Filter" className="text-black text-3xl p-1" />
+          <button className="text-black text-3xl p-1 border border-sepia bg-slate-500">Sort By</button> */}
+          <div className="h-8"></div> 
+        </div>
+
+        {/* LOWER ROW: Filter and Sort By */}
+        <div className={`relative w-full bg-blue-800/0 grid ${categoryData.length > 0 ? "grid-cols-[350px_1fr]" : "grid-cols-1"}`}>
+
+          {categoryData.length > 0 && (
+            <>
+              {/* LEFT COLUMN: Items Preview */}
+              <div className="w-[350px] px-3 bg-orange-500/0 relative">
+                        
+              <ItemPreview 
+                hoveredCard={hoveredCard}
+                isMagicalStuffShop={isMagicalStuffShop(router)}
+                renderEquipmentItemData={renderEquipmentItemData}
+                renderEffects={renderEffects}
+                playerData={playerData}                          
+                />
+              </div>
+            </>
+          )}
+
+          {/* RIGHT COLUMN: Shop */}
+          <div>
+            <div className="px-10 flex justify-center">
+              {/* Items list */}
+              <ItemsList
+                categoryData={categoryData}
+                setProductConfirm={setProductConfirm}
+                addToCart={addToCart}
+                setItemModalShown={setItemModalShown}
+                setModalItemData={setModalItemData}
+                cart={cart}
+                setCartAnimating={setCartAnimating}
+                playerData={playerData}
+                handleCardHover={handleCardHover}
+              />
+            </div>
+          </div>  
+
+        </div>
+
+      </div>
+
+
     </section>
   );
 };
@@ -417,7 +479,7 @@ const ShopContent: React.FC<ShopContentProps> = ({ categoryData, addToCart, setP
 // -----   ITEMS GRID   ----- //
 // -------------------------- //
 
-interface ItemsListProps { 
+interface ItemsListProps {
   categoryData: ItemData[],
   addToCart: (item: ItemData) => void,
   setProductConfirm: Function,
@@ -425,31 +487,33 @@ interface ItemsListProps {
   setModalItemData: Function,
   cart: CartItem[],
   setCartAnimating: Function
-  playerData: Player | null
-} 
+  playerData: Player | null,
+  handleCardHover: Function
+}
 
-const ItemsList: React.FC<ItemsListProps> = ({ categoryData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, cart, setCartAnimating, playerData }) => {
-     
+const ItemsList: React.FC<ItemsListProps> = ({ categoryData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, cart, setCartAnimating, playerData, handleCardHover }) => {
+
   const router = useRouter();
-   
+
   if (categoryData.length === 0) {
-    return <h2 className="text-4xl m-10 text-medievalSepia">There are no available items in this category</h2>;
+    return <h2 className="text-4xl m-10 text-medievalSepia mt-5">There are no available items in this category</h2>;
   }
 
   return (
-    <div className="w-11/12 my-10 grid grid-cols-5 gap-8 place-items-center">
+    <div className="w-full grid grid-cols-4 gap-8 place-items-center">
       {categoryData.map((item: ItemData, index: number) => (
-        <ItemCard 
+        <ItemCard
           key={item._id}
           itemData={item}
           addToCart={addToCart}
           setProductConfirm={setProductConfirm}
           setItemModalShown={setItemModalShown}
-          setModalItemData={setModalItemData} 
+          setModalItemData={setModalItemData}
           isMagicalStuffShop={isMagicalStuffShop(router)}
-          setCartAnimating={setCartAnimating} 
+          setCartAnimating={setCartAnimating}
           isOnCart={isItemOnCart(item, cart)}
           hasEnoughMoney={hasEnoughMoney(playerData, item)}
+          handleCardHover={handleCardHover}
         />
       ))}
     </div>
@@ -525,13 +589,14 @@ const purchaseProduct = async (playerEmail: string, products: Array<ItemData>) =
 
     if (!response.ok || !result.success) {
       // Handle the case where the purchase fails due to business logic (e.g., low level or insufficient funds)
-      console.log('Purchase failed:', result.error); 
+      console.log('Purchase failed:', result.message); 
 
       return result;
     }
 
     // Handle the successful purchase case
     console.log('Purchase successful:', result);
+    
     return result
 
   } catch (error) {

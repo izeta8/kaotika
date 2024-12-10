@@ -6,6 +6,8 @@ import { useState, useEffect } from "react";
 import Loading from "@/components/Loading";
 import ShopBackground from "@/components/shop/buy/ShopBackground";
 
+const imageStyles = "mx-20 transition transform hover:scale-105";
+
 const ShopHome = () => {
 
   const [loading, setLoading] = useState(true);
@@ -70,12 +72,14 @@ const ShopHome = () => {
 
   return (
     <Layout>
-      <ShopBackground />
-       <div className="relative z-30 flex flex-row items-start justify-center h-screen bg-transparent pt-20 space-x-10 sm:space-x-20">
-        <EquipmentShop />  
-        <SellItem />
-        <MagicalStuffShop />
+      <div className="relative z-30 w-full h-screen pb-32">
+        <div className="h-full flex flex-row items-center justify-center">
+          <EquipmentShop />  
+          <SellItem />
+          <MagicalStuffShop />
+        </div>
       </div>
+      <ShopBackground />
     </Layout>
   );
 };
@@ -84,14 +88,13 @@ const EquipmentShop = () => {
   return (
     <Link
       href="/shop/buy/equipment"
-      className="flex items-center justify-center text-white rounded-lg transition transform hover:scale-105 px-4 py-2"
+      className={imageStyles}
     >
       <Image
-        src="/images/shop/Equipment_buy_button.png" 
+        src="/images/shop/buy_equipment_image.png" 
         alt="Equipment"
         width={300}
         height={100}
-        className="mr-2"
         draggable={false}
       />
     </Link>
@@ -102,14 +105,13 @@ const MagicalStuffShop = () => {
   return (
     <Link
       href="/shop/buy/magical_stuff"
-      className="flex items-center justify-center text-white rounded-lg transition transform hover:scale-105 px-4 py-1"
+      className={imageStyles}
     >
       <Image
-        src="/images/shop/Magical_stuff_button.png" 
+        src="/images/shop/buy_magical_stuff_image.png" 
         alt="Magical Stuff"
-        width={299}
+        width={300}
         height={100}
-        className="mr-2"
         draggable={false}
       />
     </Link>
@@ -120,14 +122,13 @@ const SellItem = () => {
   return (
     <Link
       href="/shop/sell"
-      className="flex items-center justify-center text-white rounded-lg transition transform hover:scale-105 px-4 py-2"
+      className={imageStyles}
     >
       <Image
-        src="/images/shop/Sell_item_button.png" 
+        src="/images/shop/sell_image.png" 
         alt="Sell item"
-        width={290}
+        width={300}
         height={100}
-        className="mr-2"
         draggable={false}
       />
     </Link>

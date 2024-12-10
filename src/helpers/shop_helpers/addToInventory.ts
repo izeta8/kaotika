@@ -2,31 +2,30 @@ import { findExistingProduct } from "./findExistingProduct";
 import { incrementProductQuantity } from "./incrementProductQuantity";
 
 
-export const addToInventory = (playerInventory: Record<string, any[]>, products: Array<{ _id: string, type: string }>) => {
+export const addToInventory = (playerInventory: Record<string, any[]>, products: Array<{ _id: string, type: string, quantity: number }>) => {
   
   console.log("the inventory: " + playerInventory);
   console.log("the products of here " + JSON.stringify(products));
     products.forEach((product) => {
       
-      const category = product.type + 's'; // Determine the category based on the product type
+      const category = product.type + 's'; 
   
-      // Ensure the category exists in the player's inventory
       if (!playerInventory[category]) {
         playerInventory[category] = []; // Initialize the category if it doesn't exist
       }
-  
-      // Check if the product is already in the specific category
-      const existingProduct = findExistingProduct(playerInventory[category], product._id);
-  
-      if (existingProduct) {
-        // If the product exists, increment the quantity
-        incrementProductQuantity(existingProduct);
-      } else {
-        // If the product does not exist, add it to the category
-        playerInventory[category].push({
-          ...product, // Add all product details
-          quantity: 1, // Initialize quantity
-        });
-      }
-    });
+     const existingProduct = findExistingProduct(playerInventory[category], product._id);
+
+     if (existingProduct) {
+       if (category === "ingredients") {
+         incrementProductQuantity(existingProduct, product.quantity);
+       } else {
+         incrementProductQuantity(existingProduct, 1);
+       }
+     } else {
+       playerInventory[category].push({
+         ...product, 
+         quantity: category === "ingredients" ? product.quantity : 1, 
+       });
+     }
+   });
   };
