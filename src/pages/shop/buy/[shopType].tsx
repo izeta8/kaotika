@@ -301,6 +301,7 @@ const Shop = () => {
         <div className="relative -mt-2 min-h-screen">
            
           <div className={`relative transition-all min-h-screen duration-200 ${itemModalShown || productConfirm ? 'blur-sm' : 'blur-none'}`}> 
+            
             <ShopHeader 
               currentCategory={currentCategory}
               setCurrentCategory={setCurrentCategory}
@@ -318,6 +319,13 @@ const Shop = () => {
               playerData={playerData}
             />
             <ShopBackground />
+
+            {/* Print image of the modal background to load it instantly. */}
+            {isMagicalStuffShop(router) ? 
+              <img src="/images/shop/buy/magical_stuff_modal_background.webp"></img>
+              :
+              <img src="/images/shop/buy/equipment_modal_background.webp"></img>
+            }
           </div>
 
           <ShopPlayerInfo gold={playerData?.gold} level={playerData?.level}/>
@@ -382,7 +390,7 @@ interface ShopContentProps {
   setModalItemData: Function,
   cart: CartItem[],
   setCartAnimating: Function,
-  playerData: Player | undefined
+  playerData: Player | null
 }
 
 const ShopContent: React.FC<ShopContentProps> = ({ categoryData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, cart, setCartAnimating, playerData }) => {
@@ -418,7 +426,7 @@ interface ItemsListProps {
   setModalItemData: Function,
   cart: CartItem[],
   setCartAnimating: Function
-  playerData: Player | undefined
+  playerData: Player | null
 } 
 
 const ItemsList: React.FC<ItemsListProps> = ({ categoryData, addToCart, setProductConfirm, setItemModalShown, setModalItemData, cart, setCartAnimating, playerData }) => {
@@ -467,7 +475,7 @@ const isItemOnCart = (item: ItemData, cart: CartItem[]): boolean => {
   return cart.some((cartItem: CartItem) => cartItem._id === item._id);
 }
 
-const hasEnoughMoney = (playerData: Player | undefined, item: ItemData) => {
+const hasEnoughMoney = (playerData: Player | null, item: ItemData) => {
   if (!playerData?.gold || item?.value === undefined) {return false}
   return playerData.gold >= item.value;
 }
