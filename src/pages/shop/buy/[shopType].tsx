@@ -130,7 +130,6 @@ const Shop = () => {
           console.log(`el player cliente : `, data);
           setPlayerData(data);
           // localStorage.setItem('playerData', JSON.stringify( data ));
-          console.log(data.player, "is the data fetched");
           setLoading(false);
         })
         .catch(error => {

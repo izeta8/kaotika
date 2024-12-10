@@ -30,19 +30,19 @@ export const closeDatabaseConnection = async (): Promise<void> => {
   }
 };
 
-// Listening to connection events for debugging
-mongoose.connection.on('connected', () => {
-  console.log('MongoDB connected');
-});
+// // Listening to connection events for debugging
+// mongoose.connection.on('connected', () => {
+//   console.log('MongoDB connected');
+// });
 
-mongoose.connection.on('disconnected', () => {
-  console.log('MongoDB disconnected');
-});
+// mongoose.connection.on('disconnected', () => {
+//   console.log('MongoDB disconnected');
+// });
 
-mongoose.connection.on('reconnected', () => {
-  console.log('MongoDB reconnected');
-});
+// mongoose.connection.on('reconnected', () => {
+//   console.log('MongoDB reconnected');
+// });
 
-mongoose.connection.on('error', (err) => {
-  console.error(`MongoDB connection error: ${err}`);
-});
+// mongoose.connection.on('error', (err) => {
+//   console.error(`MongoDB connection error: ${err}`);
+// });

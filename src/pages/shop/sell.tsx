@@ -45,10 +45,11 @@ const Sell = () => {
   //####################################################################################################
 
   useEffect(() => {
-    if (session?.user?.email) {
-      setLoading(true);
-      setPlayerEmail(session.user.email);
-    }
+    setPlayerEmail('ander.zubizarreta@ikasle.aeg.eus');
+    // if (session?.user?.email) {
+    //   setLoading(true);
+    //   setPlayerEmail(session.user.email);
+    // }
   }, [session]);
 
   useEffect(() => {
