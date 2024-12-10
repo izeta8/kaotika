@@ -20,14 +20,14 @@ const ShopHeader: React.FC<ShopHeaderProps> = ({ currentCategory, setCurrentCate
       <div className="container mx-auto flex items-center justify-between">
 
         {/* Return Button Section */}
-        <div className="flex items-center">
+        <div className="flex items-center min-w-52">
           <Link href={'/shop'}>
             <span className='text-4xl mx-6 hover:underline hover:cursor-pointer text-medievalSepia'> &lt; Return</span>
           </Link>
         </div>
 
         {/* Category Buttons Section */}
-        <nav className="flex-1 text-center">
+        <nav className="text-center">
           {
             !isMagicalStuffShop  
               ?
@@ -37,6 +37,8 @@ const ShopHeader: React.FC<ShopHeaderProps> = ({ currentCategory, setCurrentCate
           }
         </nav>
 
+        {/* Need a div to have equally divided */}
+        <div className="min-w-52"></div> 
 
       </div>
 
