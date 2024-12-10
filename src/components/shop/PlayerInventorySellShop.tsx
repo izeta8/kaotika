@@ -222,9 +222,9 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData, setSelectedItemTo
                     - playerData?.inventory.boots.length!!
                     - playerData?.inventory.rings.length!!
                     - playerData?.inventory.ingredients.length!!
-                    - playerData?.inventory.healing_potions.length!!
-                    - playerData?.inventory.antidote_potions.length!!
-                    - playerData?.inventory.enhancer_potions.length!!
+                    // - playerData?.inventory.healing_potions.length!!
+                    // - playerData?.inventory.antidote_potions.length!!
+                    // - playerData?.inventory.enhancer_potions.length!!
                 }).map((element, index) => <div key={index} className="flex justify-center items-center bg-black/30 aspect-square" style={{ 'border': '3px ridge #000000' }}></div>)
               }
 

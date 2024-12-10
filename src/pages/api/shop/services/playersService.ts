@@ -65,23 +65,31 @@ export const fetchPlayer = async (connection: mongoose.Connection, playerEmail: 
       
       if (playerPopulated) {
         // Populate equipment
-      await playerPopulated.equipment.populate('armor');
-      await playerPopulated.equipment.populate('weapon');
-      await playerPopulated.equipment.populate('artifact');
-      await playerPopulated.equipment.populate('ring');
-      await playerPopulated.equipment.populate('helmet');
-      await playerPopulated.equipment.populate('shield');
-      await playerPopulated.equipment.populate('boot');
+        await playerPopulated.equipment.populate('armor', { 'profiles': 0 });
+        await playerPopulated.equipment.populate('weapon', { 'profiles': 0 });
+        await playerPopulated.equipment.populate('artifact', { 'profiles': 0 });
+        // await playerPopulated.equipment.populate('healing_potion', { 'profiles': 0 });
+        // await playerPopulated.equipment.populate('antidote_potion', { 'profiles': 0 });
+        // await playerPopulated.equipment.populate('enhancer_potion', { 'profiles': 0 });
+        // await playerPopulated.equipment.antidote_potion.populate('recovery_effect');
+        await playerPopulated.equipment.populate('ring', { 'profiles': 0 });
+        await playerPopulated.equipment.populate('helmet', { 'profiles': 0 });
+        await playerPopulated.equipment.populate('shield', { 'profiles': 0 });
+        await playerPopulated.equipment.populate('boot', { 'profiles': 0 });
 
       // Populate inventory
-      await playerPopulated.inventory.populate('helmets');
-      await playerPopulated.inventory.populate('shields');
-      await playerPopulated.inventory.populate('weapons');
-      await playerPopulated.inventory.populate('boots');
-      await playerPopulated.inventory.populate('rings');
-      await playerPopulated.inventory.populate('armors');
-      await playerPopulated.inventory.populate('artifacts');
-      await playerPopulated.inventory.populate('ingredients');
+      await playerPopulated.inventory.populate('helmets', { 'profiles': 0 });
+      await playerPopulated.inventory.populate('shields', { 'profiles': 0 });
+      await playerPopulated.inventory.populate('weapons', { 'profiles': 0 });
+      await playerPopulated.inventory.populate('boots', { 'profiles': 0 });
+      await playerPopulated.inventory.populate('rings', { 'profiles': 0 });
+      await playerPopulated.inventory.populate('armors', { 'profiles': 0 });
+      await playerPopulated.inventory.populate('artifacts', { 'profiles': 0 });
+      // await playerPopulated.inventory.populate('healing_potions', { 'profiles': 0 });
+      // await playerPopulated.inventory.populate('antidote_potions', { 'profiles': 0 });
+      // // await playerPopulated.inventory.populate('antidote_potions.recovery_effect', { 'profiles': 0 });
+      // await playerPopulated.inventory.populate('enhancer_potions', { 'profiles': 0 });
+      await playerPopulated.inventory.populate('ingredients', { 'profiles': 0 });
 
       }
   

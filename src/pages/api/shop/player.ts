@@ -26,7 +26,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       const playerData = await fetchPlayer(connection, email);
 
-      console.log("el player fetcheado: " + JSON.stringify(playerData));
+    //   console.log("el player fetcheado: " + JSON.stringify(playerData));
 
       if (!playerData?.player) {
           res.status(404).json({ message: `Player with email ${email} not found` });
