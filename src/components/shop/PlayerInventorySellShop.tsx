@@ -20,6 +20,8 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData, setSelectedItemTo
 
   const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null); // Track timeout for hover
 
+  const GRID_NUMBER_INVENTORY_SELL_SHOP = 72;
+
   // Define custom keyframes for glowing border effect
   const borderAnimationStyle = `
     @keyframes borderMovement {
@@ -61,7 +63,7 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData, setSelectedItemTo
     if (hoverTimeout) clearTimeout(hoverTimeout); // Clear previous timeout
     const timeout = setTimeout(() => {
       setHoverItemToSell?.(item); // Set the hover item after 1 second
-    }, 500); 
+    }, 200); 
     setHoverTimeout(timeout);
   };
 
@@ -211,7 +213,7 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData, setSelectedItemTo
               {
                 Array.from({
                   length:
-                    GRID_NUMBER
+                    GRID_NUMBER_INVENTORY_SELL_SHOP
                     - playerData?.inventory.helmets.length!!
                     - playerData?.inventory.weapons.length!!
                     - playerData?.inventory.armors.length!!
@@ -219,6 +221,7 @@ const PlayerInventorySellShop: React.FC<Props> = ({playerData, setSelectedItemTo
                     - playerData?.inventory.artifacts.length!!
                     - playerData?.inventory.boots.length!!
                     - playerData?.inventory.rings.length!!
+                    - playerData?.inventory.ingredients.length!!
                     - playerData?.inventory.healing_potions.length!!
                     - playerData?.inventory.antidote_potions.length!!
                     - playerData?.inventory.enhancer_potions.length!!
