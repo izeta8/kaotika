@@ -14,7 +14,7 @@ const CartButton: React.FC<CartButtonProps> = ({ cartItemCount, onCartClick, isC
   }, [isCartAnimating]);
 
   return (
-    <div className="fixed w-80 h-80 top-[3%] left-[87%] z-50 flex flex-col gap-4 justify-center items-center">
+    <div className="fixed w-80 h-80 top-[4%] left-[88%] z-50 flex flex-col gap-4 justify-center items-center">
     <button
         onClick={onCartClick}
         className={`relative px-8 py-6 rounded-full transition transform focus:outline-none ${
