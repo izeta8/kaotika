@@ -4,7 +4,6 @@ import React from "react";
 import { useSession } from 'next-auth/react';
 import Cart from "@/components/shop/Cart";
 import { useState, useEffect } from "react";
-import ShopPlayerInfo from "@/components/shop/ShopPlayerInfo";
 import { ItemData } from "@/_common/interfaces/ItemData";
 import { CartItem } from "@/_common/interfaces/CartItem";
 import Loading from "@/components/Loading";
