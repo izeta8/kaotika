@@ -28,15 +28,16 @@ export const SellerDialogueBox: React.FC<Prompts> = ({ phrase }) => {
       key={phrase} 
       className="flex justify-center items-center text-medievalSepia bg-cover bg-no-repeat bg-center"
       style={{
-        width: '525px',
-        height: `${boxHeight}px`, 
+        width: '528px',
+        height: `280px`, 
         transition: 'height 0.3s ease-in-out', 
+        backgroundImage: 'url(/images/shop/seller_dialogue_box.png)'
       }}
     >
       <div
         className={`text-4xl pl-8 pr-8 mb-4 ${
           isCentered ? 'text-center' : 'text-left'
-        } text-white font-bold`} 
+        } text-white `} 
         style={{
           whiteSpace: 'normal', 
           wordWrap: 'break-word', 
@@ -57,7 +58,7 @@ export const SellerDialogueBox: React.FC<Prompts> = ({ phrase }) => {
               animation: `fadeIn 0.3s ease-in-out forwards`,
               animationDelay: `${index * 0.1}s`, // Delay for each word
               marginRight: '8px', // Consistent space between words
-              textShadow: '4px 4px 10px rgba(0, 0, 0, 0.75)', // Stronger shadow effect
+              textShadow: '4px 4px 10px rgba(0, 0, 0, 0.3)', // Stronger shadow effect
             }}
           >
             {word}
