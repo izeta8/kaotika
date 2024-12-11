@@ -23,13 +23,11 @@ const ShopHome = () => {
       });
   
       if (storedProducts) {
-        console.log("localStorage of the Shop has data");
         setLoading(false);
         return;
       }
 
       try {
-        console.log("fetching Shop products");
         const response = await fetch('/api/shop/products');
         if (!response.ok) {
           throw new Error("Failed to fetch products");

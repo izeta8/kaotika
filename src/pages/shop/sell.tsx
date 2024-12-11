@@ -95,7 +95,6 @@ const Sell = () => {
             delete data.cardId;
             const playerObject = data;
 
-            console.log(playerObject)
             setPlayerData(playerObject);
           } else if (res.status === 404) {
             const data = await res.json();
@@ -130,7 +129,6 @@ const Sell = () => {
       const itemPrice = Math.floor(productConfirm.value / 3);
 
       const result = await sellProduct(playerData.email, productConfirm, itemPrice);
-      console.log(result);
 
       if (result && result.success) {
         const updatedPlayerData = {
