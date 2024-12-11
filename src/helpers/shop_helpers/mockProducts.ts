@@ -1,6 +1,6 @@
-import { ItemData } from "@/_common/interfaces/ItemData";
+import { CartItem } from "@/_common/interfaces/CartItem";
 
-export const mockProducts: ItemData[] = [
+export const mockProducts: CartItem[] = [
   {
     _id: 'product1',
     name: 'Product 1',
@@ -25,6 +25,7 @@ export const mockProducts: ItemData[] = [
     description: 'Description of Product 3',
     image: 'image3.png',
     type: 'ingredient',
+    qty: 1,
     value: 30,
   },
 ];

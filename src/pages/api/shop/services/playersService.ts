@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import Player from '../../../../database/models/playerModel';
-import { Types } from 'mongoose';
 import { Ingredient } from '@/_common/interfaces/Ingredients';
 
 export const fetchPlayer = async (connection: mongoose.Connection, playerEmail: string) => {

@@ -3,16 +3,14 @@ import { calculateTotalCost } from '@/helpers/shop_helpers/calculateTotalCost';
 import { hasEnoughGold } from '@/helpers/shop_helpers/hasEnoughGold';
 import { addToInventory } from '@/helpers/shop_helpers/addToInventory';
 import mongoose from 'mongoose';
-import { findExistingProduct } from '@/helpers/shop_helpers/findExistingProduct';
 import { checkIfProductsExistInInventory } from '@/helpers/shop_helpers/checkIfProductExistInInventory';
 import { CartItem } from '@/_common/interfaces/CartItem';
 
 interface Player {
   _id: string;
   email: string;
-  gold: number; // Ensure gold is typed as a number
-  inventory: Record<string, string[]>, // Assuming ItemData is the correct type for items
-  // other player properties
+  gold: number;
+  inventory: Record<string, string[]>, 
 }
 
 export const processProductsPurchase = async (connection: mongoose.Connection | null, playerEmail: string, products: CartItem[]) => {

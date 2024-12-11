@@ -6,9 +6,8 @@ import mongoose from 'mongoose';
 interface Player {
   _id: string;
   email: string;
-  gold: number; // Ensure gold is typed as a number
-  inventory: Record<string, string[]>, // Assuming ItemData is the correct type for items
-  // other player properties
+  gold: number;
+  inventory: Record<string, string[]>,
 }
 import { changeProductActiveStatus } from './changeActiveService';
 

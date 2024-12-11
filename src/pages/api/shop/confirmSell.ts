@@ -4,9 +4,9 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 interface SellResult {
   success: boolean;
-  message?: string; // message is optional
-  inventory?: any; // inventory type can be more specific
-  gold?: any; // gold type can be more specific
+  message?: string;
+  inventory?: any;
+  gold?: any;
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

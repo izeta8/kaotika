@@ -1,5 +1,6 @@
 import { addToInventory } from './addToInventory';
 import { ItemData } from '@/_common/interfaces/ItemData';
+import { CartItem } from '@/_common/interfaces/CartItem';
 
 describe('addToInventory', () => {
   let playerInventory: Record<string, string[]>;
@@ -10,7 +11,7 @@ describe('addToInventory', () => {
   });
 
   it('should add a single product to the inventory', () => {
-    const products: ItemData[] = [
+    const products: CartItem[] = [
       {
         _id: '1', type: 'ingredient', qty: 1,
         name: '',
@@ -26,7 +27,7 @@ describe('addToInventory', () => {
   });
 
   it('should add multiple products to the inventory under the same category', () => {
-    const products: ItemData[] = [
+    const products: CartItem[] = [
       {
         _id: '1', type: 'ingredient', qty: 3,
         name: '',
@@ -42,7 +43,7 @@ describe('addToInventory', () => {
   });
 
   it('should initialize the category if it does not exist', () => {
-    const products: ItemData[] = [
+    const products: CartItem[] = [
       {
         _id: '1', type: 'tool', qty: 2,
         name: '',
@@ -57,24 +58,8 @@ describe('addToInventory', () => {
     expect(playerInventory.tools.length).toBe(2); // Length should be 2
   });
 
-  it('should handle missing product quantity and default to 1', () => {
-    const products: ItemData[] = [
-      {
-        _id: '2', type: 'ingredient',
-        name: '',
-        description: '',
-        image: ''
-      }, // No qty provided, so default to 1
-    ];
-
-    addToInventory(playerInventory, products);
-
-    expect(playerInventory.ingredients).toContain('2'); // '2' should be added once
-    expect(playerInventory.ingredients.length).toBe(1); // There should be one item in 'ingredients'
-  });
-
   it('should add multiple products to different categories correctly', () => {
-    const products: ItemData[] = [
+    const products: CartItem[] = [
       {
         _id: '1', type: 'ingredient', qty: 1,
         name: '',
