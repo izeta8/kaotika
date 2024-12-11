@@ -8,7 +8,7 @@ interface Props {
   setHoverItemToSell: (item: ItemData | null) => void;
   selectedItemToSell: ItemData | null
 }
-
+ 
 const PlayerInventorySellShop: React.FC<Props> = ({ playerData, setSelectedItemToSell, setHoverItemToSell, selectedItemToSell }) => {
 
   const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null); // Track timeout for hover
