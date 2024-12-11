@@ -300,7 +300,7 @@ const Shop = () => {
   }
 
   useEffect(() => {
-    removeOwnedItems();
+    // removeOwnedItems();
   }, [playerData?.equipment, playerData?.inventory]);
 
   // When we change a category state value, update the current displayed data.
