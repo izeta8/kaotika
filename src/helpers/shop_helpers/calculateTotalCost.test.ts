@@ -1,5 +1,5 @@
 import { calculateTotalCost } from './calculateTotalCost';
-import { mockProducts, mockEmptyProducts, mockInvalidProducts } from './mockProducts';
+import { mockProducts } from './mockProducts';
 
 describe('calculateTotalCost', () => {
   it('should calculate the total cost correctly when products are valid', () => {

@@ -24,5 +24,5 @@ describe('hasEnoughGold', () => {
     const totalCost = 0;
     expect(hasEnoughGold(playerGold, totalCost)).toBe(true);
   });
-  
+
 });
