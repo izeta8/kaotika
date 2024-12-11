@@ -1,6 +1,7 @@
+import { ItemData } from "@/_common/interfaces/ItemData"
 
 
-export const mockHelmetData = {
+export const mockHelmetData:ItemData = {
     "_id": "66f3b3ddc8cdd090db911d7f",
     "name": "Warbringer Helm",
     "description": "Brings the wrath of war upon its foes.",
@@ -21,7 +22,7 @@ export const mockHelmetData = {
     "isActive": true,
 }
 
-export const mockWeaponData = {
+export const mockWeaponData:ItemData = {
     "modifiers": {
         "intelligence": 10,
         "dexterity": 2,
@@ -45,7 +46,7 @@ export const mockWeaponData = {
     "isActive": true,
 }
 
-export const mockArmorData = {
+export const mockArmorData:ItemData = {
     "modifiers": {
         "intelligence": 15,
         "charisma": 12,
@@ -66,7 +67,7 @@ export const mockArmorData = {
     "isActive": true,
 }
 
-export const mockShieldData = {
+export const mockShieldData:ItemData = {
     "modifiers": {
         "intelligence": 0,
         "dexterity": 2,
@@ -87,7 +88,7 @@ export const mockShieldData = {
     "isActive": true,
 }
 
-export const mockArtifactData = {
+export const mockArtifactData:ItemData = {
     "modifiers": {
         "intelligence": -2,
         "dexterity": 2,
@@ -107,7 +108,7 @@ export const mockArtifactData = {
     "isActive": true,
 }
 
-export const mockBootData = {
+export const mockBootData:ItemData = {
     "modifiers": {
         "intelligence": 0,
         "dexterity": 0,
@@ -125,10 +126,10 @@ export const mockBootData = {
     "defense": 4,
     "min_lvl": 1,
     "isActive": true,
-    "isUnique": true,
+    "isUnique": false,
 }
 
-export const mockRingData = {
+export const mockRingData:ItemData = {
     "modifiers": {
         "intelligence": 2,
         "dexterity": 0,
@@ -145,10 +146,10 @@ export const mockRingData = {
     "value": 10,
     "min_lvl": 1,
     "isActive": true,
-    "isUnique": true,
+    "isUnique": false,
 }
 
-export const mockIngredient1Data = {
+export const mockIngredient1Data:ItemData = {
     "_id": "6702b39d76863c206a48cccd",
     "name": "Moonleaf",
     "description": "A mystical leaf that offers a slight increase in hit points.",
@@ -161,7 +162,7 @@ export const mockIngredient1Data = {
     "qty": 6
 }
 
-export const mockIngredient2Data = {
+export const mockIngredient2Data:ItemData = {
     "_id": "6702b44f76863c2y6a48ccdc",
     "name": "Titan's Blood",
     "description": "A rare blood known for its ability to enhance strength tremendously.",

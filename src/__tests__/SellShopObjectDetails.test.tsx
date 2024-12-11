@@ -1,24 +1,26 @@
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import React from 'react';
-import { mockPlayerData } from './__mocks__/MockPlayerData';
 import SellShopObjectDetails from '@/components/shop/sell/SellObjectDetails';
 import { mockArmorData, mockArtifactData, mockBootData, mockHelmetData, mockIngredient1Data, mockIngredient2Data, mockRingData, mockShieldData, mockWeaponData } from './__mocks__/MockItemData';
 
 
 
 
+
 describe('SellShopObjectDetails component tests', () => {
 
-
-    const hoverItemToSell = jest.fn();
     const setSelectedItemToSell = jest.fn();
+
+    beforeEach(() => {
+        jest.resetAllMocks();
+      });
 
 
     it('renders the helmet information correctly from the mockHelmetData', () => {
 
         // Render the component with the mock data
-        render(<SellShopObjectDetails item={mockHelmetData} hover={hoverItemToSell} setSelectedItemToSell={setSelectedItemToSell} />);
+        render(<SellShopObjectDetails item={mockHelmetData} hover={mockHelmetData} setSelectedItemToSell={setSelectedItemToSell} />);
 
         // ************************************************************************************************************************
         // ************************************************************************************************************************
@@ -84,7 +86,7 @@ describe('SellShopObjectDetails component tests', () => {
     it('renders the weapon information correctly from the mockWeaponData', () => {
 
         // Render the component with the mock data
-        render(<SellShopObjectDetails item={mockWeaponData} hover={hoverItemToSell} setSelectedItemToSell={setSelectedItemToSell} />);
+        render(<SellShopObjectDetails item={mockWeaponData} hover={mockWeaponData} setSelectedItemToSell={setSelectedItemToSell} />);
 
         // ************************************************************************************************************************
         // ************************************************************************************************************************
@@ -144,7 +146,7 @@ describe('SellShopObjectDetails component tests', () => {
     it('renders the armor information correctly from the mockArmorData', () => {
 
         // Render the component with the mock data
-        render(<SellShopObjectDetails item={mockArmorData} hover={hoverItemToSell} setSelectedItemToSell={setSelectedItemToSell} />);
+        render(<SellShopObjectDetails item={mockArmorData} hover={mockArmorData} setSelectedItemToSell={setSelectedItemToSell} />);
 
         // ************************************************************************************************************************
         // ************************************************************************************************************************
@@ -205,7 +207,7 @@ describe('SellShopObjectDetails component tests', () => {
     it('renders the shield information correctly from the mockShieldData', () => {
 
         // Render the component with the mock data
-        render(<SellShopObjectDetails item={mockShieldData} hover={hoverItemToSell} setSelectedItemToSell={setSelectedItemToSell} />);
+        render(<SellShopObjectDetails item={mockShieldData} hover={mockShieldData} setSelectedItemToSell={setSelectedItemToSell} />);
 
         // ************************************************************************************************************************
         // ************************************************************************************************************************
@@ -261,7 +263,7 @@ describe('SellShopObjectDetails component tests', () => {
     it('renders the artifact information correctly from the mockArtifactData', () => {
 
         // Render the component with the mock data
-        render(<SellShopObjectDetails item={mockArtifactData} hover={hoverItemToSell} setSelectedItemToSell={setSelectedItemToSell} />);
+        render(<SellShopObjectDetails item={mockArtifactData} hover={mockArtifactData} setSelectedItemToSell={setSelectedItemToSell} />);
 
         // ************************************************************************************************************************
         // ************************************************************************************************************************
@@ -312,7 +314,7 @@ describe('SellShopObjectDetails component tests', () => {
     it('renders the boot information correctly from the mockBootData', () => {
 
         // Render the component with the mock data
-        render(<SellShopObjectDetails item={mockBootData} hover={hoverItemToSell} setSelectedItemToSell={setSelectedItemToSell} />);
+        render(<SellShopObjectDetails item={mockBootData} hover={mockBootData} setSelectedItemToSell={setSelectedItemToSell} />);
 
         // ************************************************************************************************************************
         // ************************************************************************************************************************
@@ -353,7 +355,7 @@ describe('SellShopObjectDetails component tests', () => {
     it('renders the ring information correctly from the mockRingData', () => {
 
         // Render the component with the mock data
-        render(<SellShopObjectDetails item={mockRingData} hover={hoverItemToSell} setSelectedItemToSell={setSelectedItemToSell} />);
+        render(<SellShopObjectDetails item={mockRingData} hover={mockRingData} setSelectedItemToSell={setSelectedItemToSell} />);
 
         // ************************************************************************************************************************
         // ************************************************************************************************************************
@@ -400,7 +402,7 @@ describe('SellShopObjectDetails component tests', () => {
     it('renders the ingredient information correctly from the mockIngredientData with one effect', () => {
 
         // Render the component with the mock data
-        render(<SellShopObjectDetails item={mockIngredient1Data} hover={hoverItemToSell} setSelectedItemToSell={setSelectedItemToSell} />);
+        render(<SellShopObjectDetails item={mockIngredient1Data} hover={mockIngredient1Data} setSelectedItemToSell={setSelectedItemToSell} />);
 
         // ****************************************
         // ****************************************
@@ -423,7 +425,7 @@ describe('SellShopObjectDetails component tests', () => {
     it('renders the ingredient information correctly from the mockIngredientData with more than one effect', () => {
 
         // Render the component with the mock data
-        render(<SellShopObjectDetails item={mockIngredient2Data} hover={hoverItemToSell} setSelectedItemToSell={setSelectedItemToSell} />);
+        render(<SellShopObjectDetails item={mockIngredient2Data} hover={mockIngredient2Data} setSelectedItemToSell={setSelectedItemToSell} />);
 
         // ****************************************
         // ****************************************
