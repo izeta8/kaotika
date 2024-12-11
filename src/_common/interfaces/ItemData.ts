@@ -16,4 +16,5 @@ export interface ItemData {
     die_faces?: number;
     die_modifier?: number;
     die_num?: number;
+    quantity: number;
   }
