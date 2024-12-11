@@ -16,6 +16,8 @@ import SellPlayerInfo from "@/components/shop/sell/SellPlayerInfo";
 import Loading from "@/components/Loading";
 import ConfirmModal from "@/components/shop/ConfirmModal";
 import SellScreenButton from "@/components/shop/sell/SellScreenButton";
+import Snackbar from "@/components/shop/SnackBar";
+
 
 const Sell = () => {
 
@@ -28,6 +30,10 @@ const Sell = () => {
   const [hoverItemToSell, setHoverItemToSell] = useState<ItemData | null>(null);
   const [sellerDialogueMessage, setSellerDialogueMessage] = useState<string>(MESSAGES.WELCOME);
   const [confirmModalShown, setConfirmModalShown] = useState<boolean>(false);
+
+  const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<string>('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error' | 'info' | 'warning'>('info');
 
   ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -96,6 +102,9 @@ const Sell = () => {
           }
         } catch (error) {
           console.error(`An error occurred while checking registration`, error);
+          setSnackbarMessage('An error occurred while loading the player data..');
+          setSnackbarSeverity('error');
+          setSnackbarOpen(true);
         } finally {
           setLoading(false);
         }
@@ -130,13 +139,23 @@ const Sell = () => {
           inventory: result.inventory,
         };
         setPlayerData(updatedPlayerData);
+        setSnackbarMessage('Successful sell!');
+        setSnackbarSeverity('success');
+        setSnackbarOpen(true);
+      }else{
+        setSnackbarMessage(result.message || 'The sale failed.');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
       }
-
+      
       setSelectedItemToSell(null);
       setProductConfirm(null);
       setSellerDialogueMessage(MESSAGES.ITEM_SELL_SUCCESS);
     } catch (error) {
       console.error('Error during sell:', error);
+      setSnackbarMessage('Error during sell.');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
     }
   };
 
@@ -156,15 +175,21 @@ const Sell = () => {
 
       if (!response.ok || !result.success) {
         console.log('Sell failed:', result.message);
-        //alert(result.message); 
+        setSnackbarMessage(result.message || 'Sell failed.');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true); 
         return result;
       }
       console.log('Sell successful:', result);
-      //alert('Sell successful!');
+      setSnackbarMessage('¡Successful sale!');
+      setSnackbarSeverity('success');
+      setSnackbarOpen(true);
       return result;
     } catch (error) {
       console.error('Error during product sell:', error);
-      //alert('An error occurred while processing your sell.');
+      setSnackbarMessage('An error occurred while processing the sale.');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
     }
   };
 
@@ -172,14 +197,17 @@ const Sell = () => {
   const handleCancel = () => {
     setProductConfirm(null);
     setSellerDialogueMessage(MESSAGES.ITEM_SELL_CANCEL)
+    setSnackbarMessage('Sale cancelled.');
+    setSnackbarSeverity('info');
+    setSnackbarOpen(true);
   };
-
+ 
   const handleSellClick = () => {
     setProductConfirm(selectedItemToSell);
   };
 
   ///////////////////////////////////////////////////////////
-
+ 
   // When productConfirm state has a value, show the modal, and when it does not have close.
   useEffect(() => {
     const productConfirmShown = !!productConfirm;
@@ -288,7 +316,14 @@ const Sell = () => {
             product={productConfirm}
           />
         )}
-
+        {/* Componente Snackbar */}
+        <Snackbar
+          open={snackbarOpen}
+          message={snackbarMessage}
+          severity={snackbarSeverity}
+          onClose={() => setSnackbarOpen(false)}
+          duration={4000} // Opcional: Puedes ajustar la duración
+        />
       </div>
     </Layout>
 

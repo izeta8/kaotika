@@ -92,9 +92,9 @@ const SellShopObjectDetails: React.FC<Promps> = ({ item, hover }) => {
 
             {/* Only if the item is an ingredient render the effects*/}
             {(item!.type === "ingredient") ?
-              (item!?.effects) && (
-                item!.effects.map(effect => {
-                  return (<h2 className="text-3xl pl-12">{getIngredientEffectName(effect)}</h2>);
+              (item?.effects) && (
+                item.effects.map((effect, index) => {
+                  return (<h2 key={index} className="text-3xl pl-12">{getIngredientEffectName(effect)}</h2>);
                 })
               )
               : <></>}
