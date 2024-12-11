@@ -119,7 +119,6 @@ const Sell = () => {
           gold: result.gold,
           inventory: result.inventory,
         };
-        localStorage.setItem('playerData', JSON.stringify(updatedPlayerData));
         setPlayerData(updatedPlayerData);
       }
       
