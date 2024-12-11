@@ -3,24 +3,46 @@ import { dbConfig } from './config';
 
 export const createDatabaseConnection = async (): Promise<Connection | null> => {
   try {
-    const connection = await mongoose.createConnection(dbConfig.dbURI, {});
-    console.log('Created a new MongoDB connection');
-    return connection;
+    // Use mongoose.connect() for automatic reconnection handling
+    await mongoose.connect(dbConfig.dbURI, {
+      serverSelectionTimeoutMS: 5000, // Timeout for server selection (5 seconds)
+      socketTimeoutMS: 45000,  // Timeout for socket operations (45 seconds)
+    });
+    console.log('Successfully connected to MongoDB');
+    return mongoose.connection;  // Return the mongoose connection object
   } catch (error) {
-    console.error('Error creating MongoDB connection:', error);
-    return null; // Return null if the connection fails
+    console.error('Error connecting to MongoDB:', error);
+    return null; // Return null if connection fails
   }
 };
 
-export const closeDatabaseConnection = async (connection: Connection): Promise<void> => {
+// Gracefully close the database connection
+export const closeDatabaseConnection = async (): Promise<void> => {
   try {
-    if (connection.readyState !== 0) {
-      await connection.close();
-      console.log('Closed isolated MongoDB connection');
+    if (mongoose.connection.readyState !== 0) {
+      await mongoose.connection.close();
+      console.log('Closed MongoDB connection');
     } else {
-      console.log('Connection was already closed');
+      console.log('Connection is already closed');
     }
   } catch (error) {
     console.error('Error closing MongoDB connection:', error);
   }
 };
+
+// // Listening to connection events for debugging
+// mongoose.connection.on('connected', () => {
+//   console.log('MongoDB connected');
+// });
+
+// mongoose.connection.on('disconnected', () => {
+//   console.log('MongoDB disconnected');
+// });
+
+// mongoose.connection.on('reconnected', () => {
+//   console.log('MongoDB reconnected');
+// });
+
+// mongoose.connection.on('error', (err) => {
+//   console.error(`MongoDB connection error: ${err}`);
+// });
