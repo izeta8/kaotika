@@ -330,7 +330,7 @@ const Shop = () => {
 
       setItemsInCart(prevItems => {
         return !isInCart
-          ? [...prevItems, { ...item, quantity: 1 }] // If is not in the cart, the item is added to the array and put the quantity attribute
+          ? [...prevItems, { ...item, qty: 1 }] // If is not in the cart, the item is added to the array and put the quantity attribute
           : prevItems.filter((cartItem) => cartItem._id !== item._id); // If is in the cart, remove from the array.
       });
 
@@ -343,18 +343,18 @@ const Shop = () => {
         if (isInCart) {
           return prevItems.map(cartItem =>
             cartItem._id === item._id
-              ? { ...cartItem, quantity: cartItem.quantity + 1 }
+              ? { ...cartItem, qty: cartItem.qty + 1 }
               : cartItem
           );
         } else {
-          return [...prevItems, { ...item, quantity: 1 }];
+          return [...prevItems, { ...item, qty: 1 }];
         }
       });
     }
 
   };
 
-  const cartItemCount = itemsInCart.reduce((acc, item) => acc + item.quantity, 0);
+  const cartItemCount = itemsInCart.reduce((acc, item) => acc + item.qty, 0);
 
   ////////////////////////////////////////////////////////////////////////////////
 

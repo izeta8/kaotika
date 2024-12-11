@@ -438,7 +438,7 @@ export const mockPlayerData: any = {
                 ],
                 "image": "/images/ingredients/increase/increase_4.webp",
                 "type": "ingredient",
-                "quantity": 6
+                "qty": 6
             },
         ],
         "antidote_potions": [],

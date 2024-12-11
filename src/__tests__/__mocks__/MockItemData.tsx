@@ -158,7 +158,7 @@ export const mockIngredient1Data = {
     ],
     "image": "/images/ingredients/increase/increase_4.webp",
     "type": "ingredient",
-    "quantity": 6
+    "qty": 6
 }
 
 export const mockIngredient2Data = {
@@ -173,6 +173,6 @@ export const mockIngredient2Data = {
     ],
     "image": "/images/ingredients/restore/restore_7.webp",
     "type": "ingredient",
-    "quantity": 6,
+    "qty": 6,
 }
 

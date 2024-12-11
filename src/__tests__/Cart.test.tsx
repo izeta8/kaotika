@@ -32,7 +32,7 @@ describe("Cart Component", () => {
           value: 100,
           type: "weapon",
           image: "/images/shop/items/sword.png",
-          quantity: 1,
+          qty: 1,
         },
         {
           _id: "item2",
@@ -40,7 +40,7 @@ describe("Cart Component", () => {
           value: 10,
           type: "ingredient",
           image: "/images/shop/items/herb.png",
-          quantity: 3,
+          qty: 3,
         },
       ] as CartItem[],
       setItemsInCart: mockSetItemsInCart,

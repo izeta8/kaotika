@@ -7,11 +7,11 @@ describe('removeFromInventory', () => {
   beforeEach(() => {
     inventory = {
       electronics: [
-        { _id: '1', name: 'Laptop', quantity: 2 },
-        { _id: '2', name: 'Headphones', quantity: 1 },
+        { _id: '1', name: 'Laptop', qty: 2 },
+        { _id: '2', name: 'Headphones', qty: 1 },
       ],
       furniture: [
-        { _id: '3', name: 'Chair', quantity: 5 },
+        { _id: '3', name: 'Chair', qty: 5 },
       ],
     };
   });
@@ -20,7 +20,7 @@ describe('removeFromInventory', () => {
     const product = { _id: '1', name: 'Laptop' };
     const result = removeFromInventory(inventory, 'electronics', product);
     expect(result.success).toBe(true);
-    expect(inventory.electronics[0].quantity).toBe(1); // Quantity should be reduced to 1
+    expect(inventory.electronics[0].qty).toBe(1); // Quantity should be reduced to 1
   });
 
 //   it('should remove the product if the quantity is 1', () => {

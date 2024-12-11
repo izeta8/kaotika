@@ -36,8 +36,8 @@ describe('POST /api/shop/confirmPurchseService', () => {
       success: true,
       inventory: {
         helmets: [
-          { _id: '123', name: "Guardian's Resolve", value: 150, type: 'helmet', quantity: 1 },
-          { _id: '124', name: 'Helm of the Phoenix', value: 200, type: 'helmet', quantity: 1 },
+          { _id: '123', name: "Guardian's Resolve", value: 150, type: 'helmet', qty: 1 },
+          { _id: '124', name: 'Helm of the Phoenix', value: 200, type: 'helmet', qty: 1 },
         ],
       },
       gold: 650,
@@ -80,8 +80,8 @@ describe('POST /api/shop/confirmPurchseService', () => {
       message: 'Purchase successful',
       inventory: {
         helmets: [
-          { _id: '123', name: "Guardian's Resolve", value: 150, type: 'helmet', quantity: 1 },
-          { _id: '124', name: 'Helm of the Phoenix', value: 200, type: 'helmet', quantity: 1 },
+          { _id: '123', name: "Guardian's Resolve", value: 150, type: 'helmet', qty: 1 },
+          { _id: '124', name: 'Helm of the Phoenix', value: 200, type: 'helmet', qty: 1 },
         ],
       },
       gold: 650,

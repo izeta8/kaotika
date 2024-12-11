@@ -4,6 +4,7 @@ import { ItemData } from "@/_common/interfaces/ItemData";
 import { MouseEventHandler } from "react";
 import { Player } from "@/_common/interfaces/Player";
 import ItemRow from "./CartRow";
+import { CartItem } from "@/_common/interfaces/CartItem";
 
 interface CartProps {
   isOpen: boolean;
@@ -14,17 +15,13 @@ interface CartProps {
   playerData: Player | null
 }
 
-interface CartItem extends ItemData {
-  quantity: number;
-}
-
 const Cart: React.FC<CartProps> = ({ isOpen, onClose, cartItems, setItemsInCart, confirmPurchase, playerData }) => {
 
   const increaseItem = (id: string) => {
     setItemsInCart((prevItems: CartItem[]) =>
       prevItems.map(item =>
         item._id === id
-          ? { ...item, quantity: item.quantity + 1 }
+          ? { ...item, qty: item.qty + 1 }
           : item
       )
     );
@@ -33,8 +30,8 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose, cartItems, setItemsInCart,
   const decreaseItem = (id: string) => {
     setItemsInCart((prevItems: CartItem[]) =>
       prevItems.map(item =>
-        item._id === id && item.quantity > 1
-          ? { ...item, quantity: item.quantity - 1 }
+        item._id === id && item.qty > 1
+          ? { ...item, qty: item.qty - 1 }
           : item
       )
     );
@@ -57,7 +54,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose, cartItems, setItemsInCart,
   if (!isOpen) return null;
 
   // Calculate total
-  const total = cartItems.reduce((acc, item) => acc + (item.value || 0) * item.quantity, 0);
+  const total = cartItems.reduce((acc, item) => acc + (item.value || 0) * item.qty, 0);
 
   const scrollBarStyle = "scrollbar scrollbar-thumb-medievalGold scrollbar-track-medievalGray";
 

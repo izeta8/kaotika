@@ -21,8 +21,8 @@ describe('processProductsPurchase', () => {
           gold: 650,
           inventory: {
             helmets: [
-              { _id: '123', name: "Guardian's Resolve", value: 150, type: 'helmet', quantity: 1 },
-              { _id: '124', name: 'Helm of the Phoenix', value: 200, type: 'helmet', quantity: 1 },
+              { _id: '123', name: "Guardian's Resolve", value: 150, type: 'helmet', qty: 1 },
+              { _id: '124', name: 'Helm of the Phoenix', value: 200, type: 'helmet', qty: 1 },
             ],
           },
         }), // Mock the result of findOneAndUpdate
