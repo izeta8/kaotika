@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
 interface Prompts {
-  phrase?: string;
+  phrase: string;
 }
 
 export const SellerDialogueBox: React.FC<Prompts> = ({ phrase }) => {
   const [visibleWords, setVisibleWords] = useState<string[]>([]);
   const [isCentered, setIsCentered] = useState(false);
-  const [boxHeight, setBoxHeight] = useState(100); // Initial height
 
   useEffect(() => {
     if (phrase) {
@@ -65,36 +64,9 @@ export const SellerDialogueBox: React.FC<Prompts> = ({ phrase }) => {
           </span>
         ))}
       </div>
-
-      {/* Inline CSS for animation */}
-      <style>
-        {`
-          @keyframes fadeIn {
-            from {
-              opacity: 0;
-            }
-            to {
-              opacity: 1;
-            }
-          }
-
-          .animate-fadeIn {
-            opacity: 0;
-            animation-fill-mode: forwards;
-          }
-        `}
-      </style>
     </div>
   );
 };
-
-// The function to create the seller's message
-export function createItemSellPriceMessage(message: string, itemName: string, itemValue: number): string {
-  let returnMessage = message;
-  returnMessage = returnMessage.replace("{itemName}", itemName);
-  returnMessage = returnMessage.replace("{price}", itemValue.toString());
-  return returnMessage;
-}
 
 
 

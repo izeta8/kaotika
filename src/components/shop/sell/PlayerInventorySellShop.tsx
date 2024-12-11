@@ -1,19 +1,12 @@
-import { Armor } from "@/_common/interfaces/Armor";
-import { Artifact } from "@/_common/interfaces/Artifact";
-import { Boot } from "@/_common/interfaces/Boot";
-import { Helmet } from "@/_common/interfaces/Helmet";
-import { Ingredient } from "@/_common/interfaces/Ingredients";
+import { ItemData } from "@/_common/interfaces/ItemData";
 import { Player } from "@/_common/interfaces/Player";
-import { Ring } from "@/_common/interfaces/Ring";
-import { Shield } from "@/_common/interfaces/Shield";
-import { Weapon } from "@/_common/interfaces/Weapon";
-import { GRID_NUMBER } from "@/constants/constants";
 import { useState } from "react";
 
 interface Props {
-  playerData?: Player;
-  setSelectedItemToSell?: (item: Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield | Ingredient | null) => void;
-  setHoverItemToSell?: (item: Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield | Ingredient | null) => void;
+  playerData: Player;
+  setSelectedItemToSell: (item: ItemData | null) => void;
+  setHoverItemToSell: (item: ItemData | null) => void;
+  selectedItemToSell: ItemData
 }
 
 const PlayerInventorySellShop: React.FC<Props> = ({ playerData, setSelectedItemToSell, setHoverItemToSell, selectedItemToSell }) => {
@@ -22,47 +15,21 @@ const PlayerInventorySellShop: React.FC<Props> = ({ playerData, setSelectedItemT
 
   const GRID_NUMBER_INVENTORY_SELL_SHOP = 72;
 
-  // Define custom keyframes for glowing border effect
-  const borderAnimationStyle = `
-    @keyframes borderMovement {
-      0% {
-        border-color: red;
-      }
-      25% {
-        border-color: orange;
-      }
-      50% {
-        border-color: yellow;
-      }
-      75% {
-        border-color: green;
-      }
-      100% {
-        border-color: blue;
-      }
-    }
-    .animate-borderMovement {
-      animation: borderMovement 1.5s linear infinite;
-    }
-  `;
-
-  const handleItemClick = (
-    item: Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield | Ingredient
-  ) => {
+  const handleItemClick = (item: ItemData) => {
     if (selectedItemToSell === item) {
       // Deselect the item if it is already selected
-      setSelectedItemToSell?.(null);
-      setHoverItemToSell?.(null);
+      setSelectedItemToSell(null);
+      setHoverItemToSell(null);
     } else {
       // Otherwise, select the new item
-      setSelectedItemToSell?.(item);
+      setSelectedItemToSell(item);
     }
   };
 
-  const handleMouseEnter = (item: Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield | Ingredient | null) => {
+  const handleMouseEnter = (item: ItemData) => {
     if (hoverTimeout) clearTimeout(hoverTimeout); // Clear previous timeout
     const timeout = setTimeout(() => {
-      setHoverItemToSell?.(item); // Set the hover item after 1 second
+      setHoverItemToSell(item); // Set the hover item after 1 second
     }, 200);
     setHoverTimeout(timeout);
   };
@@ -71,30 +38,27 @@ const PlayerInventorySellShop: React.FC<Props> = ({ playerData, setSelectedItemT
     if (hoverTimeout) {
       clearTimeout(hoverTimeout); // Clear timeout when mouse leaves
     }
-    setHoverItemToSell?.(null); // Remove hover item immediately
+    setHoverItemToSell(null); // Remove hover item immediately
   };
 
   // Tailwind class logic to add animation to the selected item
-  const getItemClass = (item: Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield | Ingredient) => {
+  const getItemClass = (item: ItemData) => {
     return item === selectedItemToSell
       ? "border-4 animate-borderMovement transform scale-90 transition-all duration-300"
       : "border-3 border-black"; // Default border when not selected
   };
 
-
+  const containerStyle = "flex justify-center items-center bg-black/30 aspect-square hover:cursor-pointer";
 
   return (
     <div className="w-10/12 p-4">
       {/* Inject the custom animation style for snake-like border effect */}
-      <style>{borderAnimationStyle}</style>
       <div className="w-full h-full bg-black/70">
         <div className="grid grid-cols-12 grid-rows-5 flex-grow">
           {
             playerData?.inventory.helmets.map(helmet => {
               return (
-                <div key={helmet._id} className={`flex justify-center items-center aspect-square ${getItemClass(
-                  helmet
-                )}`} >
+                <div key={helmet._id} className={`${containerStyle} ${getItemClass(helmet)}`} >
                   <img src={helmet.image} alt={helmet.name} className="w-full h-auto"
                     onClick={() => handleItemClick(helmet)}
                     onMouseEnter={() => handleMouseEnter(helmet)}
@@ -107,9 +71,7 @@ const PlayerInventorySellShop: React.FC<Props> = ({ playerData, setSelectedItemT
           {
             playerData?.inventory.weapons.map(weapon => {
               return (
-                <div key={weapon._id} className={`flex justify-center items-center bg-black/30 aspect-square ${getItemClass(
-                  weapon
-                )}`} >
+                <div key={weapon._id} className={`${containerStyle} ${getItemClass(weapon)}`} >
                   <img src={weapon.image} alt={weapon.name} className="w-full h-auto"
                     onClick={() => handleItemClick(weapon)}
                     onMouseEnter={() => handleMouseEnter(weapon)}
@@ -122,9 +84,7 @@ const PlayerInventorySellShop: React.FC<Props> = ({ playerData, setSelectedItemT
           {
             playerData?.inventory.armors.map(armor => {
               return (
-                <div key={armor._id} className={`flex justify-center items-center bg-black/30 aspect-square ${getItemClass(
-                  armor
-                )}`} >
+                <div key={armor._id} className={`${containerStyle} ${getItemClass(armor)}`} >
                   <img src={armor.image} alt={armor.name} className="w-full h-auto"
                     onClick={() => handleItemClick(armor)}
                     onMouseEnter={() => handleMouseEnter(armor)}
@@ -137,9 +97,7 @@ const PlayerInventorySellShop: React.FC<Props> = ({ playerData, setSelectedItemT
           {
             playerData?.inventory.shields.map(shield => {
               return (
-                <div key={shield._id} className={`flex justify-center items-center bg-black/30 aspect-square ${getItemClass(
-                  shield
-                )}`} >
+                <div key={shield._id} className={`${containerStyle} ${getItemClass(shield)}`} >
                   <img src={shield.image} alt={shield.name} className="w-full h-auto"
                     onClick={() => handleItemClick(shield)}
                     onMouseEnter={() => handleMouseEnter(shield)}
@@ -152,9 +110,7 @@ const PlayerInventorySellShop: React.FC<Props> = ({ playerData, setSelectedItemT
           {
             playerData?.inventory.artifacts.map(artifact => {
               return (
-                <div key={artifact._id} className={`flex justify-center items-center bg-black/30 aspect-square ${getItemClass(
-                  artifact
-                )}`} >
+                <div key={artifact._id} className={`${containerStyle} ${getItemClass(artifact)}`} >
                   <img src={artifact.image} alt={artifact.name} className="w-full h-auto"
                     onClick={() => handleItemClick(artifact)}
                     onMouseEnter={() => handleMouseEnter(artifact)}
@@ -167,9 +123,7 @@ const PlayerInventorySellShop: React.FC<Props> = ({ playerData, setSelectedItemT
           {
             playerData?.inventory.boots.map(boot => {
               return (
-                <div key={boot._id} className={`flex justify-center items-center bg-black/30 aspect-square ${getItemClass(
-                  boot
-                )}`} >
+                <div key={boot._id} className={`${containerStyle} ${getItemClass(boot)}`} >
                   <img src={boot.image} alt={boot.name} className="w-full h-auto"
                     onClick={() => handleItemClick(boot)}
                     onMouseEnter={() => handleMouseEnter(boot)}
@@ -182,9 +136,7 @@ const PlayerInventorySellShop: React.FC<Props> = ({ playerData, setSelectedItemT
           {
             playerData?.inventory.rings.map(ring => {
               return (
-                <div key={ring._id} className={`flex justify-center items-center bg-black/30 aspect-square ${getItemClass(
-                  ring
-                )}`} >
+                <div key={ring._id} className={`${containerStyle} ${getItemClass(ring)}`} >
                   <img src={ring.image} alt={ring.name} className="w-full h-auto"
                     onClick={() => handleItemClick(ring)}
                     onMouseEnter={() => handleMouseEnter(ring)}
@@ -197,11 +149,7 @@ const PlayerInventorySellShop: React.FC<Props> = ({ playerData, setSelectedItemT
           {
             playerData?.inventory.ingredients.map(ingredient => {
               return (
-                <div
-                key={ingredient._id}
-                className={`relative flex justify-center items-center bg-black/30 aspect-square ${getItemClass(
-                  ingredient
-                )}`}
+                <div key={ingredient._id} className={`relative ${containerStyle} ${getItemClass(ingredient)}`}
               >
                 <img
                   src={ingredient.image}
@@ -234,18 +182,13 @@ const PlayerInventorySellShop: React.FC<Props> = ({ playerData, setSelectedItemT
                 - playerData?.inventory.boots.length!!
                 - playerData?.inventory.rings.length!!
                 - playerData?.inventory.ingredients.length!!
-                // - playerData?.inventory.healing_potions.length!!
-                // - playerData?.inventory.antidote_potions.length!!
-                // - playerData?.inventory.enhancer_potions.length!!
             }).map((element, index) => <div key={index} className="flex justify-center items-center bg-black/30 aspect-square" style={{ 'border': '3px ridge #000000' }}></div>)
           }
-
 
         </div>
       </div>
     </div>
   );
 }
-
 
 export default PlayerInventorySellShop;

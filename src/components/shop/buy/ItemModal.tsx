@@ -1,7 +1,8 @@
-import { ItemData } from "@/_common/interfaces/ItemData";
-import ItemDataContainer from "./itemData/ItemDataContainer";
-import { Player } from "@/_common/interfaces/Player";
 import React from "react";
+import ItemDataContainer from "./itemData/ItemDataContainer";
+import { ItemData } from "@/_common/interfaces/ItemData";
+import { Player } from "@/_common/interfaces/Player";
+import { Modifier } from "@/_common/interfaces/Modifier";
 
 interface ItemModalProps {
   itemModalShown: boolean,
@@ -163,12 +164,11 @@ const LowerRow: React.FC<LowerRowProps> = ({ itemData, playerData, isMagicalStuf
   )
 }
 
-
 // ----------------------- //
 // -----   RENDER   -----  //
 // ----------------------- //
 
-export const renderEffects = (effects: Array<string> | undefined, itemType: string) => {
+export const renderEffects = (effects: string[] | undefined, itemType: string) => {
 
   if (!(effects && effects.length > 0)) {
     return <p className={`text-3xl italic`}>This item does not have any effect.</p>;
@@ -212,9 +212,8 @@ export const renderEquipmentItemData = (
 
 }
 
-
 // Attributes: Defense or Base Percentage.
-const renderAttribute = (itemAttribute: number | undefined, playerData: Player | null, itemType: string, attributeType: string) => {
+const renderAttribute = (itemAttribute: number | undefined, playerData: Player | null, itemType: string, attributeType: "defense" | "base_percentage") => {
 
   // If item attribute has no value do not render anything.
   if (!itemAttribute) return
@@ -222,10 +221,12 @@ const renderAttribute = (itemAttribute: number | undefined, playerData: Player |
   let valueDifference;
 
   if (playerData?.equipment) {
-    const equippedItem = playerData.equipment[itemType];
-    if (equippedItem[attributeType]) {
-      const playerValue = equippedItem[attributeType];
-      valueDifference = itemAttribute - playerValue;
+    const equippedItem = playerData.equipment[itemType as keyof typeof playerData.equipment];
+    if (equippedItem) {
+      const playerValue = equippedItem[attributeType as keyof typeof equippedItem];
+      if (typeof playerValue === 'number') {
+        valueDifference = itemAttribute - playerValue;
+      }
     }
   }
 
@@ -267,10 +268,12 @@ const renderModifiers = (modifiers: Record<string, number>, playerData: Player |
     return <p className={`text-[#EED1B4] text-3xl italic`}>This item does not have any modifier.</p>;
   }
 
-  return Object.entries(modifiers)
-    .map(([key, value]) => {
+  const attributes = Object.keys(modifiers) as (keyof Modifier)[];
 
-      const attribute = key;
+  return attributes.map((attribute) => {
+    
+    const value = modifiers[attribute]; // value is now strongly typed as a number
+
       const formatedAttribute = attribute?.split('_')
         .map((word) => capitalizeFirstLetter(word))
         .join(' ');
@@ -278,10 +281,11 @@ const renderModifiers = (modifiers: Record<string, number>, playerData: Player |
 
       let valueDifference;
 
-      if (playerData?.equipment) {
-        const equippedItem = playerData.equipment[itemType];
-        if (equippedItem?.modifiers) {
-          const playerValue = equippedItem.modifiers[attribute];
+      if (playerData?.equipment && itemType !== "ingredient") {
+        const equippedItem = playerData.equipment[itemType as keyof typeof playerData.equipment];
+        if (equippedItem && 'modifiers' in equippedItem) {
+          const itemWithModifiers = equippedItem;
+          const playerValue = itemWithModifiers.modifiers[attribute];
           valueDifference = value - playerValue;
         }
       }

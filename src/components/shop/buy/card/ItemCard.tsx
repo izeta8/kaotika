@@ -160,7 +160,8 @@ const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConf
   );
 }
 
-//********** TAILWIND CSS *************/
+//********** ANIMATION CSS *************/
+
 const shrinkToCartStyles = `
   @keyframes shrinkToCart {
     0% {

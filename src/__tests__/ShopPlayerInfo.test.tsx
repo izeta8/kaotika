@@ -2,7 +2,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import React from 'react';
 import { mockPlayerData } from './__mocks__/MockPlayerData';
-import SellPlayerInfo from '@/components/shop/SellPlayerInfo';
+import SellPlayerInfo from '@/components/shop/sell/SellPlayerInfo';
 
 
 

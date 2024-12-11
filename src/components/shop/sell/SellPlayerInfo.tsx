@@ -1,5 +1,5 @@
 import { ReactNode, useState, useEffect } from 'react';
-import GoldDisplay from './GoldDisplay';
+import GoldDisplay from '../GoldDisplay';
 
 interface promps {
   gold: number | undefined;

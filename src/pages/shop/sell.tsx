@@ -1,12 +1,10 @@
 import { Player } from "@/_common/interfaces/Player";
 import Layout from "@/components/Layout";
-import PlayerInventorySellShop from "@/components/shop/PlayerInventorySellShop";
+import PlayerInventorySellShop from "@/components/shop/sell/PlayerInventorySellShop";
 import Link from 'next/link';
-import SellShopObjectDetails from "@/components/shop/SellShopObjectDetails";
-import { SellerDialogueBox, createItemSellPriceMessage } from "@/components/shop/SellerDialgueBox";
-import { Button } from "@nextui-org/button";
-import KaotikaButton from "@/components/KaotikaButton";
-import SellPlayerInfo from "@/components/shop/SellPlayerInfo";
+import SellShopObjectDetails from "@/components/shop/sell/SellObjectDetails";
+import { SellerDialogueBox } from "@/components/shop/sell/SellerDialgueBox";
+import SellPlayerInfo from "@/components/shop/sell/SellPlayerInfo";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import Loading from "@/components/Loading";
@@ -20,7 +18,7 @@ import { Shield } from "@/_common/interfaces/Shield";
 import { Weapon } from "@/_common/interfaces/Weapon";
 import { MESSAGES } from "@/constants/shop/constants_messages";
 import ConfirmModal from "@/components/shop/ConfirmModal";
-import SellScreenButton from "@/components/shop/SellScreenButton";
+import SellScreenButton from "@/components/shop/sell/SellScreenButton";
 
 
 const Sell = () => {
@@ -31,8 +29,8 @@ const Sell = () => {
   const [playerEmail, setPlayerEmail] = useState<string | null>(null);
   const [playerData, setPlayerData] = useState<Player>();
   const [productConfirm, setProductConfirm] = useState<object | null>(null);
-  const [selectedItemToSell, setSelectedItemToSell] = useState< Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield | null >(null);
-  const [hoverItemToSell, setHoverItemToSell] = useState< Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield | null >(null);
+  const [selectedItemToSell, setSelectedItemToSell] = useState< Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield | Ingredient | null >(null);
+  const [hoverItemToSell, setHoverItemToSell] = useState< Helmet | Armor | Weapon | Artifact | Ring | Boot | Shield | Ingredient |null >(null);
   const [sellerDialogueMessage, setSellerDialogueMessage] = useState<string>(MESSAGES.WELCOME);
 
 
@@ -256,6 +254,14 @@ const Sell = () => {
 
   );
 };
+
+// The function to create the seller's message
+export function createItemSellPriceMessage(message: string, itemName: string, itemValue: number): string {
+  let returnMessage = message;
+  returnMessage = returnMessage.replace("{itemName}", itemName);
+  returnMessage = returnMessage.replace("{price}", itemValue.toString());
+  return returnMessage;
+}
 
 
 export default Sell;

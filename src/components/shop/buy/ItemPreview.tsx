@@ -1,6 +1,6 @@
 import { ItemData } from "@/_common/interfaces/ItemData";
 import { Player } from "@/_common/interfaces/Player";
-import { LevelDisplay } from "../SellPlayerInfo";
+import { LevelDisplay } from "../sell/SellPlayerInfo";
 import GoldDisplay from "../GoldDisplay";
 
 interface ItemPreviewProps {

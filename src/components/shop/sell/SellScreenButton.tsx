@@ -1,41 +1,13 @@
 import React from 'react';
 
-// Define the props for the SellButton component
 interface SellButtonProps {
   text: string;
   handleClick: () => void;
-  isSelected: boolean; // Flag to determine whether an item is selected
+  isSelected: boolean;
 }
 
-const SellScreenButton: React.FC<SellButtonProps> = ({
-  text,
-  handleClick,
-  isSelected,
-}) => {
-  // Inject the border animation styles directly in the component
-  const borderAnimationStyle = `
-@keyframes borderMovement {
-  0% {
-    border-color: #704214; /* Dark sepia */
-  }
-  25% {
-    border-color: #a67c52; /* Warm brown */
-  }
-  50% {
-    border-color: #d2b48c; /* Tan (parchment-like) */
-  }
-  75% {
-    border-color: #c2b280; /* Muted gold */
-  }
-  100% {
-    border-color: #9c661f; /* Burnt orange */
-  }
-}
-.animate-borderMovement {
-  animation: borderMovement 1.5s linear infinite;
-}
-  `;
-
+const SellScreenButton: React.FC<SellButtonProps> = ({text, handleClick, isSelected, }) => {
+  
   // Tailwind class for dynamic styling based on selection
   const buttonClass = isSelected
     ? 'from-transparent bg-darkSepia hover:bg-medievalSepia to-transparent border-4 border-transparent transform scale-100 transition-all duration-300 hover:scale-110'
@@ -59,3 +31,26 @@ const SellScreenButton: React.FC<SellButtonProps> = ({
 
 export default SellScreenButton;
 
+// Inject the border animation styles directly in the component
+const borderAnimationStyle = `
+    @keyframes borderMovement {
+      0% {
+        border-color: #704214; 
+      }
+      25% {
+        border-color: #a67c52; 
+      }
+      50% {
+        border-color: #d2b48c; 
+      }
+      75% {
+        border-color: #9c661f; 
+      }
+      100% {
+        border-color: #704214;
+      }
+    }
+    .animate-borderMovement {
+      animation: borderMovement 1.5s linear infinite;
+    }
+  `;
