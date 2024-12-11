@@ -56,9 +56,9 @@ const PlayerInventorySellShop: React.FC<Props> = ({ playerData, setSelectedItemT
       <div className="w-full h-full bg-black/70">
         <div className="grid grid-cols-12 grid-rows-5 flex-grow">
           {
-            playerData?.inventory.helmets.map(helmet => {
+            playerData?.inventory.helmets.map((helmet, index) => {
               return (
-                <div key={helmet._id} className={`${containerStyle} ${getItemClass(helmet)}`} >
+                <div key={index} className={`${containerStyle} ${getItemClass(helmet)}`} >
                   <img src={helmet.image} alt={helmet.name} className="w-full h-auto"
                     onClick={() => handleItemClick(helmet)}
                     onMouseEnter={() => handleMouseEnter(helmet)}
@@ -69,9 +69,9 @@ const PlayerInventorySellShop: React.FC<Props> = ({ playerData, setSelectedItemT
             })
           }
           {
-            playerData?.inventory.weapons.map(weapon => {
+            playerData?.inventory.weapons.map((weapon, index) => {
               return (
-                <div key={weapon._id} className={`${containerStyle} ${getItemClass(weapon)}`} >
+                <div key={index} className={`${containerStyle} ${getItemClass(weapon)}`} >
                   <img src={weapon.image} alt={weapon.name} className="w-full h-auto"
                     onClick={() => handleItemClick(weapon)}
                     onMouseEnter={() => handleMouseEnter(weapon)}
@@ -82,9 +82,9 @@ const PlayerInventorySellShop: React.FC<Props> = ({ playerData, setSelectedItemT
             })
           }
           {
-            playerData?.inventory.armors.map(armor => {
+            playerData?.inventory.armors.map((armor, index) => {
               return (
-                <div key={armor._id} className={`${containerStyle} ${getItemClass(armor)}`} >
+                <div key={index} className={`${containerStyle} ${getItemClass(armor)}`} >
                   <img src={armor.image} alt={armor.name} className="w-full h-auto"
                     onClick={() => handleItemClick(armor)}
                     onMouseEnter={() => handleMouseEnter(armor)}
@@ -95,9 +95,9 @@ const PlayerInventorySellShop: React.FC<Props> = ({ playerData, setSelectedItemT
             })
           }
           {
-            playerData?.inventory.shields.map(shield => {
+            playerData?.inventory.shields.map((shield, index) => {
               return (
-                <div key={shield._id} className={`${containerStyle} ${getItemClass(shield)}`} >
+                <div key={index} className={`${containerStyle} ${getItemClass(shield)}`} >
                   <img src={shield.image} alt={shield.name} className="w-full h-auto"
                     onClick={() => handleItemClick(shield)}
                     onMouseEnter={() => handleMouseEnter(shield)}
@@ -108,9 +108,9 @@ const PlayerInventorySellShop: React.FC<Props> = ({ playerData, setSelectedItemT
             })
           }
           {
-            playerData?.inventory.artifacts.map(artifact => {
+            playerData?.inventory.artifacts.map((artifact, index) => {
               return (
-                <div key={artifact._id} className={`${containerStyle} ${getItemClass(artifact)}`} >
+                <div key={index} className={`${containerStyle} ${getItemClass(artifact)}`} >
                   <img src={artifact.image} alt={artifact.name} className="w-full h-auto"
                     onClick={() => handleItemClick(artifact)}
                     onMouseEnter={() => handleMouseEnter(artifact)}
@@ -121,9 +121,9 @@ const PlayerInventorySellShop: React.FC<Props> = ({ playerData, setSelectedItemT
             })
           }
           {
-            playerData?.inventory.boots.map(boot => {
+            playerData?.inventory.boots.map((boot, index) => {
               return (
-                <div key={boot._id} className={`${containerStyle} ${getItemClass(boot)}`} >
+                <div key={index} className={`${containerStyle} ${getItemClass(boot)}`} >
                   <img src={boot.image} alt={boot.name} className="w-full h-auto"
                     onClick={() => handleItemClick(boot)}
                     onMouseEnter={() => handleMouseEnter(boot)}
@@ -134,9 +134,9 @@ const PlayerInventorySellShop: React.FC<Props> = ({ playerData, setSelectedItemT
             })
           }
           {
-            playerData?.inventory.rings.map(ring => {
+            playerData?.inventory.rings.map((ring, index) => {
               return (
-                <div key={ring._id} className={`${containerStyle} ${getItemClass(ring)}`} >
+                <div key={index} className={`${containerStyle} ${getItemClass(ring)}`} >
                   <img src={ring.image} alt={ring.name} className="w-full h-auto"
                     onClick={() => handleItemClick(ring)}
                     onMouseEnter={() => handleMouseEnter(ring)}
@@ -147,9 +147,9 @@ const PlayerInventorySellShop: React.FC<Props> = ({ playerData, setSelectedItemT
             })
           }
           {
-            playerData?.inventory.ingredients.map(ingredient => {
+            playerData?.inventory.ingredients.map((ingredient, index) => {
               return (
-                <div key={ingredient._id} className={`relative ${containerStyle} ${getItemClass(ingredient)}`}
+                <div key={index} className={`relative ${containerStyle} ${getItemClass(ingredient)}`}
               >
                 <img
                   src={ingredient.image}
