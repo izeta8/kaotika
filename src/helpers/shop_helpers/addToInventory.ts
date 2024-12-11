@@ -1,8 +1,8 @@
-import { ItemData } from "@/_common/interfaces/ItemData";
+import { CartItem } from "@/_common/interfaces/CartItem";
 
 export const addToInventory = (
   playerInventory: Record<string, string[]>, // Inventory with only IDs
-  products: ItemData[]
+  products: CartItem[]
 ) => {
   products.forEach((product) => {
     const category = product.type + 's'; // Determine the category (e.g., 'ingredients')

@@ -7,7 +7,7 @@ interface Promps {
 }
 
 const SellShopObjectDetails: React.FC<Promps> = ({ item, hover }) => {
-  
+
   if (!item && !hover) return null;
 
   if (!item && hover) {
@@ -81,14 +81,14 @@ const SellShopObjectDetails: React.FC<Promps> = ({ item, hover }) => {
             {/* Only if the item type is the one which have defense attribute */}
             {((item.type === "armor") || (item.type === "helmet") || (item.type === "boot") || (item.type === "shield")) && (
               (item?.defense) && (
-                (item.defense > 0) 
-                ? <h2 className="text-3xl pl-24">Defense: <span className="text-emerald-300">{item.defense}</span></h2>
-                : (item.defense < 0)
-                ? <h2 className="text-3xl pl-24">Defense: <span className="text-rose-600">{item.defense}</span></h2>
-                : <></>
+                (item.defense > 0)
+                  ? <h2 className="text-3xl pl-24">Defense: <span className="text-emerald-300">{item.defense}</span></h2>
+                  : (item.defense < 0)
+                    ? <h2 className="text-3xl pl-24">Defense: <span className="text-rose-600">{item.defense}</span></h2>
+                    : <></>
               )
             )}
-            
+
 
             {/* Only if the item is an ingredient render the effects*/}
             {(item.type === "ingredient") ?
@@ -97,7 +97,7 @@ const SellShopObjectDetails: React.FC<Promps> = ({ item, hover }) => {
                   return (<h2 className="text-3xl pl-12">{getIngredientEffectName(effect)}</h2>);
                 })
               )
-            : <></>}
+              : <></>}
 
           </div>
           <div className="w-1/2 place-self-center">
@@ -107,8 +107,11 @@ const SellShopObjectDetails: React.FC<Promps> = ({ item, hover }) => {
               : <img src={item.image} alt={item.name} className=" w-40 h-40 ml-20" />
             }
 
-            {/* Render the item value */}
-            <h2 className="text-3xl text-center">Item value is {item.value}</h2>
+            {/* Render the item value depending if it is unique or not with different text*/}
+            {(item.isUnique) ? <h2 className="text-3xl text-center">Unique item value is {item.value}</h2>
+              : <h2 className="text-3xl text-center">Item value is {item.value}</h2>
+            }
+
             {/* Only if the item type is the one which needs a minimum level to use */}
             {((item.type === "armor") || (item.type === "artifact") || (item.type === "helmet") || (item.type === "boot") || (item.type === "ring") || (item.type === "shield") || (item.type === "weapon")) ?
               <h2 className="text-3xl text-center">Min level to use is {item.min_lvl}</h2>
