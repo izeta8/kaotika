@@ -41,8 +41,10 @@ describe("ItemCard component", () => {
     setCartAnimating: mockSetCartAnimating,
     isOnCart: false,
     hasEnoughMoney: true,
+    handleCardHover: Function
   };
 
+   
   beforeEach(() => {
     jest.clearAllMocks();
   });
