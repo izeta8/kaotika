@@ -22,14 +22,17 @@ export const fetchAllProducts = async (connection: mongoose.Connection) => {
     const WeaponModel = connection.model('Weapon', Weapon.schema);
 
     // Fetch data from the models
-    const rings = await RingModel.find().exec();
-    const armors = await ArmorModel.find().exec();
-    const artifacts = await ArtifactModel.find().exec();
-    const boots = await BootModel.find().exec();
-    const helmets = await HelmetModel.find().exec();
-    const ingredients = await IngredientModel.find().exec();
-    const shields = await ShieldModel.find().exec();
-    const weapons = await WeaponModel.find().exec();
+    const [rings, armors, artifacts, boots, helmets, ingredients, shields, weapons] = await Promise.all([
+      RingModel.find().exec(),
+      ArmorModel.find().exec(),
+      ArtifactModel.find().exec(),
+      BootModel.find().exec(),
+      HelmetModel.find().exec(),
+      IngredientModel.find().exec(),
+      ShieldModel.find().exec(),
+      WeaponModel.find().exec(),
+    ]);
+    
 
     return {
       rings,
