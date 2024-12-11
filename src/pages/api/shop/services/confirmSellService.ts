@@ -34,8 +34,8 @@ export const processProductSell = async (connection, playerEmail, product, produ
 
   
 
-  if (!product.isUnique) {  
-    await changeProductActiveStatus(connection, product, false);
+  if (product.isUnique) {  
+    await changeProductActiveStatus(connection, product, true);
   }
 
   return {
