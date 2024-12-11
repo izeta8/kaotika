@@ -1,4 +1,7 @@
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 export const dbConfig = {
-  dbURI: 'mongodb+srv://anderzubi:mendi_house@cluster0.dkmeqmy.mongodb.net/MendiDB',
+  dbURI: process.env.DB_URI,
 };
-  

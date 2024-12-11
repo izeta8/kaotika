@@ -3,7 +3,6 @@ import { fetchAllProducts } from './services/productsService';
 import mongoose from 'mongoose';
 import { createDatabaseConnection, closeDatabaseConnection } from '@/database/connection';
 
-
 export default async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void> {
   let connection: mongoose.Connection | null = null
   try {
@@ -17,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(500).json({ message: 'Error fetching products', error: error.message });
   } finally {
     if (connection) {
-      await closeDatabaseConnection(connection);
+      await closeDatabaseConnection();
     }
   }
 }
