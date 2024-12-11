@@ -74,15 +74,15 @@ const Sell = () => {
           const res = await fetch(`/api/shop/player/?playerEmail=${playerEmail}`);
           if (res.status === 200) {
             const data = await res.json();
-            delete data.player.isInsideTower;
-            delete data.player.socketId;
-            delete data.player.isInsideLab;
-            delete data.player.isInsideHall;
-            delete data.player.obituaryDiscovered;
-            delete data.player.fcm_token;
-            delete data.player.role;
-            delete data.player.cardId;
-            const playerObject = data.player;
+            delete data.isInsideTower;
+            delete data.socketId;
+            delete data.isInsideLab;
+            delete data.isInsideHall;
+            delete data.obituaryDiscovered;
+            delete data.fcm_token;
+            delete data.role;
+            delete data.cardId;
+            const playerObject = data;
 
             console.log(playerObject)
             setPlayerData(playerObject);
@@ -119,7 +119,6 @@ const Sell = () => {
           gold: result.gold,
           inventory: result.inventory,
         };
-        localStorage.setItem('playerData', JSON.stringify(updatedPlayerData));
         setPlayerData(updatedPlayerData);
       }
       

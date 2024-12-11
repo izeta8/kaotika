@@ -1,4 +1,4 @@
-import { fetchPlayer, updatePlayer } from './playersService';
+import { fetchPlayer, populatePlayer, updatePlayer } from './playersService';
 import Player from '../../../../database/models/playerModel';
 import { calculateTotalCost } from '@/helpers/shop_helpers/calculateTotalCost';
 import { hasEnoughGold } from '@/helpers/shop_helpers/hasEnoughGold';
@@ -25,6 +25,9 @@ export const processProductsPurchase = async (connection, playerEmail, products)
   // Calculate the total cost of all products
   const totalCost = calculateTotalCost(products);
 
+  console.log("el costo total: " + totalCost);
+  console.log(player.gold);
+  console.log(hasEnoughGold(player.gold, totalCost));
   // Check if the player has enough gold for all products
   if (!hasEnoughGold(player.gold, totalCost)) {
     return {
@@ -45,10 +48,13 @@ export const processProductsPurchase = async (connection, playerEmail, products)
     inventory: player.inventory as object,
   });
 
+  const populatedPlayer = await populatePlayer(connection, playerEmail);
+  console.log("la populacion FINAL:" + populatedPlayer);
+
   return {
     success: true,
-    inventory: updatedPlayer.updatedPlayer.inventory,
-    gold: updatedPlayer.updatedPlayer.gold,
+    inventory: populatedPlayer.inventory,
+    gold: populatedPlayer.gold,
   };
 };
 

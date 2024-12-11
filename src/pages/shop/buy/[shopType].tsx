@@ -94,12 +94,6 @@ const Shop = () => {
     { state: "shields", setter: setShields },
     { state: "boots", setter: setBoots },
     { state: "rings", setter: setRings },
-    { state: "helmets", setter: setHelmets },
-    { state: "weapons", setter: setWeapons },
-    { state: "armors", setter: setArmors },
-    { state: "shields", setter: setShields },
-    { state: "boots", setter: setBoots },
-    { state: "rings", setter: setRings },
   ];
 
   const magicalStuffStateSetters = [
@@ -130,10 +124,9 @@ const Shop = () => {
       fetch(`/api/shop/player?playerEmail=${playerEmail}`)
         .then(response => response.json())
         .then(data => {
-          console.log(`el player : `, data.player);
-          setPlayerData(data.player);
+          console.log(`el player cliente : `, data);
+          setPlayerData(data);
           // localStorage.setItem('playerData', JSON.stringify( data ));
-          console.log(data.player, "is the data fetched");
           setLoading(false);
         })
         .catch(error => {
@@ -245,6 +238,78 @@ const Shop = () => {
   const handleBuyClick = () => {
     setProductConfirm(productConfirm);
   };
+
+  ////////////////////////////////////////////////////////////////////////////////
+
+  // Remove owned items from the shop.
+
+  const removeOwnedItems = () => {
+
+    if (!playerData) {return}
+
+    const itemTypes = [
+      {category: "helmet", setter: setHelmets},
+      {category: "weapon", setter: setWeapons},
+      {category: "armor", setter: setArmors},
+      {category: "shield", setter: setShields},
+      {category: "boot", setter: setBoots},
+      {category: "ring", setter: setRings},
+    ];
+
+    itemTypes.forEach((categoryObject: {category: string, setter: Function}):void => {
+
+      const playerItems: string[] = [];
+      
+      const {category, setter} = categoryObject;
+
+      // Add equipped item to array.
+      const equippedItem = playerData?.equipment[category];
+      if (equippedItem) {
+        playerItems.push(equippedItem._id);
+      }
+
+      // Add inventory items to array.
+      const inventoryItems = playerData?.inventory[`${category}s`];
+      if (inventoryItems && inventoryItems.length>0) {
+        const inventoryIds = inventoryItems
+          .filter((item:any) => item && item._id)
+          .map((item:any) => item._id);
+        playerItems.push(...inventoryIds);
+      }
+
+      // I use set just because it is more efficient with large objects.
+      const playerItemsSet = new Set(playerItems);
+
+      // Remove the owned items of the current category from the state and localstorage.
+      setter((prevItems: ItemData[]) => {
+        const filteredItems = prevItems.filter(item => !playerItemsSet.has(item._id));
+
+        // Update localStorage
+        try {
+          localStorage.setItem(
+            `${category}s`,
+            JSON.stringify(filteredItems)
+          );
+        } catch (error) {
+          console.error(`Failed to update localStorage for ${category}s:`, error);
+        }
+
+        return filteredItems;
+      });
+    })
+  }
+
+  useEffect(() => {
+    removeOwnedItems();
+  }, [playerData?.equipment, playerData?.inventory]);
+
+  // When we change a category state value, update the current displayed data.
+  useEffect(() => {
+    if (currentCategory) {
+      setCategoryData(shopCategories[currentCategory]);
+    }
+  }, [helmets, weapons, armors, shields, boots, rings]);
+
 
   ////////////////////////////////////////////////////////////////////////////////
 
@@ -416,7 +481,7 @@ const ShopContent: React.FC<ShopContentProps> = ({ categoryData, addToCart, setP
   const router = useRouter();
 
   return (
-    <section className='w-full h-full relative z-30 flex justify-center items-center mb-8'>
+    <section className='w-full h-full relative z-30 flex justify-center items-center mb-8  animate-fadeIn'>
 
       <div className="w-11/12 flex flex-row flex-wrap">
 
@@ -497,7 +562,7 @@ const ItemsList: React.FC<ItemsListProps> = ({ categoryData, addToCart, setProdu
   const router = useRouter();
 
   if (categoryData.length === 0) {
-    return <h2 className="text-4xl m-10 text-medievalSepia mt-5">There are no available items in this category</h2>;
+    return <h2 className="text-4xl m-10 text-medievalSepia mt-5 animate-fadeIn">There are no available items in this category</h2>;
   }
 
   return (
@@ -590,13 +655,14 @@ const purchaseProduct = async (playerEmail: string, products: Array<ItemData>) =
 
     if (!response.ok || !result.success) {
       // Handle the case where the purchase fails due to business logic (e.g., low level or insufficient funds)
-      console.log('Purchase failed:', result.error); 
+      console.log('Purchase failed:', result.message); 
 
       return result;
     }
 
     // Handle the successful purchase case
     console.log('Purchase successful:', result);
+    
     return result
 
   } catch (error) {

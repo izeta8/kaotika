@@ -1,4 +1,4 @@
-import { fetchPlayer, updatePlayer } from './playersService';
+import { fetchPlayer, populatePlayer, updatePlayer } from './playersService';
 import { removeFromInventory } from '@/helpers/shop_helpers/removeFromInventory';
 
 export const processProductSell = async (connection, playerEmail, product, productPrice) => {
@@ -16,7 +16,7 @@ export const processProductSell = async (connection, playerEmail, product, produ
   const category = product.type + 's';
 
   // Remove the product from the player's inventory
-  const inventoryUpdateResult = removeFromInventory(player.inventory, category, product);
+  const inventoryUpdateResult = removeFromInventory(player.inventory, category, product._id);
 
   if (!inventoryUpdateResult.success) {
     return inventoryUpdateResult; // Return the failure message
@@ -28,9 +28,12 @@ export const processProductSell = async (connection, playerEmail, product, produ
     inventory: inventoryUpdateResult.inventory,
   });
 
+  const populatedPlayer = await populatePlayer(connection, playerEmail);
+  console.log("la populacion FINAL:" + populatedPlayer);
+
   return {
     success: true,
-    inventory: updatedPlayer.updatedPlayer.inventory,
-    gold: updatedPlayer.updatedPlayer.gold,
+    inventory: populatedPlayer.inventory,
+    gold: populatedPlayer.gold,
   };
 };
