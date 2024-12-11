@@ -94,8 +94,13 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose, cartItems, setItemsInCart,
         )}
 
         {(cartItems.length > 0) ?
-          (total <= playerData?.gold!) ? /* Proceed to Checkout */ <ProceedCheckout handlePurchase={handlePurchase} /> :
-            (/* Total */ <Total total={total} />)
+          <Total total={total} />
+          : <></>
+        }
+
+        {(cartItems.length > 0) ?
+          (total <= playerData?.gold!) ? /* Proceed to Checkout Visible & Activate */ <ProceedCheckout handlePurchase={handlePurchase} enoughMoneyToBuy={true} /> :
+            /* Proceed to Checkout Visible & Not Activate*/ <ProceedCheckout handlePurchase={handlePurchase} enoughMoneyToBuy={false} />
           : <></>
         }
       </div>
@@ -227,30 +232,49 @@ const Total: React.FC<TotalProps> = ({ total }) => {
 // ---- PROCEED TO CHECKOUT ---- //
 
 interface ProceedCheckoutProps {
-  handlePurchase: Function
+  handlePurchase: Function,
+  enoughMoneyToBuy: boolean
 }
 
-const ProceedCheckout: React.FC<ProceedCheckoutProps> = ({ handlePurchase }) => {
-
-  return (
-    <div className="mt-12 flex justify-center relative">
-      <button
-        onClick={() => handlePurchase()}
-        className="cursor-pointer transition transform hover:scale-105"
-      >
-        <span className="absolute top-5 left-1/2 transform -translate-x-1/2 text-4xl font-semibold text-white">
-          Proceed to Checkout
-        </span>
-        <img
-          src="/images/shop/buy/BUTTONBIMAGE1.png"
-          alt="Proceed to Checkout"
-          className="cursor-pointer"
-          draggable={false}
-        />
-      </button>
-    </div>
-  )
-
+const ProceedCheckout: React.FC<ProceedCheckoutProps> = ({ handlePurchase, enoughMoneyToBuy }) => {
+  if (enoughMoneyToBuy) {
+    return (
+      <div className="mt-12 flex justify-center relative">
+        <button
+          onClick={() => handlePurchase()}
+          className="cursor-pointer transition transform hover:scale-105"
+        >
+          <span className="absolute top-5 left-1/2 transform -translate-x-1/2 text-4xl font-semibold text-white">
+            Proceed to Checkout
+          </span>
+          <img
+            src="/images/shop/buy/BUTTONBIMAGE1.png"
+            alt="Proceed to Checkout"
+            className="cursor-pointer"
+            draggable={false}
+          />
+        </button>
+      </div>
+    )
+  } else {
+    return (
+      <div className="mt-12 flex justify-center opacity-35 relative">
+        <button
+          className="cursor-not-allowed transition"
+        >
+          <span className="absolute top-5 left-1/2 transform -translate-x-1/2 text-4xl font-semibold text-white">
+            Not Enough Gold
+          </span>
+          <img
+            src="/images/shop/buy/BUTTONBIMAGE1.png"
+            alt="Proceed to Checkout"
+            className="cursor-not-allowed"
+            draggable={false}
+          />
+        </button>
+      </div>
+    )
+  }
 }
 
 export default Cart;
