@@ -38,7 +38,7 @@ const GoldDisplay: React.FC<GoldDisplayProps> = ({ gold }) => {
 
   return (
     <>
-      <style jsx>{customStyles}</style>
+      <style>{customStyles}</style>
       <div
         className={`w-3/5 border border-medievalSepia rounded-md px-2 py-1 flex items-center gap-3 bg-black/30 transition-transform ${
           animationType === "increase" ? "animate-gold-increase" : ""
@@ -57,8 +57,6 @@ const GoldDisplay: React.FC<GoldDisplayProps> = ({ gold }) => {
     </>
   );
 };
-
-
 
 export default GoldDisplay;
 

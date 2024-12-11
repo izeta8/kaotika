@@ -6,7 +6,7 @@ interface Props {
   playerData: Player;
   setSelectedItemToSell: (item: ItemData | null) => void;
   setHoverItemToSell: (item: ItemData | null) => void;
-  selectedItemToSell: ItemData
+  selectedItemToSell: ItemData | null
 }
 
 const PlayerInventorySellShop: React.FC<Props> = ({ playerData, setSelectedItemToSell, setHoverItemToSell, selectedItemToSell }) => {

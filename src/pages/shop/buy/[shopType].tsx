@@ -16,7 +16,6 @@ import ShopBackground from "@/components/shop/ShopBackground";
 import ShopHeader from "@/components/shop/buy/structure/header/ShopHeader"; 
 import { Player } from "@/_common/interfaces/Player";
 import CartButton from "@/components/shop/buy/cart/CartButton";
-import ItemPreview from "@/components/shop/buy/ItemPreview";
 
 export type ShopCategories = "helmets" | "weapons" | "armors" | "shields" | "boots" | "rings" | "ingredients" | "containers";
 type EquipmentCategory = 'helmet' | 'weapon' | 'armor' | 'shield' | 'artifact' | 'boot' | 'ring' | 'healing_potion' | 'antidote_potion' | 'enhancer_potion';
