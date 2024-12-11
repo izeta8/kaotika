@@ -1,6 +1,8 @@
+import { ItemData } from "@/_common/interfaces/ItemData";
+
 export const addToInventory = (
   playerInventory: Record<string, string[]>, // Inventory with only IDs
-  products: Array<{ _id: string, type: string }>
+  products: ItemData[]
 ) => {
   products.forEach((product) => {
     const category = product.type + 's'; // Determine the category (e.g., 'ingredients')
@@ -10,7 +12,12 @@ export const addToInventory = (
       playerInventory[category] = [];
     }
 
-    // Add the product ID to the category
-    playerInventory[category].push(product._id);
+    const quantity = product.qty || 1;
+    for (let i = 0; i < quantity; i++) {
+      playerInventory[category].push(product._id);
+    }
   });
 };
+
+
+

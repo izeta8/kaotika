@@ -29,6 +29,7 @@ describe("ItemCard component", () => {
     base_percentage: 10,
     defense: 5,
     isUnique: false,
+    qty: 1,
   };
 
   const defaultProps = {

@@ -13,7 +13,7 @@ interface ItemRowProps {
 
 const ItemRow: React.FC<ItemRowProps> = ({item, isItemIngredient, decreaseItem, increaseItem, removeItem}) => {
   
-  const {image, name, _id, value, quantity} = item;
+  const {image, name, _id, value, qty} = item;
 
    if (value === undefined || value === null) { return null; }
 
@@ -40,11 +40,11 @@ const ItemRow: React.FC<ItemRowProps> = ({item, isItemIngredient, decreaseItem, 
               <button
                 onClick={() => decreaseItem(_id)}
                 className="px-3 py-2 bg-gray-600 text-white rounded hover:bg-gray-500 text-2xl"
-                 aria-label="Decrease quantity"
+                aria-label="Decrease quantity"
               >
                 <FaMinus />
               </button>
-              <span className="text-2xl">{quantity}</span>
+              <span className="text-2xl">{qty}</span>
               <button
                 onClick={() => increaseItem(_id)}
                 className="px-3 py-2 bg-gray-600 text-white rounded hover:bg-gray-500 text-2xl"
@@ -58,7 +58,7 @@ const ItemRow: React.FC<ItemRowProps> = ({item, isItemIngredient, decreaseItem, 
           )}
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-3xl">{value * quantity}</span>
+          <span className="text-3xl">{value * qty}</span>
           <img
             src="/images/icons/gold.png"
             draggable={false}

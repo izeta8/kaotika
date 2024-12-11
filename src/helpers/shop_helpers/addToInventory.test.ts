@@ -16,8 +16,8 @@ describe('addToInventory', () => {
   beforeEach(() => {
     playerInventory = {
       weapons: [
-        { _id: '1', type: 'weapon', name: 'Sword', quantity: 1 },
-        { _id: '2', type: 'weapon', name: 'Axe', quantity: 1 },
+        { _id: '1', type: 'weapon', name: 'Sword', qty: 1 },
+        { _id: '2', type: 'weapon', name: 'Axe', qty: 1 },
       ],
     };
   });
@@ -30,7 +30,7 @@ describe('addToInventory', () => {
     addToInventory(playerInventory, products);
 
     expect(playerInventory.weapons).toHaveLength(3);
-    expect(playerInventory.weapons).toContainEqual({ _id: '3', type: 'weapon', name: 'Bow', quantity: 1 });
+    expect(playerInventory.weapons).toContainEqual({ _id: '3', type: 'weapon', name: 'Bow', qty: 1 });
   });
 
 //   it('should increment the quantity of an existing product', () => {
