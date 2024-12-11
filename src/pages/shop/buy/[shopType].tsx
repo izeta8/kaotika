@@ -20,6 +20,8 @@ import CartButton from "@/components/shop/buy/cart/CartButton";
 import ItemPreview from "@/components/shop/buy/ItemPreview";
 
 export type ShopCategories = "helmets" | "weapons" | "armors" | "shields" | "boots" | "rings" | "ingredients" | "containers";
+type EquipmentCategory = 'helmet' | 'weapon' | 'armor' | 'shield' | 'artifact' | 'boot' | 'ring' | 'healing_potion' | 'antidote_potion' | 'enhancer_potion';
+type InventoryCategory = 'helmets' | 'weapons' | 'armors' | 'shields' | 'artifacts' | 'boots' | 'rings' | 'healing_potions' | 'antidote_potions' | 'enhancer_potions';
 
 // Shops item categories
 const equipmentCategories: ShopCategories[] = ["helmets", "weapons", "armors", "shields", "boots", "rings"];
@@ -34,9 +36,10 @@ const Shop = () => {
   const { data: session } = useSession();
 
   const [categoryData, setCategoryData] = useState<ItemData[]>([]);
-  const [productConfirm, setProductConfirm] = useState<CartItem[] | null>(null);
+  const [productConfirm, setProductConfirm] = useState<ItemData|null>(null);
   const [currentCategory, setCurrentCategory] = useState<ShopCategories | undefined>(undefined);
 
+  const [confirmModalShown, setConfirmModalShown] = useState<boolean>(false);
   const [itemModalShown, setItemModalShown] = useState(false);
   const [modalItemData, setModalItemData] = useState<ItemData | undefined>();
 
@@ -195,7 +198,7 @@ const Shop = () => {
 
   // ---- BUY FUNCTIONS ---- //
 
-  const handleConfirmBuy = async (productConfirm: CartItem[]) => {
+  const handleConfirmBuy = async (productConfirm: CartItem[] | ItemData) => {
 
     const products = [];
     console.log('productConfirm before push:', JSON.stringify(productConfirm, null, 2));
@@ -235,9 +238,6 @@ const Shop = () => {
   const handleCancel = () => {
     setProductConfirm(null);
   };
-  const handleBuyClick = () => {
-    setProductConfirm(productConfirm);
-  };
 
   ////////////////////////////////////////////////////////////////////////////////
 
@@ -262,19 +262,22 @@ const Shop = () => {
       
       const {category, setter} = categoryObject;
 
+    
       // Add equipped item to array.
-      const equippedItem = playerData?.equipment[category];
+      const equippedItem = playerData?.equipment[category as EquipmentCategory];
       if (equippedItem) {
         playerItems.push(equippedItem._id);
       }
 
       // Add inventory items to array.
-      const inventoryItems = playerData?.inventory[`${category}s`];
-      if (inventoryItems && inventoryItems.length>0) {
-        const inventoryIds = inventoryItems
-          .filter((item:any) => item && item._id)
-          .map((item:any) => item._id);
-        playerItems.push(...inventoryIds);
+      if (`${category}s` in playerData?.inventory) {
+        const inventoryItems = playerData?.inventory[`${category}s` as InventoryCategory];
+        if (inventoryItems && inventoryItems.length>0) {
+          const inventoryIds = inventoryItems
+            .filter((item:any) => item && item._id)
+            .map((item:any) => item._id);
+          playerItems.push(...inventoryIds);
+        }
       }
 
       // I use set just because it is more efficient with large objects.
@@ -366,6 +369,14 @@ const Shop = () => {
 
   ////////////////////////////////////////////////////////////////////////////////
 
+  // When productConfirm state has a value, show the modal, and when it does not have close.
+  useEffect(() => {
+    const productConfirmShown = !!productConfirm;
+    setConfirmModalShown(productConfirmShown);
+  }, [productConfirm]);
+
+  ////////////////////////////////////////////////////////////////////////////////
+
   // ---- RENDER ----  //
 
   if (loading) {
@@ -450,7 +461,14 @@ const Shop = () => {
           )}
 
           {productConfirm && (
-             <ConfirmModal isBuy={true} isOpen={handleBuyClick} onCancel={handleCancel} onConfirm={handleConfirmBuy} product={productConfirm}/>
+            <ConfirmModal
+              isBuy={true} 
+              isOpen={confirmModalShown}
+              setConfirmModalShown={setConfirmModalShown}
+              onCancel={handleCancel}
+              onConfirm={handleConfirmBuy}
+              product={productConfirm}
+            />
           )}
 
         </div>
