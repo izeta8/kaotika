@@ -230,6 +230,13 @@ const Sell = () => {
     return (<Loading />);
   }
 
+  const snackbarProduct = selectedItemToSell
+  ? {
+      name: selectedItemToSell.name,
+      image: selectedItemToSell.image,
+    }
+  : undefined;
+
   return (
 
     <Layout>
@@ -321,8 +328,9 @@ const Sell = () => {
           open={snackbarOpen}
           message={snackbarMessage}
           severity={snackbarSeverity}
+          product={snackbarProduct}
           onClose={() => setSnackbarOpen(false)}
-          duration={4000} // Opcional: Puedes ajustar la duración
+          duration={4000} 
         />
       </div>
     </Layout>
