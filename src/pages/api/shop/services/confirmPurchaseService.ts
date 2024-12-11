@@ -4,6 +4,7 @@ import { hasEnoughGold } from '@/helpers/shop_helpers/hasEnoughGold';
 import { addToInventory } from '@/helpers/shop_helpers/addToInventory';
 import mongoose from 'mongoose';
 import { ItemData } from '@/_common/interfaces/ItemData';
+import { findExistingProduct } from '@/helpers/shop_helpers/findExistingProduct';
 
 interface Player {
   _id: string;
@@ -50,8 +51,18 @@ export const processProductsPurchase = async (connection: mongoose.Connection | 
   // Deduct the total cost from the player's gold
   player.gold -= totalCost;
 
+  if(products[0].type != "ingredient"){
+    if (findExistingProduct(player.inventory[products[0].type + "s"], products[0]._id)){
+      return {
+        success: false,
+        message: 'Already in inventory',
+      };
+    }
+  }
+  
   // Update the inventory with the purchased products
   addToInventory(player.inventory, products);
+
 
   // Update the player document in the database
   await updatePlayer(connection, playerEmail, {
