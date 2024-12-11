@@ -34,8 +34,6 @@ const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConf
 
   if (!name) { return }
 
-  const displayName = name.length >= 18 ? name.substring(0, 15) + '...' : name;
-
   const backgroundPath = isMagicalStuffShop ?
     "url('/images/shop/buy/magic_stuff_card_background.png')" :
     "url('/images/shop/buy/equipment_card_background.png')";
@@ -85,6 +83,8 @@ const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConf
     setAnimatingItemId(item._id);
   };
 
+  const fontSize = name.length > 19 ? 'text-3xl' : 'text-4xl';
+
   return (
 
     <>
@@ -132,13 +132,11 @@ const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConf
             />
             {/* ITEM NAME */}
             <p
-              style={{ fontSize: 42 }}
-              className={`
-              whitespace-nowrap font-medium select-text text-center ${isMagicalStuffShop ? "text-[#bccff6]" : equipmentTextGradient}
+              className={`${fontSize} whitespace-nowrap font-medium select-text text-center ${isMagicalStuffShop ? "text-[#bccff6]" : equipmentTextGradient}
               [filter:drop-shadow(0px_2px_0_rgba(0,0,0,0.3))_drop-shadow(0px_1px_0_rgba(0,0,0,0.3))_drop-shadow(0px_-1px_0_rgba(0,0,0,0.3))_drop-shadow(0px_0px_2px_rgba(0,0,0,.5))]
               `}
             >
-              {displayName}
+              {name}
             </p>
 
             {/* BUY BUTTONS */}
