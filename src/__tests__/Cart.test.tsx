@@ -115,18 +115,18 @@ describe("Cart Component", () => {
     expect(mockSetItemsInCart).toHaveBeenCalledWith([]);
   });
 
-  test("If the total is greater than the available gold it does not clean the cart.", () => {
+  test("If the total is greater than the available gold, it does not show Proceed to Checkout.", () => {
     const playerWithLessGold = { gold: 50 } as Player;
     renderCart({ playerData: playerWithLessGold });
 
-    const proceedButton = screen.getByText("Proceed to Checkout");
-    fireEvent.click(proceedButton);
+    // Ensure "Proceed to Checkout" is NOT present
+    const proceedButton = screen.queryByText("Proceed to Checkout");
+    expect(proceedButton).not.toBeInTheDocument();
 
-    // Call confirmPurchase, but do not clear the cart as total > gold
-    expect(mockConfirmPurchase).toHaveBeenCalled();
-    expect(mockSetItemsInCart).not.toHaveBeenCalledWith([]); 
-    expect(mockOnClose).toHaveBeenCalled();
-  });
+    // Ensure "Not Enough Gold" is present
+    const notEnoughGoldButton = screen.getByText("Not Enough Gold");
+    expect(notEnoughGoldButton).toBeInTheDocument();
+});
 
 });
 
