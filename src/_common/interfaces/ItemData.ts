@@ -1,3 +1,5 @@
+import { ItemTypes } from "./ItemTypes";
+
 export interface ItemData {
     _id: string;
     name: string;
@@ -7,8 +9,9 @@ export interface ItemData {
     value?: number;
     modifiers?: any;
     min_lvl?: number;
-    effects?: Array<string>;
-    profiles?: Array<string>;
+    effects?: string[];
+    qty?: number;
+    profiles?: string[];
     base_percentage?: number;
     defense?: number;
     isUnique?: boolean;

@@ -1,6 +1,14 @@
 export interface Ingredient {
-    id: string;
-    name: string;
-    price: number;
-    quantity: number;
-  }
+  _id: string;
+  name: string;
+  description: string;
+  value: number;
+  effects: string[];
+  image: string;
+  type: string;
+  qty: number;
+}
+
+  
+
+
