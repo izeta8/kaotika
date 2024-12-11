@@ -36,7 +36,7 @@ describe('Player Service', () => {
 
   test('fetchPlayer should return player data', async () => {
     // Act: Call fetchPlayer with a mocked connection
-    const { player } = await fetchPlayer({ model: () => Player } as mongoose.Connection, 'test@example.com');
+    const { player } = await fetchPlayer({ model: () => Player } as unknown as mongoose.Connection, 'test@example.com');
 
     // Assert: Check if findOne was called with the correct parameters
     expect(Player.findOne).toHaveBeenCalledWith({ email: 'test@example.com' });
@@ -47,7 +47,7 @@ describe('Player Service', () => {
     const updates = { name: 'Updated Player' };
 
     // Act: Call updatePlayer with a mocked connection
-    const { updatedPlayer } = await updatePlayer({ model: () => Player } as mongoose.Connection, 'test@example.com', updates);
+    const { updatedPlayer } = await updatePlayer({ model: () => Player } as unknown as mongoose.Connection, 'test@example.com', updates);
 
     // Assert: Check if findOneAndUpdate was called with the correct parameters
     expect(Player.findOneAndUpdate).toHaveBeenCalledWith(

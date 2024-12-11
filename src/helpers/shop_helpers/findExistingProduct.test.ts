@@ -1,10 +1,19 @@
 import { findExistingProduct } from './findExistingProduct';
-import { mockProducts } from './mockProducts';
 
 describe('findExistingProduct', () => {
-  it('should find and return an existing product if the product ID matches', () => {
-    const productId = 'product2';
-    const result = findExistingProduct(mockProducts, productId);
-    expect(result).toEqual({ _id: 'product2' });
+  it('returns the product when found', () => {
+    expect(findExistingProduct(['product1', 'product2'], 'product2')).toBe('product2');
+  });
+
+  it('returns null when not found', () => {
+    expect(findExistingProduct(['product1', 'product2'], 'product3')).toBeNull();
+  });
+
+  it('returns null when inventory is empty', () => {
+    expect(findExistingProduct([], 'product1')).toBeNull();
+  });
+
+  it('returns null when productId is empty', () => {
+    expect(findExistingProduct(['product1'], '')).toBeNull();
   });
 });

@@ -1,5 +1,6 @@
-import handler from '@/pages/api/shop/products'; // Import the API route handler
-import { fetchAllProducts } from './services/productsService'; // Import the service function
+import { NextApiRequest, NextApiResponse } from 'next';
+import handler from '@/pages/api/shop/products'; // Import your API route handler
+import { fetchAllProducts } from './services/productsService'; // Import your service
 import { createDatabaseConnection, closeDatabaseConnection } from '@/database/connection';
 
 // Mock dependencies
@@ -25,24 +26,18 @@ describe('Products API', () => {
     (createDatabaseConnection as jest.Mock).mockResolvedValue({}); // Mock successful DB connection
 
     // Simulate a mock request and response
-    const req = {
-      method: 'GET',
-    } as unknown as NextApiRequest;
-
-    const res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn().mockReturnThis(),
-      _getData: () => res.json.mock.calls[0][0], // Access the response data
-      _getStatusCode: () => res.status.mock.calls[0][0], // Access the response status code
-    };
+    const req = { method: 'GET' } as NextApiRequest;
+    const res = { 
+      status: jest.fn().mockReturnThis(), 
+      json: jest.fn() 
+    } as unknown as NextApiResponse;
 
     // Act: Call the handler function
     await handler(req, res);
 
     // Assert: Check that the correct status and data are returned
-    const responseData = res._getData();
-    expect(res._getStatusCode()).toBe(200);
-    expect(responseData).toEqual(mockedProducts); // Check the data directly
+    expect(res.status).toHaveBeenCalledWith(200); // Ensure status is 200
+    expect(res.json).toHaveBeenCalledWith(mockedProducts); // Ensure the mocked products data is passed to json
     expect(fetchAllProducts).toHaveBeenCalledWith(expect.anything());
     expect(createDatabaseConnection).toHaveBeenCalled();
     expect(closeDatabaseConnection).toHaveBeenCalled();
@@ -54,56 +49,23 @@ describe('Products API', () => {
     (createDatabaseConnection as jest.Mock).mockResolvedValue({}); // Mock successful DB connection
 
     // Simulate a mock request and response
-    const req = {
-      method: 'GET',
-    } as unknown as NextApiRequest;
-
-    const res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn().mockReturnThis(),
-      _getData: () => res.json.mock.calls[0][0],
-      _getStatusCode: () => res.status.mock.calls[0][0],
-    };
+    const req = { method: 'GET' } as NextApiRequest;
+    const res = { 
+      status: jest.fn().mockReturnThis(), 
+      json: jest.fn() 
+    } as unknown as NextApiResponse;
 
     // Act: Call the handler function
     await handler(req, res);
 
     // Assert: Check that the correct status and error message are returned
-    const responseData = res._getData();
-    expect(res._getStatusCode()).toBe(500);
-    expect(responseData.message).toBe('Error fetching products');
-    expect(responseData.error).toBe('Database error'); // Ensure the error message is passed
+    expect(res.status).toHaveBeenCalledWith(500); // Ensure status is 500
+    expect(res.json).toHaveBeenCalledWith({
+      message: 'Error fetching products',
+      error: 'Database error',
+    }); // Ensure the error message is passed to json
     expect(fetchAllProducts).toHaveBeenCalledWith(expect.anything());
     expect(createDatabaseConnection).toHaveBeenCalled();
     expect(closeDatabaseConnection).toHaveBeenCalled();
   });
-
-//   it('should return 500 if database connection fails', async () => {
-//     // Arrange: Simulate database connection failure
-//     (createDatabaseConnection as jest.Mock).mockResolvedValue(null);
-
-//     // Simulate a mock request and response
-//     const req = {
-//       method: 'GET',
-//     } as unknown as NextApiRequest;
-
-//     const res = {
-//       status: jest.fn().mockReturnThis(),
-//       json: jest.fn().mockReturnThis(),
-//       _getData: () => res.json.mock.calls[0][0],
-//       _getStatusCode: () => res.status.mock.calls[0][0],
-//     };
-
-//     // Act: Call the handler function
-//     await handler(req, res);
-
-//     // Assert: Check that the correct status and error message are returned
-//     const responseData = res._getData();
-//     expect(res._getStatusCode()).toBe(500);
-//     expect(responseData.message).toBe('Error fetching products');
-//     expect(responseData.error).toBe('Database connection failed'); // Ensure the error is descriptive
-//     expect(fetchAllProducts).not.toHaveBeenCalled(); // fetchAllProducts should not be called
-//     expect(createDatabaseConnection).toHaveBeenCalled();
-//     expect(closeDatabaseConnection).not.toHaveBeenCalled(); // closeDatabaseConnection should not be called since connection was null
-//   });
 });

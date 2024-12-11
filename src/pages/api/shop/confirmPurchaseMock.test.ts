@@ -1,25 +1,18 @@
 import handler from './confirmPurchase';
 import { createDatabaseConnection, closeDatabaseConnection } from '@/database/connection';
 import { processProductsPurchase } from './services/confirmPurchaseService';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 jest.mock('./services/confirmPurchaseService', () => ({
   processProductsPurchase: jest.fn(), //mock function 
 }));
 
 jest.mock('@/database/connection', () => ({
-  createDatabaseConnection: jest.fn(), 
+  createDatabaseConnection: jest.fn(),
   closeDatabaseConnection: jest.fn(),
 }));
 
 describe('POST /api/shop/confirmPurchseService', () => {
-  // beforeEach(() => {
-  //   createDatabaseConnection.mockResolvedValue({});
-  // });
-
-  // afterEach(() => {
-  //   jest.clearAllMocks();
-  // });
-
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -28,11 +21,11 @@ describe('POST /api/shop/confirmPurchseService', () => {
 
   it('should return success and updated player when purchase is valid', async () => {
 
-     //*****************************************************************//
+    //*****************************************************************//
     //*****************************INTERNAL FUNCTIONS*******************//
-     //*****************************************************************//
+    //*****************************************************************//
 
-     (processProductsPurchase as jest.Mock).mockResolvedValue({
+    (processProductsPurchase as jest.Mock).mockResolvedValue({
       success: true,
       inventory: {
         helmets: [
@@ -57,16 +50,16 @@ describe('POST /api/shop/confirmPurchseService', () => {
           { _id: '124', name: 'Helm of the Phoenix', value: 200, type: 'helmet' },
         ],
       },
-    };
+    } as NextApiRequest;
 
     const res = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
-    };
+    } as unknown as NextApiResponse;
 
     //*****************************************************************//
     //*********************************ACT*****************************//
-     //*****************************************************************//
+    //*****************************************************************//
 
     await handler(req, res);
 
@@ -92,11 +85,11 @@ describe('POST /api/shop/confirmPurchseService', () => {
 
   it('should return failure and error message when purchase has insufficient funds', async () => {
 
-      //*****************************************************************//
+    //*****************************************************************//
     //*****************************INTERNAL FUNCTIONS*******************//
-     //*****************************************************************//
+    //*****************************************************************//
 
-     (processProductsPurchase as jest.Mock).mockResolvedValue({
+    (processProductsPurchase as jest.Mock).mockResolvedValue({
       success: false,
       message: 'Insufficient funds',
     });
@@ -114,16 +107,16 @@ describe('POST /api/shop/confirmPurchseService', () => {
           { _id: '124', name: 'Helm of the Phoenix', value: 200, type: 'helmet' },
         ],
       },
-    };
+    } as NextApiRequest;;
 
     const res = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
-    };
+    } as unknown as NextApiResponse;
 
     //*****************************************************************//
     //*********************************ACT*****************************//
-     //*****************************************************************//
+    //*****************************************************************//
 
     await handler(req, res);
 
@@ -140,4 +133,3 @@ describe('POST /api/shop/confirmPurchseService', () => {
 });
 
 
-  
