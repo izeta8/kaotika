@@ -17,8 +17,8 @@ interface CartItem extends ItemData {
   quantity: number;
 }
 
-const Cart: React.FC<CartProps> = ({ isOpen, onClose, cartItems, setItemsInCart, confirmPurchase, playerData}) => {
- 
+const Cart: React.FC<CartProps> = ({ isOpen, onClose, cartItems, setItemsInCart, confirmPurchase, playerData }) => {
+
   const increaseItem = (id: string) => {
     setItemsInCart((prevItems: CartItem[]) =>
       prevItems.map(item =>
@@ -47,7 +47,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose, cartItems, setItemsInCart,
 
   const handlePurchase = () => {
     confirmPurchase(cartItems);
-    if (playerData && total <= playerData.gold){
+    if (playerData && total <= playerData.gold) {
       clearCart();
     }
     onClose();
@@ -66,7 +66,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose, cartItems, setItemsInCart,
 
         {/* Button close */}
         <CloseButton onClick={onClose} />
-        
+
         <h2 className="text-5xl font-bold mb-8 text-center">Your Cart</h2>
 
         {cartItems.length === 0 ? (
@@ -79,7 +79,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose, cartItems, setItemsInCart,
                 const isItemIngredient = item.type === "ingredient";
 
                 return (
-                  <ItemRow 
+                  <ItemRow
                     key={item._id}
                     item={item}
                     isItemIngredient={isItemIngredient}
@@ -93,12 +93,11 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose, cartItems, setItemsInCart,
           </div>
         )}
 
-        {/* Total */}
-        <Total total={total} />
-
-        {/* Proceed to Checkout */}
-        <ProceedCheckout handlePurchase={handlePurchase} />
-        
+        {(cartItems.length > 0) ?
+          (total <= playerData?.gold!) ? /* Proceed to Checkout */ <ProceedCheckout handlePurchase={handlePurchase} /> :
+            (/* Total */ <Total total={total} />)
+          : <></>
+        }
       </div>
     </div>
   );
@@ -114,11 +113,11 @@ interface ItemRowProps {
   removeItem: Function
 }
 
-const ItemRow: React.FC<ItemRowProps> = ({item, isItemIngredient, decreaseItem, increaseItem, removeItem}) => {
-  
-  const {image, name, _id, value, quantity} = item;
+const ItemRow: React.FC<ItemRowProps> = ({ item, isItemIngredient, decreaseItem, increaseItem, removeItem }) => {
 
-   if (value === undefined || value === null) { return null; }
+  const { image, name, _id, value, quantity } = item;
+
+  if (value === undefined || value === null) { return null; }
 
   return (
     <div className="flex justify-between items-center border-b border-gray-700 pb-4">
@@ -143,7 +142,7 @@ const ItemRow: React.FC<ItemRowProps> = ({item, isItemIngredient, decreaseItem, 
               <button
                 onClick={() => decreaseItem(_id)}
                 className="px-3 py-2 bg-gray-600 text-white rounded hover:bg-gray-500 text-2xl"
-                 aria-label="Decrease quantity"
+                aria-label="Decrease quantity"
               >
                 <FaMinus />
               </button>
@@ -170,7 +169,7 @@ const ItemRow: React.FC<ItemRowProps> = ({item, isItemIngredient, decreaseItem, 
           <button
             onClick={() => removeItem(_id)}
             className="text-yellow-600 hover:text-yellow-700"
-            aria-label={`RemoveItem`} 
+            aria-label={`RemoveItem`}
           >
             <FaTimes size={28} />
           </button>
@@ -187,7 +186,7 @@ interface CloseButtonProps {
   onClick: MouseEventHandler<HTMLButtonElement>;
 }
 
-const CloseButton: React.FC<CloseButtonProps> = ({onClick}) => {
+const CloseButton: React.FC<CloseButtonProps> = ({ onClick }) => {
 
   return (
     <button
@@ -207,7 +206,7 @@ interface TotalProps {
   total: number
 }
 
-const Total: React.FC<TotalProps> = ({total}) => {
+const Total: React.FC<TotalProps> = ({ total }) => {
   return (
     <div className="mt-10">
       <div className="flex justify-between items-center text-4xl font-semibold">
@@ -231,7 +230,7 @@ interface ProceedCheckoutProps {
   handlePurchase: Function
 }
 
-const ProceedCheckout: React.FC<ProceedCheckoutProps> = ({handlePurchase}) => {
+const ProceedCheckout: React.FC<ProceedCheckoutProps> = ({ handlePurchase }) => {
 
   return (
     <div className="mt-12 flex justify-center relative">
@@ -257,4 +256,3 @@ const ProceedCheckout: React.FC<ProceedCheckoutProps> = ({handlePurchase}) => {
 export default Cart;
 
 
- 
