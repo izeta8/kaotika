@@ -1,6 +1,6 @@
-import { ItemData } from "@/_common/interfaces/ItemData";
+import { CartItem } from "@/_common/interfaces/CartItem";
 
-export const calculateTotalCost = (products: Array<ItemData>) => {
+export const calculateTotalCost = (products: Array<CartItem>) => {
   return products.reduce((sum, product) => {
     if (!product.value || !product._id) {
       throw new Error('Each product must have a value and an _id');

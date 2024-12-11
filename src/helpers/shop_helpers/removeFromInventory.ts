@@ -1,7 +1,7 @@
 interface Inventory {
   [category: string]: string[];
 }
-type ProductId = string;
+type ProductId = string;  
 type Category = string;
 
 
