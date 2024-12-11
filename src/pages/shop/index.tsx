@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRouter } from 'next/router';
 import { useState, useEffect } from "react";
 import Loading from "@/components/Loading";
-import ShopBackground from "@/components/shop/buy/ShopBackground";
+import ShopBackground from "@/components/shop/ShopBackground";
 
 const imageStyles = "mx-20 transition transform hover:scale-105";
 

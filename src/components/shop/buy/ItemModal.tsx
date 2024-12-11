@@ -1,5 +1,5 @@
 import { ItemData } from "@/_common/interfaces/ItemData";
-import ItemDataContainer from "./ItemDataContainer";
+import ItemDataContainer from "./itemData/ItemDataContainer";
 import { Player } from "@/_common/interfaces/Player";
 import React from "react";
 
@@ -9,34 +9,34 @@ interface ItemModalProps {
   itemData: ItemData | undefined,
   playerData: Player | null
   isMagicalStuffShop: boolean
-} 
+}
 
 // Style variables 
-const equipmentTextGradient = "bg-gradient-to-b from-[#FFD0A0] via-[#EED1B4] to-[#B2AF9E] bg-clip-text text-transparent"; 
-const magicalStuffTextGradient = "bg-gradient-to-b from-[#212532] via-[#9CB5EA] to-[#3A3C45] bg-clip-text text-transparent"; 
+const equipmentTextGradient = "bg-gradient-to-b from-[#FFD0A0] via-[#EED1B4] to-[#B2AF9E] bg-clip-text text-transparent";
+const magicalStuffTextGradient = "bg-gradient-to-b from-[#212532] via-[#9CB5EA] to-[#3A3C45] bg-clip-text text-transparent";
 
 const redColor = "text-[#e8513c]";
 const greenColor = "text-[#7cc74e]";
 
-const ItemModal: React.FC<ItemModalProps> = ({itemModalShown, setItemModalShown, itemData, playerData, isMagicalStuffShop}) => {
-   
-  if (!itemData) {return}
-  if (!itemData?.value) {return}
+const ItemModal: React.FC<ItemModalProps> = ({ itemModalShown, setItemModalShown, itemData, playerData, isMagicalStuffShop }) => {
 
-  const {name} = itemData;
+  if (!itemData) { return }
+  if (!itemData?.value) { return }
 
-  const modalBackgroundImage = isMagicalStuffShop 
-  ? "url('/images/shop/buy/magical_stuff_modal_background.webp')" 
-  : "url('/images/shop/buy/equipment_modal_background.webp')";
+  const { name } = itemData;
+
+  const modalBackgroundImage = isMagicalStuffShop
+    ? "url('/images/shop/buy/magical_stuff_modal_background.webp')"
+    : "url('/images/shop/buy/equipment_modal_background.webp')";
 
   return (
-    
-    <div 
-      onClick={() => setItemModalShown(false)} 
-      className={`fixed flex justify-center items-center h-screen pb-28 mt-28 w-full top-0 left-0 bg-black/50 transition-all z-50 ${itemModalShown ? 'animate-fadeIn' : 'opacity-0'} `} 
-    > 
-    
-      <div 
+
+    <div
+      onClick={() => setItemModalShown(false)}
+      className={`fixed flex justify-center items-center h-screen pb-28 mt-28 w-full top-0 left-0 bg-black/50 transition-all z-50 ${itemModalShown ? 'animate-fadeIn' : 'opacity-0'} `}
+    >
+
+      <div
         onClick={(e) => e.stopPropagation()}
         className={`relative flex justify-center items-center hover:cursor-default ${itemModalShown ? 'animate-slideIn' : null}`}
         style={{
@@ -45,10 +45,10 @@ const ItemModal: React.FC<ItemModalProps> = ({itemModalShown, setItemModalShown,
           backgroundSize: '100%',
           backgroundRepeat: 'no-repeat',
           width: 1024,
-          height: 690, 
-        }} 
+          height: 690,
+        }}
       >
-         
+
         {/* Content Container */}
         <div className={`relative bg-red-500/0 w-3/4 h-3/5 py-3 flex flex-col gap-3`}>
 
@@ -65,20 +65,20 @@ const ItemModal: React.FC<ItemModalProps> = ({itemModalShown, setItemModalShown,
 
       </div>
     </div>
-     
+
   );
 
 }
 
 // ---- Close Button ---- // 
 
-const CloseButton: React.FC<{setItemModalShown: Function}> = ({setItemModalShown}) => {
+const CloseButton: React.FC<{ setItemModalShown: Function }> = ({ setItemModalShown }) => {
 
   return (
-    <div 
+    <div
       className="absolute hover:cursor-pointer -right-3 -top-8 bg-[#523f29]/30 rounded-full border border-medievalSepia w-12 h-12 flex justify-center items-center hover:scale-105 transition-all"
       onClick={() => setItemModalShown(false)}
-    >  
+    >
       <p className="ml-0.5 text-2xl">X</p>
     </div>
   )
@@ -88,11 +88,11 @@ const CloseButton: React.FC<{setItemModalShown: Function}> = ({setItemModalShown
 // ---- Upper Row ---- // 
 
 interface UpperRowProps {
-  name: string, 
+  name: string,
   isMagicalStuffShop: boolean
 }
 
-const UpperRow: React.FC<UpperRowProps> = ({name, isMagicalStuffShop}) => {
+const UpperRow: React.FC<UpperRowProps> = ({ name, isMagicalStuffShop }) => {
 
   return (
     <div className="bg-blue-500/0 ">
@@ -112,20 +112,20 @@ interface LowerRowProps {
   isMagicalStuffShop: boolean
 }
 
-const LowerRow: React.FC<LowerRowProps> = ({itemData, playerData, isMagicalStuffShop}) => {
-  
-  const {description, type, value, modifiers, effects, min_lvl, image, base_percentage, defense} = itemData;
-      
+const LowerRow: React.FC<LowerRowProps> = ({ itemData, playerData, isMagicalStuffShop }) => {
+
+  const { description, type, value, modifiers, effects, min_lvl, image, base_percentage, defense } = itemData;
+
   return (
     <div className="grid grid-cols-3 h-full bg-orange-300/0">
 
-    {/* Item Data */}
-    <div className="flex justify-center items-center flex-col ">  
+      {/* Item Data */}
+      <div className="flex justify-center items-center flex-col ">
 
-        {!isMagicalStuffShop ? 
+        {!isMagicalStuffShop ?
           // EQUIPMENT MODAL 
           <div>
-            {renderEquipmentItemData(modifiers, defense, base_percentage, playerData, type)} 
+            {renderEquipmentItemData(modifiers, defense, base_percentage, playerData, type)}
           </div>
           :
           // MAGICAL STUFF MODAL 
@@ -134,32 +134,32 @@ const LowerRow: React.FC<LowerRowProps> = ({itemData, playerData, isMagicalStuff
           </div>
         }
 
-    </div>
-    
-    {/* Image */}
-    <div className="flex justify-center items-center flex-col gap-3">
-      <img  
-        className={`h-56 drop-shadow-[0_10px_10px_rgba(0,0,0,0.45)] select-none ${isMagicalStuffShop ? 'rounded-full border-3 border-[#1e1f23]' : null}`}
-        src={image}  
-        draggable={false}
-        onError={(e) => {
-          e.currentTarget.onerror = null; // Prevent infinite loop if fallback also fails
-          e.currentTarget.src = "/images/shop/buy/interrogation_sign.png"; // Fallback image
-          e.currentTarget.title="Image not found"
-        }}
-      />
-      <ItemDataContainer value={value} min_lvl={min_lvl} />
-    </div>
+      </div>
 
-    {/* Description */}
-    <div className="flex justify-center items-center bg">
-      <p
-        className={`text-4xl italic text-balance py-2 select-text text-center ${isMagicalStuffShop ? "text-[#9CB5EA]" : equipmentTextGradient}`}
-      >
-        {`"${description}"`}
-      </p>
+      {/* Image */}
+      <div className="flex justify-center items-center flex-col gap-3">
+        <img
+          className={`h-56 drop-shadow-[0_10px_10px_rgba(0,0,0,0.45)] select-none ${isMagicalStuffShop ? 'rounded-full border-3 border-[#1e1f23]' : null}`}
+          src={image}
+          draggable={false}
+          onError={(e) => {
+            e.currentTarget.onerror = null; // Prevent infinite loop if fallback also fails
+            e.currentTarget.src = "/images/shop/buy/interrogation_sign.png"; // Fallback image
+            e.currentTarget.title = "Image not found"
+          }}
+        />
+        <ItemDataContainer value={value} min_lvl={min_lvl} />
+      </div>
+
+      {/* Description */}
+      <div className="flex justify-center items-center bg">
+        <p
+          className={`text-4xl italic text-balance py-2 select-text text-center ${isMagicalStuffShop ? "text-[#9CB5EA]" : equipmentTextGradient}`}
+        >
+          {`"${description}"`}
+        </p>
+      </div>
     </div>
-  </div>
   )
 }
 
@@ -170,19 +170,19 @@ const LowerRow: React.FC<LowerRowProps> = ({itemData, playerData, isMagicalStuff
 
 export const renderEffects = (effects: Array<string> | undefined, itemType: string) => {
 
-  if (!(effects && effects.length>0)) {
+  if (!(effects && effects.length > 0)) {
     return <p className={`text-3xl italic`}>This item does not have any effect.</p>;
   }
 
   if (itemType !== "ingredient") { return }
 
   return (
-    
+
     effects.map(effect => {
       const effectName = capitalizeFirstLetter(effect);
 
       return (
-        <p  
+        <p
           key={`${effect}-p`}
           className="text-4xl text-center"
         >
@@ -190,21 +190,21 @@ export const renderEffects = (effects: Array<string> | undefined, itemType: stri
         </p>
       )
     })
-  );  
+  );
 }
 
 export const renderEquipmentItemData = (
-    modifiers: Record<string, number>, 
-    defense: number | undefined, 
-    base_percentage: number | undefined, 
-    playerData: Player | null, 
-    itemType: string
-  ) => {
-  
+  modifiers: Record<string, number>,
+  defense: number | undefined,
+  base_percentage: number | undefined,
+  playerData: Player | null,
+  itemType: string
+) => {
+
   return (
     <>
-      {renderModifiers(modifiers, playerData, itemType) }
-      {(defense || base_percentage) && <hr className="w-5/6 mt-3 mb-1 border-medievalSepia opacity-30"/> }
+      {renderModifiers(modifiers, playerData, itemType)}
+      {(defense || base_percentage) && <hr className="w-5/6 mt-3 mb-1 border-medievalSepia opacity-30" />}
       {renderAttribute(defense, playerData, itemType, "defense")}
       {renderAttribute(base_percentage, playerData, itemType, "base_percentage")}
     </>
@@ -219,9 +219,9 @@ const renderAttribute = (itemAttribute: number | undefined, playerData: Player |
   // If item attribute has no value do not render anything.
   if (!itemAttribute) return
 
-  let valueDifference; 
-       
-  if (playerData?.equipment) { 
+  let valueDifference;
+
+  if (playerData?.equipment) {
     const equippedItem = playerData.equipment[itemType];
     if (equippedItem[attributeType]) {
       const playerValue = equippedItem[attributeType];
@@ -238,16 +238,16 @@ const renderAttribute = (itemAttribute: number | undefined, playerData: Player |
         {valueDifference !== undefined && valueDifference !== null && (
           valueDifference !== 0 ?
             <span
-              className={`italic" ${valueDifference>0 ? greenColor : redColor}`}
+              className={`italic" ${valueDifference > 0 ? greenColor : redColor}`}
             >
               {` (${valueDifference > 0 ? '+' : ''}${valueDifference})`}
             </span>
-          :
-          <span
+            :
+            <span
               className={`italic text-gray-300 opacity-60`}
-          >
-            {` (same)`}
-          </span>
+            >
+              {` (same)`}
+            </span>
         )}
 
       </p>
@@ -261,10 +261,10 @@ const renderModifiers = (modifiers: Record<string, number>, playerData: Player |
 
   const hasModifiers = () => Object.values(modifiers).some(value => value !== 0);
 
-  if (!modifiers) {return}
+  if (!modifiers) { return }
 
   if (!hasModifiers()) {
-    return <p className={`text-[#EED1B4] text-3xl italic`}>This item does not have any modifier.</p> ;
+    return <p className={`text-[#EED1B4] text-3xl italic`}>This item does not have any modifier.</p>;
   }
 
   return Object.entries(modifiers)
@@ -272,13 +272,13 @@ const renderModifiers = (modifiers: Record<string, number>, playerData: Player |
 
       const attribute = key;
       const formatedAttribute = attribute?.split('_')
-                              .map((word) => capitalizeFirstLetter(word))
-                              .join(' ');
+        .map((word) => capitalizeFirstLetter(word))
+        .join(' ');
 
 
-      let valueDifference; 
-       
-      if (playerData?.equipment) { 
+      let valueDifference;
+
+      if (playerData?.equipment) {
         const equippedItem = playerData.equipment[itemType];
         if (equippedItem?.modifiers) {
           const playerValue = equippedItem.modifiers[attribute];
@@ -288,7 +288,7 @@ const renderModifiers = (modifiers: Record<string, number>, playerData: Player |
 
       if (value !== 0) {
         return (
-          <p  
+          <p
             key={`${attribute}-p`}
             className="text-[#EED1B4] text-3xl"
           >
@@ -296,14 +296,14 @@ const renderModifiers = (modifiers: Record<string, number>, playerData: Player |
             {`${formatedAttribute}: `}
 
             {/* Attibute Value */}
-            <span   
-              className={`${value>0 ? greenColor : redColor}`}
+            <span
+              className={`${value > 0 ? greenColor : redColor}`}
               key={`${attribute}-value`}
             >
               {value}
             </span>
-            
-            {/* Difference from current stats */} 
+
+            {/* Difference from current stats */}
             {(valueDifference !== undefined && valueDifference !== null) && (
               valueDifference === 0 ? (
                 <span
@@ -339,6 +339,6 @@ const renderModifiers = (modifiers: Record<string, number>, playerData: Player |
 function capitalizeFirstLetter(string: string): string {
   if (!string) return ''; // Handle empty string
   return string.charAt(0).toUpperCase() + string.slice(1).replaceAll('_', ' ');
-} 
+}
 
 export default ItemModal;

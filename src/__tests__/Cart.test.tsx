@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom';
-import Cart from '../components/shop/Cart';
+import Cart from '../components/shop/buy/cart/Cart';
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { Player } from "@/_common/interfaces/Player";

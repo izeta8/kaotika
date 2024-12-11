@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import React from "react";
 import { render, screen} from "@testing-library/react";
-import ItemDataContainer from '@/components/shop/buy/ItemDataContainer';
+import ItemDataContainer from '@/components/shop/buy/itemData/ItemDataContainer';
 
 
 describe("ItemDataContainer", () => {

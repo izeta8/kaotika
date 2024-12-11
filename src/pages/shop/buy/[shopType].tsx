@@ -2,7 +2,7 @@ import Layout from "@/components/Layout";
 import { useRouter } from 'next/router'
 import React from "react";
 import { useSession } from 'next-auth/react';
-import Cart from "@/components/shop/Cart";
+import Cart from "@/components/shop/buy/cart/Cart";
 import { useState, useEffect } from "react";
 import { ItemData } from "@/_common/interfaces/ItemData";
 import { CartItem } from "@/_common/interfaces/CartItem";
@@ -12,11 +12,11 @@ import Loading from "@/components/Loading";
 import { renderEquipmentItemData, renderEffects } from "@/components/shop/buy/ItemModal";
 import Confirm from "@/components/shop/Confirm";
 import ItemModal from "@/components/shop/buy/ItemModal";
-import ShopBackground from "@/components/shop/buy/ShopBackground";
-import ItemCard from "@/components/shop/buy/ItemCard"; 
-import ShopHeader from "@/components/shop/buy/ShopHeader"; 
+import ShopBackground from "@/components/shop/ShopBackground";
+import ItemCard from "@/components/shop/buy/card/ItemCard"; 
+import ShopHeader from "@/components/shop/buy/header/ShopHeader"; 
 import { Player } from "@/_common/interfaces/Player";
-import CartButton from "@/components/shop/buy/CartButton";
+import CartButton from "@/components/shop/buy/cart/CartButton";
 import ItemPreview from "@/components/shop/buy/ItemPreview";
 
 export type ShopCategories = "helmets" | "weapons" | "armors" | "shields" | "boots" | "rings" | "ingredients" | "containers";

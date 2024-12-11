@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom';
-import ItemCard from '../components/shop/buy/ItemCard';
+import ItemCard from '../components/shop/buy/card/ItemCard';
 import React from "react";
 import { render, screen, fireEvent,act } from "@testing-library/react";
 import { ItemData } from '@/_common/interfaces/ItemData';
