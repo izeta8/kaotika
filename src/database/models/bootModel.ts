@@ -40,6 +40,14 @@ const bootSchema = new Schema({
     type: Number,
     required: true,
   },
+  isUnique: {
+    type: Boolean,
+    default: false,
+  },
+  isActive: {
+    type: Boolean,
+    default: false,
+  }
 });
 
 const Boot = mongoose.models.Boot || mongoose.model('Boot', bootSchema);

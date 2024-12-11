@@ -41,6 +41,18 @@ const armorSchema = new Schema({
       ref: 'Profile',
     },
   ],
+  min_lvl: {
+    type: Number,
+    required: true,
+  }, 
+  isUnique: {
+    type: Boolean,
+    default: false,
+  },
+  isActive: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const Armor = mongoose.models.Armor || mongoose.model('Armor', armorSchema);

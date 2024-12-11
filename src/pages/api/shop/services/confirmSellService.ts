@@ -1,5 +1,7 @@
 import { fetchPlayer, populatePlayer, updatePlayer } from './playersService';
 import { removeFromInventory } from '@/helpers/shop_helpers/removeFromInventory';
+import { changeProductActiveStatus } from './changeActiveService';
+
 
 export const processProductSell = async (connection, playerEmail, product, productPrice) => {
   if (!playerEmail || !product || !product.value || !product._id) {
@@ -29,7 +31,12 @@ export const processProductSell = async (connection, playerEmail, product, produ
   });
 
   const populatedPlayer = await populatePlayer(connection, playerEmail);
-  console.log("la populacion FINAL:" + populatedPlayer);
+
+  
+
+  if (!product.isUnique) {  
+    await changeProductActiveStatus(connection, product, false);
+  }
 
   return {
     success: true,
