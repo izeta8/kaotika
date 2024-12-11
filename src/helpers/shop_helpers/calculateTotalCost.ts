@@ -4,11 +4,11 @@ export const calculateTotalCost = (products: Array<Product>) => {
       throw new Error('Each product must have a value and an _id');
     }
 
-    if (product.type === "ingredient") {
-      const qty = product.quantity || 1; 
-      return sum + product.value * qty;
-    } else {
+    // if (product.type === "ingredient") {
+    //   const qty = product.quantity || 1; 
+    //   return sum + product.value * qty;
+    // } else {
       return sum + product.value;
-    }
+    // }
   }, 0);
 };

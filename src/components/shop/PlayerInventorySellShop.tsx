@@ -215,7 +215,7 @@ const PlayerInventorySellShop: React.FC<Props> = ({ playerData, setSelectedItemT
                 <span className="absolute bottom-0 right-0 text-white text-5xl" onClick={() => handleItemClick(ingredient)}
                   onMouseEnter={() => handleMouseEnter(ingredient)}
                   onMouseLeave={() => handleMouseLeave()}>
-                  {ingredient.quantity}
+                  {ingredient.qty}
                 </span>
               </div>
             )

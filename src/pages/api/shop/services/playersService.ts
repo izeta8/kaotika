@@ -62,6 +62,8 @@ export const fetchPlayer = async (connection: mongoose.Connection, playerEmail: 
   
       // Fetch the player document
       const playerPopulated: any = await PlayerModel.findOne({ email: playerEmail }).populate('profile').exec();
+
+      let returnPlayer;
       
       if (playerPopulated) {
         // Populate equipment
@@ -91,9 +93,12 @@ export const fetchPlayer = async (connection: mongoose.Connection, playerEmail: 
       // await playerPopulated.inventory.populate('enhancer_potions', { 'profiles': 0 });
       await playerPopulated.inventory.populate('ingredients', { 'profiles': 0 });
 
+      returnPlayer = await updateIngredientsWithQuantity(playerPopulated);
       }
   
-      return playerPopulated;
+      console.log("RETURNED PLAYER: ");
+      console.log(returnPlayer.inventory)
+      return returnPlayer;
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error('Error populating player:', error);
@@ -104,4 +109,41 @@ export const fetchPlayer = async (connection: mongoose.Connection, playerEmail: 
       }
     }
   };
+
+  //******************************HELPER *******************************/
+
+  const updateIngredientsWithQuantity = async(playerPopulated) => {
+    //Asignamos ingredient y añadimos atributo quantity
+    const inputIngredientIds =  playerPopulated.inventory.ingredients;
+
+    const ingredientQuantites = [];
+
+    inputIngredientIds.forEach(ingredient => {
+        const indexFound = ingredientQuantites.findIndex(item => item._id.equals(ingredient._id));
+       
+        if (indexFound !== -1) {
+            ingredientQuantites[indexFound].qty++;
+        }
+        else {
+            ingredientQuantites.push({_id: ingredient._id, qty: 1 });
+        }
+    });
+
+
+    const {ingredients} = await playerPopulated.inventory.populate('ingredients', { 'profiles': 0 });
+
+   
+
+    const ingredientQuantitiesPopulated = ingredientQuantites.map(item => {
+        const object = ingredients.filter(ingredient => item._id.equals(ingredient._id))[0];
+       
+        return {...object.toObject(), qty: item.qty};
+
+    });
+
+    const returnPlayer = {...playerPopulated.toObject()};
+    returnPlayer.inventory.ingredients = ingredientQuantitiesPopulated;
+   
+    return returnPlayer;
+}
   
