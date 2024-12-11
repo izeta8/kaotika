@@ -10,7 +10,7 @@ import Loading from "@/components/Loading";
 
 // Shop Components
 import { renderEquipmentItemData, renderEffects } from "@/components/shop/buy/ItemModal";
-import Confirm from "@/components/shop/Confirm";
+import ConfirmModal from "@/components/shop/ConfirmModal";
 import ItemModal from "@/components/shop/buy/ItemModal";
 import ShopBackground from "@/components/shop/ShopBackground";
 import ItemCard from "@/components/shop/buy/card/ItemCard"; 
@@ -450,7 +450,7 @@ const Shop = () => {
           )}
 
           {productConfirm && (
-             <Confirm isOpen={handleBuyClick} onCancel={handleCancel} onConfirm={handleConfirmBuy} product={productConfirm}/>
+             <ConfirmModal isBuy={true} isOpen={handleBuyClick} onCancel={handleCancel} onConfirm={handleConfirmBuy} product={productConfirm}/>
           )}
 
         </div>

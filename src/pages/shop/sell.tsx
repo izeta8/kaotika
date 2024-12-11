@@ -19,7 +19,7 @@ import { Ring } from "@/_common/interfaces/Ring";
 import { Shield } from "@/_common/interfaces/Shield";
 import { Weapon } from "@/_common/interfaces/Weapon";
 import { MESSAGES } from "@/constants/shop/constants_messages";
-import Confirm from "@/components/shop/Confirm";
+import ConfirmModal from "@/components/shop/ConfirmModal";
 import SellScreenButton from "@/components/shop/SellScreenButton";
 
 
@@ -248,7 +248,7 @@ const Sell = () => {
 
         </div>
         {productConfirm && (
-          <Confirm isOpen={handleSellClick} onCancel={handleCancel} onConfirm={handleConfirmSell} product={selectedItemToSell} />
+          <ConfirmModal isBuy={false} isOpen={handleSellClick} onCancel={handleCancel} onConfirm={handleConfirmSell} product={selectedItemToSell} />
         )}
       </div>
     </Layout>
