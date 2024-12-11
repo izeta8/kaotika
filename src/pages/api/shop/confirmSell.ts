@@ -1,7 +1,15 @@
 import { createDatabaseConnection, closeDatabaseConnection } from '@/database/connection';
 import { processProductSell } from './services/confirmSellService';
+import { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function handler(req, res) {
+interface SellResult {
+  success: boolean;
+  message?: string; // message is optional
+  inventory?: any; // inventory type can be more specific
+  gold?: any; // gold type can be more specific
+}
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
@@ -12,26 +20,31 @@ export default async function handler(req, res) {
   try {
     connection = await createDatabaseConnection();
 
-    const result = await processProductSell(connection, playerEmail, product, productPrice);
+    // Ensure the result is typed as SellResult
+    const result: SellResult = await processProductSell(connection, playerEmail, product, productPrice);
 
-    if (!result.success) {
+    // Handle cases where message might not be available
+    if (result.success) {
+      return res.status(200).json({
+        success: true,
+        message: 'Sell successful',
+        inventory: result.inventory,
+        gold: result.gold,
+      });
+    } else {
+      // If message exists, send it back
       return res.status(200).json({
         success: false,
-        message: result.message,
+        message: result.message || 'An unknown error occurred', // Fallback to default message
       });
     }
-    res.status(200).json({
-      success: true,
-      message: 'Sell successful',
-      inventory: result.inventory,
-      gold: result.gold,
-    });
   } catch (error) {
     console.error('Error processing sell:', error);
     res.status(500).json({ success: false, message: 'Internal Server Error' });
   } finally {
     if (connection) {
-      await closeDatabaseConnection(connection);
+      await closeDatabaseConnection();
     }
   }
 }
+

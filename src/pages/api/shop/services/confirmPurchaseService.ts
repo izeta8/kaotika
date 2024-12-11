@@ -1,34 +1,45 @@
 import { fetchPlayer, populatePlayer, updatePlayer } from './playersService';
-import Player from '../../../../database/models/playerModel';
 import { calculateTotalCost } from '@/helpers/shop_helpers/calculateTotalCost';
 import { hasEnoughGold } from '@/helpers/shop_helpers/hasEnoughGold';
 import { addToInventory } from '@/helpers/shop_helpers/addToInventory';
+import mongoose from 'mongoose';
+import { ItemData } from '@/_common/interfaces/ItemData';
 
+interface Player {
+  _id: string;
+  email: string;
+  gold: number; // Ensure gold is typed as a number
+  inventory: Record<string, string[]>, // Assuming ItemData is the correct type for items
+  // other player properties
+}
 
-export const processProductsPurchase = async (connection, playerEmail, products) => {
+export const processProductsPurchase = async (connection: mongoose.Connection | null, playerEmail: string, products: Array<ItemData> | any[]) => {
   if (!playerEmail || !Array.isArray(products) || products.length === 0) {
     throw new Error('Player email and a non-empty products array are required');
   }
 
-  // Ensure that models are registered with the passed connection
-  const PlayerModel = connection.model('Player', Player.schema);
+  if (!connection) {
+    return {
+      success: false,
+      message: 'Database connection is not available',
+    };
+  }
 
-  let player = await fetchPlayer(connection, playerEmail);
+  let playerData = await fetchPlayer(connection, playerEmail);
 
-  player = player.player; // Assuming fetchPlayer returns { player: {...} }
-  // console.log("el player: " + JSON.stringify(player));
-  // console.log("los productos: " + JSON.stringify(products));
+  // Handle the case where player is null or doesn't exist
+  if (!playerData || !playerData.player) {
+    return {
+      success: false,
+      message: 'Player not found',
+    };
+  }
 
-  console.log("el player que me interesa: " + player);
-
+  let player = playerData.player as unknown as Player; // Assuming fetchPlayer returns { player: {...} }
 
   // Calculate the total cost of all products
   const totalCost = calculateTotalCost(products);
 
-  console.log("el costo total: " + totalCost);
-  console.log(player.gold);
-  console.log(hasEnoughGold(player.gold, totalCost));
-  // Check if the player has enough gold for all products
   if (!hasEnoughGold(player.gold, totalCost)) {
     return {
       success: false,
@@ -43,13 +54,12 @@ export const processProductsPurchase = async (connection, playerEmail, products)
   addToInventory(player.inventory, products);
 
   // Update the player document in the database
-  const updatedPlayer = await updatePlayer(connection, playerEmail, {
+  await updatePlayer(connection, playerEmail, {
     gold: player.gold as number,
     inventory: player.inventory as object,
   });
 
   const populatedPlayer = await populatePlayer(connection, playerEmail);
-  console.log("la populacion FINAL:" + populatedPlayer);
 
   return {
     success: true,

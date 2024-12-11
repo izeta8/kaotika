@@ -1,5 +1,11 @@
-export const removeFromInventory = (inventory, category, productId) => {
-  // Ensure the category exists in the inventory
+interface Inventory {
+  [category: string]: string[];
+}
+type ProductId = string;
+type Category = string;
+
+
+export const removeFromInventory = (inventory: Inventory, category: Category, productId: ProductId) => {
   if (!inventory[category]) {
     return {
       success: false,

@@ -33,7 +33,15 @@ const ringSchema = new Schema({
   profiles: {
     type: Array,
     default: []
-  }
+  },
+  isUnique: {
+    type: Boolean,
+    default: false
+  },
+  isActive: {   
+    type: Boolean,
+    default: false
+  },
 });
 
 const Ring = mongoose.models.Ring || mongoose.model('Ring', ringSchema);
