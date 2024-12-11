@@ -35,7 +35,19 @@ const shieldSchema = new Schema({
       isUnique: false,
       isActive: true
     }
-  }
+  },
+  min_lvl: {
+    type: Number,
+    required: true,
+  }, 
+  isUnique: {
+    type: Boolean,
+    default: false,
+  },
+  isActive: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const Shield = mongoose.models.Shield || mongoose.model('Shield', shieldSchema);

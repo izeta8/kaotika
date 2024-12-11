@@ -36,6 +36,18 @@ const weaponSchema = new Schema({
       ref: 'Profile',
     },
   ],
+  min_lvl: {
+    type: Number,
+    required: true,
+  }, 
+  isUnique: {
+    type: Boolean,
+    default: false,
+  },
+  isActive: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const Weapon = mongoose.models.Weapon || mongoose.model('Weapon', weaponSchema);

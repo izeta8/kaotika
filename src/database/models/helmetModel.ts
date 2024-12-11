@@ -40,6 +40,14 @@ const helmetSchema = new Schema({
     type: Number,
     required: true,
   },
+  isUnique: {
+    type: Boolean,
+    default: false,
+  },
+  isActive: {
+    type: Boolean,
+    default: false,
+  }
 });
 
 const Helmet = mongoose.models.Helmet || mongoose.model('Helmet', helmetSchema);
