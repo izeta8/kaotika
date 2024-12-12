@@ -13,9 +13,10 @@ import ShopContent from "@/components/shop/buy/structure/ShopContent";
 import ConfirmModal from "@/components/shop/ConfirmModal";
 import ItemModal from "@/components/shop/buy/ItemModal";
 import ShopBackground from "@/components/shop/ShopBackground";
-import ShopHeader from "@/components/shop/buy/structure/header/ShopHeader"; 
+import ShopHeader from "@/components/shop/buy/structure/header/ShopHeader";
 import { Player } from "@/_common/interfaces/Player";
 import CartButton from "@/components/shop/buy/cart/CartButton";
+import Snackbar from "@/components/shop/SnackBar";
 
 export type ShopCategories = "helmets" | "weapons" | "armors" | "shields" | "boots" | "rings" | "ingredients" | "containers";
 type EquipmentCategory = 'helmet' | 'weapon' | 'armor' | 'shield' | 'artifact' | 'boot' | 'ring' | 'healing_potion' | 'antidote_potion' | 'enhancer_potion';
@@ -34,15 +35,15 @@ const Shop = () => {
   const { data: session } = useSession();
 
   const [categoryData, setCategoryData] = useState<ItemData[]>([]);
-  const [productConfirm, setProductConfirm] = useState<ItemData|null>(null);
+  const [productConfirm, setProductConfirm] = useState<ItemData | null>(null);
   const [currentCategory, setCurrentCategory] = useState<ShopCategories | undefined>(undefined);
 
   const [confirmModalShown, setConfirmModalShown] = useState<boolean>(false);
   const [itemModalShown, setItemModalShown] = useState(false);
   const [modalItemData, setModalItemData] = useState<ItemData | undefined>();
 
-  const [hoveredCard, setHoveredCard] = useState<ItemData|undefined>(undefined);
-  
+  const [hoveredCard, setHoveredCard] = useState<ItemData | undefined>(undefined);
+
   // ---- CART ----  //
 
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -64,6 +65,11 @@ const Shop = () => {
   });
 
   // ---- SHOP ITEMS ----  //
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error' | 'info' | 'warning'>('success'); // Updated state for severity
+
 
   const [helmets, setHelmets] = useState<ItemData[]>([]);
   const [weapons, setWeapons] = useState<ItemData[]>([]);
@@ -114,7 +120,7 @@ const Shop = () => {
     setPlayerEmail('ander.zubizarreta@ikasle.aeg.eus');
     // if (session?.user?.email) {
     //   setLoading(true);
-      // setPlayerEmail(session.user.email);
+    // setPlayerEmail(session.user.email);
     // }
   }, [session]);
 
@@ -207,24 +213,28 @@ const Shop = () => {
 
     try {
 
-      if (!playerData?.email) {throw new Error("[Client Error] Playerdata state does not have a email currently!")}
+      if (!playerData?.email) { throw new Error("[Client Error] Playerdata state does not have a email currently!") }
 
       const result = await purchaseProduct(playerData?.email, products);
 
       ////////////////////////////////////
       if (result.success) {
+        setSnackbarMessage('Purchased!');
+        setSnackbarSeverity('success');
+        setSnackbarOpen(true);
         // Update the playerData
         const updatedPlayerData = {
           ...playerData,    // Spread all properties of playerData
           gold: result.gold,        // Override the gold property
           inventory: result.inventory // Override the inventory property
         };
-        // Save the updated playerData to localStorage
-        // localStorage.setItem('playerData', JSON.stringify(updatedPlayerData));
         setPlayerData(updatedPlayerData);
       }
       ////////////////////////////////////
       setProductConfirm(null);
+      setSnackbarMessage(result.message);
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
     } catch (error) {
       console.error('Error during purchase:', error);
     }
@@ -240,24 +250,24 @@ const Shop = () => {
 
   const removeOwnedItems = () => {
 
-    if (!playerData) {return}
+    if (!playerData) { return }
 
     const itemTypes = [
-      {category: "helmet", setter: setHelmets},
-      {category: "weapon", setter: setWeapons},
-      {category: "armor", setter: setArmors},
-      {category: "shield", setter: setShields},
-      {category: "boot", setter: setBoots},
-      {category: "ring", setter: setRings},
+      { category: "helmet", setter: setHelmets },
+      { category: "weapon", setter: setWeapons },
+      { category: "armor", setter: setArmors },
+      { category: "shield", setter: setShields },
+      { category: "boot", setter: setBoots },
+      { category: "ring", setter: setRings },
     ];
 
-    itemTypes.forEach((categoryObject: {category: string, setter: Function}):void => {
+    itemTypes.forEach((categoryObject: { category: string, setter: Function }): void => {
 
       const playerItems: string[] = [];
-      
-      const {category, setter} = categoryObject;
 
-    
+      const { category, setter } = categoryObject;
+
+
       // Add equipped item to array.
       const equippedItem = playerData?.equipment[category as EquipmentCategory];
       if (equippedItem) {
@@ -267,10 +277,10 @@ const Shop = () => {
       // Add inventory items to array.
       if (`${category}s` in playerData?.inventory) {
         const inventoryItems = playerData?.inventory[`${category}s` as InventoryCategory];
-        if (inventoryItems && inventoryItems.length>0) {
+        if (inventoryItems && inventoryItems.length > 0) {
           const inventoryIds = inventoryItems
-            .filter((item:any) => item && item._id)
-            .map((item:any) => item._id);
+            .filter((item: any) => item && item._id)
+            .map((item: any) => item._id);
           playerItems.push(...inventoryIds);
         }
       }
@@ -300,7 +310,7 @@ const Shop = () => {
   useEffect(() => {
     // If items are loaded, 
     if (!playerData || loading || !currentCategory) return;
-    if (currentCategory && currentCategory?.length>0) {
+    if (currentCategory && currentCategory?.length > 0) {
       removeOwnedItems();
     }
   }, [playerData?.equipment, playerData?.inventory, currentCategory]);
@@ -384,94 +394,104 @@ const Shop = () => {
 
   return (
 
-      <Layout>
+    <Layout>
 
-        <div className="relative -mt-2 min-h-screen">
+      <div className="relative -mt-2 min-h-screen">
 
-          {/* <div className={`relative transition-all min-h-screen duration-200 ${itemModalShown || productConfirm ? 'blur-sm' : 'blur-none'}`}>  */}
-          <div className={`relative transition-all min-h-screen duration-200`}>
+        {/* <div className={`relative transition-all min-h-screen duration-200 ${itemModalShown || productConfirm ? 'blur-sm' : 'blur-none'}`}>  */}
+        <div className={`relative transition-all min-h-screen duration-200`}>
 
-            <ShopHeader
-              currentCategory={currentCategory}
-              setCurrentCategory={setCurrentCategory}
-              isMagicalStuffShop={isMagicalStuffShop(router)}
-            />
-
-            <ShopContent
-              categoryData={categoryData}
-              setProductConfirm={setProductConfirm}
-              addToCart={addToCart}
-              setItemModalShown={setItemModalShown}
-              setModalItemData={setModalItemData}
-              cart={itemsInCart}
-              setCartAnimating={setCartAnimating}
-              playerData={playerData} 
-              hoveredCard={hoveredCard} 
-              handleCardHover={handleCardHover}
-              
-            />
-            <ShopBackground />
-
-            {/* Print image of the modal background to load it instantly. */}
-            {isMagicalStuffShop(router) ?
-              <img className="w-0" src="/images/shop/buy/magical_stuff_modal_background.webp"></img>
-              :
-              <img className="w-0" src="/images/shop/buy/equipment_modal_background.webp"></img>
-            }
-
-          </div>
-
-          {/* Cart Button Wrapper */}
-          <CartButton
-            cartItemCount={cartItemCount}
-            onCartClick={openCart}
-            isCartAnimating={cartAnimating}
+          <ShopHeader
+            currentCategory={currentCategory}
+            setCurrentCategory={setCurrentCategory}
+            isMagicalStuffShop={isMagicalStuffShop(router)}
           />
 
-          {/********** Modals ***********/}
+          <ShopContent
+            categoryData={categoryData}
+            setProductConfirm={setProductConfirm}
+            addToCart={addToCart}
+            setItemModalShown={setItemModalShown}
+            setModalItemData={setModalItemData}
+            cart={itemsInCart}
+            setCartAnimating={setCartAnimating}
+            playerData={playerData}
+            hoveredCard={hoveredCard}
+            handleCardHover={handleCardHover}
 
-          {itemModalShown && (
-            <ItemModal
-              playerData={playerData}
-              itemModalShown={itemModalShown}
-              setItemModalShown={setItemModalShown}
-              itemData={modalItemData}
-              isMagicalStuffShop={isMagicalStuffShop(router)}
-            />
-          )}
+          />
+          <ShopBackground />
 
-          {isCartOpen && (
-            <div className="fixed inset-0 z-50">
-              <div
-                className="absolute inset-0 bg-black/60 pointer-events-auto"
-                onClick={closeCart} // Close modal when clicking outside
-              ></div>
-
-              {/* Cart Modal */}
-              <Cart
-                isOpen={isCartOpen}
-                onClose={closeCart}
-                cartItems={itemsInCart}
-                setItemsInCart={setItemsInCart}
-                confirmPurchase={handleConfirmBuy}
-                playerData={playerData}
-              />
-            </div>
-          )}
-
-          {productConfirm && (
-            <ConfirmModal
-              isBuy={true} 
-              isOpen={confirmModalShown}
-              setConfirmModalShown={setConfirmModalShown}
-              onCancel={handleCancel}
-              onConfirm={handleConfirmBuy}
-              product={productConfirm}
-            />
-          )}
+          {/* Print image of the modal background to load it instantly. */}
+          {isMagicalStuffShop(router) ?
+            <img className="w-0" src="/images/shop/buy/magical_stuff_modal_background.webp"></img>
+            :
+            <img className="w-0" src="/images/shop/buy/equipment_modal_background.webp"></img>
+          }
 
         </div>
-      </Layout>
+
+        {/* Cart Button Wrapper */}
+        <CartButton
+          cartItemCount={cartItemCount}
+          onCartClick={openCart}
+          isCartAnimating={cartAnimating}
+        />
+
+        {/********** Modals ***********/}
+
+        {itemModalShown && (
+          <ItemModal
+            playerData={playerData}
+            itemModalShown={itemModalShown}
+            setItemModalShown={setItemModalShown}
+            itemData={modalItemData}
+            isMagicalStuffShop={isMagicalStuffShop(router)}
+          />
+        )}
+
+        {isCartOpen && (
+          <div className="fixed inset-0 z-50">
+            <div
+              className="absolute inset-0 bg-black/60 pointer-events-auto"
+              onClick={closeCart} // Close modal when clicking outside
+            ></div>
+
+            {/* Cart Modal */}
+            <Cart
+              isOpen={isCartOpen}
+              onClose={closeCart}
+              cartItems={itemsInCart}
+              setItemsInCart={setItemsInCart}
+              confirmPurchase={handleConfirmBuy}
+              playerData={playerData}
+            />
+          </div>
+        )}
+
+        {productConfirm && (
+          <ConfirmModal
+            isBuy={true}
+            isOpen={confirmModalShown}
+            setConfirmModalShown={setConfirmModalShown}
+            onCancel={handleCancel}
+            onConfirm={handleConfirmBuy}
+            product={productConfirm}
+          />
+        )}
+
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-[9999] w-[95%]">
+          <Snackbar
+            open={snackbarOpen}
+            message={snackbarMessage}
+            severity={snackbarSeverity}
+            onClose={() => setSnackbarOpen(false)}
+            duration={1000}
+          />
+        </div>
+
+      </div>
+    </Layout>
   )
 };
 
@@ -494,7 +514,7 @@ const isItemOnCart = (item: ItemData, cart: CartItem[]): boolean => {
 }
 
 
-const loadLocalStorageIntoStates = (categoryObject: {state: string, setter: Function}): void => {
+const loadLocalStorageIntoStates = (categoryObject: { state: string, setter: Function }): void => {
 
   // Desestructurize the loop's current state name and setter.
   const { state, setter } = categoryObject;
@@ -537,13 +557,13 @@ const purchaseProduct = async (playerEmail: string, products: Array<ItemData>) =
 
     if (!response.ok || !result.success) {
       // Handle the case where the purchase fails due to business logic (e.g., low level or insufficient funds)
-      console.log('Purchase failed:', result.message); 
+      console.log('Purchase failed:', result.message);
       return result;
     }
 
     // Handle the successful purchase case
     console.log('Purchase successful:', result);
-    
+
     return result
 
   } catch (error) {

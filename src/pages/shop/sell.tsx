@@ -42,6 +42,8 @@ const Sell = () => {
 
   useEffect(() => {
     setSellerDialogueMessage(MESSAGES.WELCOME)
+
+
   }, []);
 
   ///////////////////////////////////////////////////////////////////////////////////////
@@ -131,10 +133,13 @@ const Sell = () => {
           setSnackbarOpen(true);
         } finally {
           setLoading(false);
+          speakMessage("BEST PRICE MY FRIEND. I AM NOT CHEAP LIKE MORTIMER AND THE VILLAIN");
         }
       }
 
       loadPlayerData();
+      setSellerDialogueMessage(MESSAGES.WELCOME)
+
     }
   }, [playerEmail]);
 
@@ -243,6 +248,36 @@ const Sell = () => {
     setProductConfirm(null);
     setSellerDialogueMessage(MESSAGES.ITEM_SELL_CANCEL)
     setSelectedItemToSell(null);
+  }
+
+  function speakMessage(message: any) {
+    // Set up SpeechSynthesisUtterance
+    const phrase = new SpeechSynthesisUtterance();
+    phrase.text = message;
+
+    // Set the rate and pitch for clear and natural speech
+    phrase.rate = 0.8;  // Slow down slightly to make it clearer
+    phrase.pitch = 1.0; // Neutral pitch to avoid a robotic or overly deep voice
+
+    // Get available voices
+    const voices = window.speechSynthesis.getVoices();
+
+    // Try to find a male voice with the "en" language that is clear
+    let grandpaVoice = voices.find(
+      (voice) =>
+        voice.name.toLowerCase().includes('male') && voice.lang.includes('en')
+    );
+
+    // If no clear male voice is found, fall back to the first available English voice
+    if (!grandpaVoice) {
+      grandpaVoice = voices.find((voice) => voice.lang.includes('en'));
+    }
+
+    // Use the fallback if necessary
+    phrase.voice = grandpaVoice || voices[0];
+
+    // Speak the message
+    window.speechSynthesis.speak(phrase);
   }
 
   ///////////////////////////////////////////////////////////
@@ -390,14 +425,17 @@ const Sell = () => {
           />
         )}
         {/* Componente Snackbar */}
-        <Snackbar
-          open={snackbarOpen}
-          message={snackbarMessage}
-          severity={snackbarSeverity}
-          product={snackbarProduct}
-          onClose={() => setSnackbarOpen(false)}
-          duration={4000}
-        />
+        <div className={`snackbar fixed top-25 left-1/2 transform -translate-x-1/2`}
+          style={{ backgroundColor: '#222', zIndex: 9999 }}>
+          <Snackbar
+            open={snackbarOpen}
+            message={snackbarMessage}
+            severity={snackbarSeverity}
+            product={snackbarProduct}
+            onClose={() => setSnackbarOpen(false)}
+            duration={1000}
+          />
+        </div>
       </div>
     </Layout>
 

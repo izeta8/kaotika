@@ -12,7 +12,7 @@ interface SnackbarProps {
   };
   severity?: 'success' | 'error' | 'info' | 'warning';
   onClose: () => void;
-  duration?: number; 
+  duration?: number;
 }
 
 const Snackbar: React.FC<SnackbarProps> = ({
@@ -47,7 +47,7 @@ const Snackbar: React.FC<SnackbarProps> = ({
           <Image
             src={product.image}
             alt={product.name}
-            width={52} 
+            width={52}
             height={52}
             className="object-cover rounded mr-4"
             draggable={false}
@@ -83,14 +83,16 @@ const Snackbar: React.FC<SnackbarProps> = ({
         }
 
         .snackbar {
-          max-width: 600px;
+          max-width: 300px;
           width: 90%;
-          background-color: rgba(23, 24, 28, 0.95); /* RGB(23,24,28) con 95% de opacidad */
+          background-color: rgba(23, 24, 28, 0.95); 
         }
 
         .message {
           flex: 1;
-          font-size: 1.25rem;
+          font-size: 40px;
+          text-align: center; /* Center the text horizontally */
+          align-self: center; /* Center the text vertically */
         }
 
         .close-button {
