@@ -288,8 +288,24 @@ const Shop = () => {
       // I use set just because it is more efficient with large objects.
       const playerItemsSet = new Set(playerItems);
 
+      if (playerItemsSet.size === 0) {
+        console.warn(`No items found for category: ${category}`);
+        return;
+      }
+
       // Remove the owned items of the current category from the state and localstorage.
       setter((prevItems: ItemData[]) => {
+
+        if (!prevItems || prevItems.length === 0) {
+          console.warn(`No previous items to filter for category: ${category}`);
+          return prevItems; // No realizar cambios si `prevItems` ya está vacío
+        }
+
+        if (!Array.isArray(prevItems)) {
+          console.error(`Invalid state for ${category}:`, prevItems);
+          return prevItems; // No hacer cambios
+        }
+
         const filteredItems = prevItems.filter(item => !playerItemsSet.has(item._id));
 
         // Update localStorage
@@ -307,13 +323,13 @@ const Shop = () => {
     })
   }
 
-  // useEffect(() => {
-  //   // If items are loaded, 
-  //   if (!playerData || loading || !currentCategory) return;
-  //   if (currentCategory && currentCategory?.length > 0) {
-  //     removeOwnedItems();
-  //   }
-  // }, [playerData?.equipment, playerData?.inventory, currentCategory]);
+  useEffect(() => {
+    // If items are loaded, 
+    if (!playerData || loading || !currentCategory) return;
+    if (currentCategory && currentCategory?.length > 0) {
+      removeOwnedItems();
+    }
+  }, [playerData?.equipment, playerData?.inventory, currentCategory]);
 
   // When we change a category state value, update the current displayed data.
   useEffect(() => {
