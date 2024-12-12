@@ -307,13 +307,13 @@ const Shop = () => {
     })
   }
 
-  useEffect(() => {
-    // If items are loaded, 
-    if (!playerData || loading || !currentCategory) return;
-    if (currentCategory && currentCategory?.length > 0) {
-      removeOwnedItems();
-    }
-  }, [playerData?.equipment, playerData?.inventory, currentCategory]);
+  // useEffect(() => {
+  //   // If items are loaded, 
+  //   if (!playerData || loading || !currentCategory) return;
+  //   if (currentCategory && currentCategory?.length > 0) {
+  //     removeOwnedItems();
+  //   }
+  // }, [playerData?.equipment, playerData?.inventory, currentCategory]);
 
   // When we change a category state value, update the current displayed data.
   useEffect(() => {
@@ -486,7 +486,7 @@ const Shop = () => {
             message={snackbarMessage}
             severity={snackbarSeverity}
             onClose={() => setSnackbarOpen(false)}
-            duration={1000}
+            duration={3000}
           />
         </div>
 

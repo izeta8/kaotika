@@ -19,7 +19,7 @@ const SellScreenButton: React.FC<SellButtonProps> = ({ text, handleClick, isSele
       <style>{backgroundAnimationStyle}</style>
       
       <button
-        className={`px-12 py-8 text-5xl font-semibold rounded-lg text-black ${buttonClass}`}
+        className={`px-6 py-3 text-4xl rounded-lg text-black ${buttonClass}`}
         onClick={isSelected ? handleClick : undefined} // Only enable the click if an item is selected
         disabled={!isSelected} // Disable the button if no item is selected
       >
