@@ -125,7 +125,6 @@ const Shop = () => {
       fetch(`/api/shop/player?playerEmail=${playerEmail}`)
         .then(response => response.json())
         .then(data => {
-          console.log(`el player cliente : `, data);
           setPlayerData(data);
           // localStorage.setItem('playerData', JSON.stringify( data ));
           setLoading(false);
@@ -199,21 +198,19 @@ const Shop = () => {
   const handleConfirmBuy = async (productConfirm: CartItem[] | ItemData) => {
 
     const products = [];
-    console.log('productConfirm before push:', JSON.stringify(productConfirm, null, 2));
+
     if (!Array.isArray(productConfirm)) {
       products.push(productConfirm);
     } else {
       products.push(...productConfirm);
     }
-    console.log('products after push:', JSON.stringify(products, null, 2));
-    console.log("dame el email" + playerData?.email);
 
     try {
 
       if (!playerData?.email) {throw new Error("[Client Error] Playerdata state does not have a email currently!")}
 
       const result = await purchaseProduct(playerData?.email, products);
-      console.log(result); // logs the inventory and gold after the Promise resolves
+
       ////////////////////////////////////
       if (result.success) {
         // Update the playerData
@@ -515,15 +512,12 @@ const loadLocalStorageIntoStates = (categoryObject: {state: string, setter: Func
       if (Array.isArray(parsedData)) {
         setter(parsedData);
       } else {
-        console.warn("Data in localStorage is not an array:", parsedData);
         setter([]);
       }
     } catch (error) {
-      console.error("Failed to parse localStorage data:", error);
       setter([]);
     }
   } else {
-    console.log("No data found in localStorage for key:", state);
     setter([]);
   }
 }
@@ -544,7 +538,6 @@ const purchaseProduct = async (playerEmail: string, products: Array<ItemData>) =
     if (!response.ok || !result.success) {
       // Handle the case where the purchase fails due to business logic (e.g., low level or insufficient funds)
       console.log('Purchase failed:', result.message); 
-
       return result;
     }
 
