@@ -14,14 +14,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
-  const { playerEmail, product, productPrice } = req.body;
+  const { playerEmail, product, productPrice, productQuantity } = req.body;
   let connection = null;
 
   try {
     connection = await createDatabaseConnection();
 
     // Ensure the result is typed as SellResult
-    const result: SellResult = await processProductSell(connection, playerEmail, product, productPrice);
+    const result: SellResult = await processProductSell(connection, playerEmail, product, productPrice, productQuantity);
 
     // Handle cases where message might not be available
     if (result.success) {
