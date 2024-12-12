@@ -357,7 +357,7 @@ const Sell = () => {
           />
         )}
         {/* Componente Snackbar */}
-        <div className={`snackbar fixed top-25 left-1/2 transform -translate-x-1/2`}
+        <div className={`snackbar fixed top-4 left-1/2 transform -translate-x-1/2`}
           style={{ backgroundColor: '#222', zIndex: 9999 }}>
           <Snackbar
             open={snackbarOpen}

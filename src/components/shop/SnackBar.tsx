@@ -38,7 +38,7 @@ const Snackbar: React.FC<SnackbarProps> = ({
   return (
     <>
       <div
-        className={`snackbar fixed top-25 left-1/2 transform -translate-x-1/2 text-white px-6 py-3 rounded shadow-lg z-50 flex items-center justify-between space-x-4 animate-fade-in-out`}
+        className={`snackbar fixed top-32 left-1/2 transform -translate-x-1/2 text-white px-6 py-3 rounded shadow-lg z-50 flex items-center justify-between space-x-4 animate-fade-in-out`}
         role="alert"
         aria-live="assertive"
         aria-atomic="true"
@@ -83,7 +83,7 @@ const Snackbar: React.FC<SnackbarProps> = ({
         }
 
         .snackbar {
-          max-width: 300px;
+          max-width: 600px;
           width: 90%;
           background-color: rgba(23, 24, 28, 0.95); 
         }
