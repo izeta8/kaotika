@@ -9,7 +9,7 @@ interface ShopHeaderProps {
 }
 
 // Shops item categories
-const equipmentCategories = ["helmets", "weapons", "armors", "shields", "boots", "rings"];
+const equipmentCategories = ["helmets", "weapons", "armors", "shields", "boots", "rings", "artifacts"];
 const magicalStuffCategories = ["ingredients", "containers"];
 
 const ShopHeader: React.FC<ShopHeaderProps> = ({ currentCategory, setCurrentCategory, isMagicalStuffShop }) => {

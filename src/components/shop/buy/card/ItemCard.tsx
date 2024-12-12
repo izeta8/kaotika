@@ -82,8 +82,9 @@ const ItemCard: React.FC<ItemCardProps> = ({ itemData, addToCart, setProductConf
     if (isOnCart) { addToCart(itemData); return }
     setAnimatingItemId(item._id);
   };
-
-  const fontSize = name.length > 19 ? 'text-3xl' : 'text-4xl';
+   
+  const fontSize = name.length >= 26 ? 'text-2xl' :
+                   name.length > 19 ? 'text-3xl' : 'text-4xl';
 
   return (
 

@@ -18,12 +18,12 @@ import { Player } from "@/_common/interfaces/Player";
 import CartButton from "@/components/shop/buy/cart/CartButton";
 import Snackbar from "@/components/shop/SnackBar";
 
-export type ShopCategories = "helmets" | "weapons" | "armors" | "shields" | "boots" | "rings" | "ingredients" | "containers";
-type EquipmentCategory = 'helmet' | 'weapon' | 'armor' | 'shield' | 'artifact' | 'boot' | 'ring' | 'healing_potion' | 'antidote_potion' | 'enhancer_potion';
-type InventoryCategory = 'helmets' | 'weapons' | 'armors' | 'shields' | 'artifacts' | 'boots' | 'rings' | 'healing_potions' | 'antidote_potions' | 'enhancer_potions';
+export type ShopCategories = "helmets" | "weapons" | "armors" | "shields" | "boots" | "rings" | "ingredients" | "containers" | "artifacts";
+type EquipmentCategory = 'helmet' | 'weapon' | 'armor' | 'shield' | 'artifact' | 'boot' | 'ring' | 'healing_potion' | 'antidote_potion' | 'enhancer_potion' | 'artifact';
+type InventoryCategory = 'helmets' | 'weapons' | 'armors' | 'shields' | 'artifacts' | 'boots' | 'rings' | 'healing_potions' | 'antidote_potions' | 'enhancer_potions' | 'artifacts';
 
 // Shops item categories
-const equipmentCategories: ShopCategories[] = ["helmets", "weapons", "armors", "shields", "boots", "rings"];
+const equipmentCategories: ShopCategories[] = ["helmets", "weapons", "armors", "shields", "boots", "rings", "artifacts"];
 const magicalStuffCategories: ShopCategories[] = ["ingredients", "containers"];
 
 const Shop = () => {
@@ -77,6 +77,7 @@ const Shop = () => {
   const [shields, setShields] = useState<ItemData[]>([]);
   const [boots, setBoots] = useState<ItemData[]>([]);
   const [rings, setRings] = useState<ItemData[]>([]);
+  const [artifacts, setArtifacts] = useState<ItemData[]>([]);
 
   const [ingredients, setIngredients] = useState<ItemData[]>([]);
   const [containers, setContainers] = useState<ItemData[]>([]);
@@ -92,6 +93,7 @@ const Shop = () => {
     rings,
     ingredients,
     containers,
+    artifacts,
   };
 
   const equipmentStateSetters = [
@@ -101,6 +103,7 @@ const Shop = () => {
     { state: "shields", setter: setShields },
     { state: "boots", setter: setBoots },
     { state: "rings", setter: setRings },
+    { state: "artifacts", setter: setArtifacts },
   ];
 
   const magicalStuffStateSetters = [
@@ -259,6 +262,7 @@ const Shop = () => {
       { category: "shield", setter: setShields },
       { category: "boot", setter: setBoots },
       { category: "ring", setter: setRings },
+      { category: "artifact", setter: setArtifacts },
     ];
 
     itemTypes.forEach((categoryObject: { category: string, setter: Function }): void => {
