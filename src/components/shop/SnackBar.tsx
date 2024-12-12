@@ -1,7 +1,5 @@
-// components/shop/SnackBar.tsx
-
 import React, { useEffect } from 'react';
-import Image from 'next/image'; // Importa el componente Image de Next.js
+
 
 interface SnackbarProps {
   open: boolean;
@@ -43,16 +41,6 @@ const Snackbar: React.FC<SnackbarProps> = ({
         aria-live="assertive"
         aria-atomic="true"
       >
-        {product ? (
-          <Image
-            src={product.image}
-            alt={product.name}
-            width={52}
-            height={52}
-            className="object-cover rounded mr-4"
-            draggable={false}
-          />
-        ) : null}
         <span className="message">{message}</span>
         <button onClick={onClose} className="close-button text-white font-bold text-2xl focus:outline-none">
           &times;
