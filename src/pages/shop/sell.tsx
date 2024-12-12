@@ -335,7 +335,8 @@ const Sell = () => {
             <div className="px-6">
               {
                 ((selectedItemToSell?.type === "ingredient") && (sellItemQuantity > 1)) ? <button onClick={restSellItemquantity} className={`px-6 py-2 text-2xl rounded-lg text-black bg-medievalSepia to-transparent border-4 border-transparent cursor-pointer`}>DISCARD</button>
-                  : <></>
+                :(selectedItemToSell?.type === "ingredient") ? <button className={`px-6 py-2 text-2xl rounded-lg text-black bg-medievalSepia to-transparent border-4 border-transparent cursor-not-allowed opacity-50`}>DISCARD</button>
+                :<></>
               }
             </div>
             <div>
@@ -345,8 +346,9 @@ const Sell = () => {
             </div>
             <div className="px-6">
               {
-                ((selectedItemToSell?.type === "ingredient") && (sellItemQuantity < selectedItemToSell?.qty!)) ? <button onClick={addSellItemquantity} className={`px-6 py-2 text-2xl rounded-lg text-black bg-medievalSepia to-transparent border-4 border-transparent cursor-pointer`}>ADD MORE</button>
-                  : <></>
+                ((selectedItemToSell?.type === "ingredient") && (sellItemQuantity < selectedItemToSell?.qty!)) ? <button onClick={addSellItemquantity} className={`px-6 py-2 text-2xl rounded-lg text-black bg-medievalSepia to-transparent border-4 border-transparent cursor-pointer`}>ADD MORE</button>:
+                (selectedItemToSell?.type === "ingredient") ? <button className={`px-6 py-2 text-2xl rounded-lg text-black bg-medievalSepia to-transparent border-4 border-transparent cursor-not-allowed opacity-50`}>ADD MORE</button>
+                :<></>
               }
             </div>
 
