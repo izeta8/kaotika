@@ -41,6 +41,8 @@ const Sell = () => {
 
   useEffect(() => {
     setSellerDialogueMessage(MESSAGES.WELCOME)
+
+
   }, []);
 
   ///////////////////////////////////////////////////////////////////////////////////////
@@ -106,10 +108,13 @@ const Sell = () => {
           setSnackbarOpen(true);
         } finally {
           setLoading(false);
+          speakMessage("BEST PRICE MY FRIEND. I AM NOT CHEAP LIKE MORTIMER AND THE VILLAIN");
         }
       }
 
       loadPlayerData();
+      setSellerDialogueMessage(MESSAGES.WELCOME)
+
     }
   }, [playerEmail]);
 
@@ -140,12 +145,12 @@ const Sell = () => {
         setSnackbarMessage('Successful sell!');
         setSnackbarSeverity('success');
         setSnackbarOpen(true);
-      }else{
+      } else {
         setSnackbarMessage(result.message || 'The sale failed.');
         setSnackbarSeverity('error');
         setSnackbarOpen(true);
       }
-      
+
       setSelectedItemToSell(null);
       setProductConfirm(null);
       setSellerDialogueMessage(MESSAGES.ITEM_SELL_SUCCESS);
@@ -175,7 +180,7 @@ const Sell = () => {
         console.log('Sell failed:', result.message);
         setSnackbarMessage(result.message || 'Sell failed.');
         setSnackbarSeverity('error');
-        setSnackbarOpen(true); 
+        setSnackbarOpen(true);
         return result;
       }
       console.log('Sell successful:', result);
@@ -199,13 +204,13 @@ const Sell = () => {
     setSnackbarSeverity('info');
     setSnackbarOpen(true);
   };
- 
+
   const handleSellClick = () => {
     setProductConfirm(selectedItemToSell);
   };
 
   ///////////////////////////////////////////////////////////
- 
+
   // When productConfirm state has a value, show the modal, and when it does not have close.
   useEffect(() => {
     const productConfirmShown = !!productConfirm;
@@ -221,6 +226,36 @@ const Sell = () => {
     setSelectedItemToSell(null);
   }
 
+  function speakMessage(message: any) {
+    // Set up SpeechSynthesisUtterance
+    const phrase = new SpeechSynthesisUtterance();
+    phrase.text = message;
+
+    // Set the rate and pitch for clear and natural speech
+    phrase.rate = 0.8;  // Slow down slightly to make it clearer
+    phrase.pitch = 1.0; // Neutral pitch to avoid a robotic or overly deep voice
+
+    // Get available voices
+    const voices = window.speechSynthesis.getVoices();
+
+    // Try to find a male voice with the "en" language that is clear
+    let grandpaVoice = voices.find(
+      (voice) =>
+        voice.name.toLowerCase().includes('male') && voice.lang.includes('en')
+    );
+
+    // If no clear male voice is found, fall back to the first available English voice
+    if (!grandpaVoice) {
+      grandpaVoice = voices.find((voice) => voice.lang.includes('en'));
+    }
+
+    // Use the fallback if necessary
+    phrase.voice = grandpaVoice || voices[0];
+
+    // Speak the message
+    window.speechSynthesis.speak(phrase);
+  }
+
   ///////////////////////////////////////////////////////////
 
   // Return loading spinner if there is charging something
@@ -229,11 +264,11 @@ const Sell = () => {
   }
 
   const snackbarProduct = selectedItemToSell
-  ? {
+    ? {
       name: selectedItemToSell.name,
       image: selectedItemToSell.image,
     }
-  : undefined;
+    : undefined;
 
   return (
 
@@ -313,7 +348,7 @@ const Sell = () => {
 
         {productConfirm && (
           <ConfirmModal
-            isBuy={false} 
+            isBuy={false}
             isOpen={confirmModalShown}
             setConfirmModalShown={setConfirmModalShown}
             onCancel={handleCancel}
@@ -323,15 +358,15 @@ const Sell = () => {
         )}
         {/* Componente Snackbar */}
         <div className={`snackbar fixed top-25 left-1/2 transform -translate-x-1/2 text-white px-6 py-3 rounded shadow-lg z-50 flex items-center justify-between space-x-4 animate-fade-in-out`}
-        style={{ backgroundColor: '#222', zIndex: 9999 }}>
-        <Snackbar
-          open={snackbarOpen}
-          message={snackbarMessage}
-          severity={snackbarSeverity}
-          product={snackbarProduct}
-          onClose={() => setSnackbarOpen(false)}
-          duration={4000} 
-        />
+          style={{ backgroundColor: '#222', zIndex: 9999 }}>
+          <Snackbar
+            open={snackbarOpen}
+            message={snackbarMessage}
+            severity={snackbarSeverity}
+            product={snackbarProduct}
+            onClose={() => setSnackbarOpen(false)}
+            duration={4000}
+          />
         </div>
       </div>
     </Layout>
