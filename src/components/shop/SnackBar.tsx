@@ -1,7 +1,5 @@
-// components/shop/SnackBar.tsx
-
 import React, { useEffect } from 'react';
-import Image from 'next/image'; // Importa el componente Image de Next.js
+import Image from 'next/image'; 
 
 interface SnackbarProps {
   open: boolean;
@@ -38,7 +36,7 @@ const Snackbar: React.FC<SnackbarProps> = ({
   return (
     <>
       <div
-        className={`snackbar fixed top-25 left-1/2 transform -translate-x-1/2 text-white px-6 py-3 rounded shadow-lg z-50 flex items-center justify-between space-x-4 animate-fade-in-out`}
+        className={`snackbar fixed top-25 left-1/2 transform -translate-x-1/2  text-bg-medievalSepia px-6 py-3 rounded shadow-lg z-50 flex items-center justify-between space-x-4 animate-fade-in-out`}
         role="alert"
         aria-live="assertive"
         aria-atomic="true"
@@ -53,8 +51,8 @@ const Snackbar: React.FC<SnackbarProps> = ({
             draggable={false}
           />
         ) : null}
-        <span className="message">{message}</span>
-        <button onClick={onClose} className="close-button text-white font-bold text-2xl focus:outline-none">
+        <span className="message text-4xl">{message}</span>
+        <button onClick={onClose} className="close-button text-bg-medievalSepia font-bold text-4xl focus:outline-none">
           &times;
         </button>
       </div>

@@ -19,7 +19,7 @@ export const removeFromInventory = (inventory: Inventory, category: Category, pr
   if (productIndex === -1) {
     return {
       success: false,
-      message: 'The product is not in stock.',
+      message: 'The product is not in the inventory.',
     };
   }
 
