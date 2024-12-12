@@ -12,7 +12,7 @@ interface SnackbarProps {
   };
   severity?: 'success' | 'error' | 'info' | 'warning';
   onClose: () => void;
-  duration?: number; 
+  duration?: number;
 }
 
 const Snackbar: React.FC<SnackbarProps> = ({
@@ -47,7 +47,7 @@ const Snackbar: React.FC<SnackbarProps> = ({
           <Image
             src={product.image}
             alt={product.name}
-            width={52} 
+            width={52}
             height={52}
             className="object-cover rounded mr-4"
             draggable={false}
