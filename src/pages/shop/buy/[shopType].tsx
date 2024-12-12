@@ -16,6 +16,7 @@ import ShopBackground from "@/components/shop/ShopBackground";
 import ShopHeader from "@/components/shop/buy/structure/header/ShopHeader"; 
 import { Player } from "@/_common/interfaces/Player";
 import CartButton from "@/components/shop/buy/cart/CartButton";
+import Snackbar from "@/components/shop/SnackBar";
 
 export type ShopCategories = "helmets" | "weapons" | "armors" | "shields" | "boots" | "rings" | "ingredients" | "containers";
 type EquipmentCategory = 'helmet' | 'weapon' | 'armor' | 'shield' | 'artifact' | 'boot' | 'ring' | 'healing_potion' | 'antidote_potion' | 'enhancer_potion';
@@ -64,6 +65,11 @@ const Shop = () => {
   });
 
   // ---- SHOP ITEMS ----  //
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error' | 'info' | 'warning'>('success'); // Updated state for severity
+
 
   const [helmets, setHelmets] = useState<ItemData[]>([]);
   const [weapons, setWeapons] = useState<ItemData[]>([]);
@@ -213,18 +219,22 @@ const Shop = () => {
 
       ////////////////////////////////////
       if (result.success) {
+        setSnackbarMessage('Purchased!');
+        setSnackbarSeverity('success');
+        setSnackbarOpen(true);
         // Update the playerData
         const updatedPlayerData = {
           ...playerData,    // Spread all properties of playerData
           gold: result.gold,        // Override the gold property
           inventory: result.inventory // Override the inventory property
         };
-        // Save the updated playerData to localStorage
-        // localStorage.setItem('playerData', JSON.stringify(updatedPlayerData));
         setPlayerData(updatedPlayerData);
       }
       ////////////////////////////////////
       setProductConfirm(null);
+      setSnackbarMessage(result.message);
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
     } catch (error) {
       console.error('Error during purchase:', error);
     }
@@ -469,6 +479,16 @@ const Shop = () => {
               product={productConfirm}
             />
           )}
+
+<div className="fixed top-4 left-1/4 transform -translate-x-1/2 z-[9999]"> 
+          <Snackbar
+            open={snackbarOpen}
+            message={snackbarMessage}
+            severity={snackbarSeverity}
+            onClose={() => setSnackbarOpen(false)}
+            duration={4000} 
+          />
+        </div> 
 
         </div>
       </Layout>

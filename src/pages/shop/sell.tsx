@@ -322,6 +322,8 @@ const Sell = () => {
           />
         )}
         {/* Componente Snackbar */}
+        <div className={`snackbar fixed top-25 left-1/2 transform -translate-x-1/2 text-white px-6 py-3 rounded shadow-lg z-50 flex items-center justify-between space-x-4 animate-fade-in-out`}
+        style={{ backgroundColor: '#222', zIndex: 9999 }}>
         <Snackbar
           open={snackbarOpen}
           message={snackbarMessage}
@@ -330,6 +332,7 @@ const Sell = () => {
           onClose={() => setSnackbarOpen(false)}
           duration={4000} 
         />
+        </div>
       </div>
     </Layout>
 

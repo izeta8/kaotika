@@ -83,14 +83,16 @@ const Snackbar: React.FC<SnackbarProps> = ({
         }
 
         .snackbar {
-          max-width: 600px;
+          max-width: 300px;
           width: 90%;
-          background-color: rgba(23, 24, 28, 0.95); /* RGB(23,24,28) con 95% de opacidad */
+          background-color: rgba(23, 24, 28, 0.95); 
         }
 
         .message {
           flex: 1;
-          font-size: 1.25rem;
+          font-size: 30px;
+          text-align: center; /* Center the text horizontally */
+          align-self: center; /* Center the text vertically */
         }
 
         .close-button {
