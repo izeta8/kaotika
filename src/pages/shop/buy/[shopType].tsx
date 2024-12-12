@@ -308,15 +308,15 @@ const Shop = () => {
 
         const filteredItems = prevItems.filter(item => !playerItemsSet.has(item._id));
 
-        // Update localStorage
-        try {
-          localStorage.setItem(
-            `${category}s`,
-            JSON.stringify(filteredItems)
-          );
-        } catch (error) {
-          console.error(`Failed to update localStorage for ${category}s:`, error);
-        }
+        // // Update localStorage
+        // try {
+        //   localStorage.setItem(
+        //     `${category}s`,
+        //     JSON.stringify(filteredItems)
+        //   );
+        // } catch (error) {
+        //   console.error(`Failed to update localStorage for ${category}s:`, error);
+        // }
 
         return filteredItems;
       });
