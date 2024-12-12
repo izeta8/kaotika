@@ -365,7 +365,7 @@ const Sell = () => {
             severity={snackbarSeverity}
             product={snackbarProduct}
             onClose={() => setSnackbarOpen(false)}
-            duration={1000}
+            duration={3000}
           />
         </div>
       </div>
