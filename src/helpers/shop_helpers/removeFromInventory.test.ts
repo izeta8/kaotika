@@ -13,7 +13,7 @@ describe('removeFromInventory', () => {
 
   it('should remove the product if it exists in the inventory', () => {
     const productId = '1';
-    const result = removeFromInventory(inventory, 'electronics', productId);
+    const result = removeFromInventory(inventory, 'electronics', productId, 1);
 
     expect(result.success).toBe(true);
     expect(inventory.electronics).not.toContain(productId); // '1' should be removed
@@ -21,7 +21,7 @@ describe('removeFromInventory', () => {
 
   it('should return an error if the category does not exist', () => {
     const productId = '4'; // Non-existing product ID
-    const result = removeFromInventory(inventory, 'toys', productId);
+    const result = removeFromInventory(inventory, 'toys', productId, 1);
 
     expect(result.success).toBe(false);
     expect(result.message).toBe('The product category does not exist in the inventory.');
@@ -29,7 +29,7 @@ describe('removeFromInventory', () => {
 
   it('should return an error if the product is not found in the category', () => {
     const productId = '4'; // Non-existing product ID
-    const result = removeFromInventory(inventory, 'electronics', productId);
+    const result = removeFromInventory(inventory, 'electronics', productId, 1);
 
     expect(result.success).toBe(false);
     expect(result.message).toBe('The product is not in stock.');
