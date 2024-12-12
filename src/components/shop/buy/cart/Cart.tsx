@@ -1,6 +1,5 @@
 import React from "react";
 import { FaTimes } from 'react-icons/fa';
-import { ItemData } from "@/_common/interfaces/ItemData";
 import { MouseEventHandler } from "react";
 import { Player } from "@/_common/interfaces/Player";
 import ItemRow from "./CartRow";

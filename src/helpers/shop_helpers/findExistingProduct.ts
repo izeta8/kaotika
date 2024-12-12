@@ -1,3 +1,7 @@
 export const findExistingProduct = (categoryInventory: any[], productId: string) => {
-  return categoryInventory.find((item) => item._id.toString() === productId);
+  const foundProduct = categoryInventory.find((item) => item === productId);
+  if (foundProduct) {
+    return foundProduct;
+  }
+  return null;
 };

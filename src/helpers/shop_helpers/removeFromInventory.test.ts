@@ -1,46 +1,37 @@
-// removeFromInventory.test.ts
 import { removeFromInventory } from './removeFromInventory';
 
 describe('removeFromInventory', () => {
-  let inventory;
+  let inventory: Record<string, string[]>;
 
   beforeEach(() => {
+    // Setup the initial inventory with product IDs in each category
     inventory = {
-      electronics: [
-        { _id: '1', name: 'Laptop', qty: 2 },
-        { _id: '2', name: 'Headphones', qty: 1 },
-      ],
-      furniture: [
-        { _id: '3', name: 'Chair', qty: 5 },
-      ],
+      electronics: ['1', '2'], // '1' is Laptop, '2' is Headphones
+      furniture: ['3'], // '3' is Chair
     };
   });
 
-  it('should decrement the quantity by 1 if the quantity is more than 1', () => {
-    const product = { _id: '1', name: 'Laptop' };
-    const result = removeFromInventory(inventory, 'electronics', product);
+  it('should remove the product if it exists in the inventory', () => {
+    const productId = '1';
+    const result = removeFromInventory(inventory, 'electronics', productId);
+
     expect(result.success).toBe(true);
-    expect(inventory.electronics[0].qty).toBe(1); // Quantity should be reduced to 1
+    expect(inventory.electronics).not.toContain(productId); // '1' should be removed
   });
 
-//   it('should remove the product if the quantity is 1', () => {
-//     const product = { _id: '2', name: 'Headphones' };
-//     const result = removeFromInventory(inventory, 'electronics', product);
-//     expect(result.success).toBe(true);
-//     expect(inventory.electronics).not.toContainEqual(product); // Product should be removed
-//   });
+  it('should return an error if the category does not exist', () => {
+    const productId = '4'; // Non-existing product ID
+    const result = removeFromInventory(inventory, 'toys', productId);
 
-//   it('should return an error if the category does not exist', () => {
-//     const product = { _id: '4', name: 'Keyboard' };
-//     const result = removeFromInventory(inventory, 'toys', product);
-//     expect(result.success).toBe(false);
-//     expect(result.message).toBe('The product category does not exist in the inventory.');
-//   });
+    expect(result.success).toBe(false);
+    expect(result.message).toBe('The product category does not exist in the inventory.');
+  });
 
-//   it('should return an error if the product is not found in the category', () => {
-//     const product = { _id: '4', name: 'Keyboard' };
-//     const result = removeFromInventory(inventory, 'electronics', product);
-//     expect(result.success).toBe(false);
-//     expect(result.message).toBe('The product is not in stock.');
-//   });
+  it('should return an error if the product is not found in the category', () => {
+    const productId = '4'; // Non-existing product ID
+    const result = removeFromInventory(inventory, 'electronics', productId);
+
+    expect(result.success).toBe(false);
+    expect(result.message).toBe('The product is not in stock.');
+  });
 });

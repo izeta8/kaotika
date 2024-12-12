@@ -35,6 +35,7 @@ const Sell = () => {
   const [snackbarMessage, setSnackbarMessage] = useState<string>('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error' | 'info' | 'warning'>('info');
 
+
   const [soldProduct, setSoldProduct] = useState<{ name: string; image: string } | undefined>(undefined);
 
   ///////////////////////////////////////////////////////////////////////////////////////
@@ -97,7 +98,6 @@ const Sell = () => {
             delete data.cardId;
             const playerObject = data;
 
-            console.log(playerObject)
             setPlayerData(playerObject);
           } else if (res.status === 404) {
             const data = await res.json();
@@ -132,7 +132,6 @@ const Sell = () => {
       const itemPrice = Math.floor(productConfirm.value / 3);
 
       const result = await sellProduct(playerData.email, productConfirm, itemPrice);
-      console.log(result);
 
       if (result && result.success) {
         const updatedPlayerData = {

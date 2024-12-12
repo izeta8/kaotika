@@ -1,7 +1,6 @@
 import Layout from "@/components/Layout";
 import Link from 'next/link';
 import Image from "next/image";
-import { useRouter } from 'next/router';
 import { useState, useEffect } from "react";
 import Loading from "@/components/Loading";
 import ShopBackground from "@/components/shop/ShopBackground";
@@ -24,13 +23,11 @@ const ShopHome = () => {
       });
   
       if (storedProducts) {
-        console.log("localStorage of the Shop has data");
         setLoading(false);
         return;
       }
 
       try {
-        console.log("fetching Shop products");
         const response = await fetch('/api/shop/products');
         if (!response.ok) {
           throw new Error("Failed to fetch products");

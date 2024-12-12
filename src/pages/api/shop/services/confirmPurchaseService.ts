@@ -3,18 +3,17 @@ import { calculateTotalCost } from '@/helpers/shop_helpers/calculateTotalCost';
 import { hasEnoughGold } from '@/helpers/shop_helpers/hasEnoughGold';
 import { addToInventory } from '@/helpers/shop_helpers/addToInventory';
 import mongoose from 'mongoose';
-import { ItemData } from '@/_common/interfaces/ItemData';
-import { findExistingProduct } from '@/helpers/shop_helpers/findExistingProduct';
+import { checkIfProductsExistInInventory } from '@/helpers/shop_helpers/checkIfProductExistInInventory';
+import { CartItem } from '@/_common/interfaces/CartItem';
 
 interface Player {
   _id: string;
   email: string;
-  gold: number; // Ensure gold is typed as a number
-  inventory: Record<string, string[]>, // Assuming ItemData is the correct type for items
-  // other player properties
+  gold: number;
+  inventory: Record<string, string[]>, 
 }
 
-export const processProductsPurchase = async (connection: mongoose.Connection | null, playerEmail: string, products: Array<ItemData> | any[]) => {
+export const processProductsPurchase = async (connection: mongoose.Connection | null, playerEmail: string, products: CartItem[]) => {
   if (!playerEmail || !Array.isArray(products) || products.length === 0) {
     throw new Error('Player email and a non-empty products array are required');
   }
@@ -50,16 +49,14 @@ export const processProductsPurchase = async (connection: mongoose.Connection | 
 
   // Deduct the total cost from the player's gold
   player.gold -= totalCost;
-
-  if(products[0].type != "ingredient"){
-    if (findExistingProduct(player.inventory[products[0].type + "s"], products[0]._id)){
-      return {
-        success: false,
-        message: 'Already in inventory',
-      };
-    }
-  }
   
+
+  if (checkIfProductsExistInInventory(player, products)) {
+    return {
+      success: false,
+      message: 'Already in inventory',
+    };
+  }
   // Update the inventory with the purchased products
   addToInventory(player.inventory, products);
 
