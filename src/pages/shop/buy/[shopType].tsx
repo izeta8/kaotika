@@ -502,7 +502,7 @@ const Shop = () => {
             message={snackbarMessage}
             severity={snackbarSeverity}
             onClose={() => setSnackbarOpen(false)}
-            duration={3000}
+            duration={1500}
           />
         </div>
 
