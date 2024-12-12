@@ -480,7 +480,7 @@ const Shop = () => {
             />
           )}
 
-<div className="fixed top-4 left-1/4 transform -translate-x-1/2 z-[9999]"> 
+<div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-[9999] w-[95%]">
           <Snackbar
             open={snackbarOpen}
             message={snackbarMessage}

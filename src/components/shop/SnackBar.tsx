@@ -90,7 +90,7 @@ const Snackbar: React.FC<SnackbarProps> = ({
 
         .message {
           flex: 1;
-          font-size: 30px;
+          font-size: 40px;
           text-align: center; /* Center the text horizontally */
           align-self: center; /* Center the text vertically */
         }
