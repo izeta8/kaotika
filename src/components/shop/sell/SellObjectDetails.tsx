@@ -1,12 +1,14 @@
 import { ItemData } from "@/_common/interfaces/ItemData";
+import KaotikaButton from "@/components/KaotikaButton";
 
 interface Promps {
   item: ItemData | null;
   hover: ItemData | null;
   setSelectedItemToSell: (item: any) => void;
+  sellItemQuantity: number;
 }
 
-const SellShopObjectDetails: React.FC<Promps> = ({ item, hover }) => {
+const SellShopObjectDetails: React.FC<Promps> = ({ item, hover, sellItemQuantity}) => {
 
   if (!item && !hover) return null;
 
@@ -98,8 +100,8 @@ const SellShopObjectDetails: React.FC<Promps> = ({ item, hover }) => {
                 })
               )
               : <></>}
-
           </div>
+
           <div className="w-1/2 place-self-center">
 
             {(item!.type === "ingredient") ?
@@ -116,10 +118,10 @@ const SellShopObjectDetails: React.FC<Promps> = ({ item, hover }) => {
             {((item!.type === "armor") || (item!.type === "artifact") || (item!.type === "helmet") || (item!.type === "boot") || (item!.type === "ring") || (item!.type === "shield") || (item!.type === "weapon")) ?
               <h2 className="text-3xl text-center">Min level to use is {item!.min_lvl}</h2>
               : <></>}
-
           </div>
         </div>
-
+        {/* Only if the item is an ingredient render the quantity selected to sell*/}
+        
       </div>
     </div>
   );

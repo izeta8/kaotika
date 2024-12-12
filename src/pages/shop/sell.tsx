@@ -30,6 +30,7 @@ const Sell = () => {
   const [hoverItemToSell, setHoverItemToSell] = useState<ItemData | null>(null);
   const [sellerDialogueMessage, setSellerDialogueMessage] = useState<string>(MESSAGES.WELCOME);
   const [confirmModalShown, setConfirmModalShown] = useState<boolean>(false);
+  const [sellItemQuantity, setSellItemquantity] = useState<number>(0);
 
   const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
   const [snackbarMessage, setSnackbarMessage] = useState<string>('');
@@ -66,13 +67,37 @@ const Sell = () => {
       const itemSellPrice = Math.floor(selectedItemToSell.value / 3);
       const message = createItemSellPriceMessage(MESSAGES.ITEM_SELECTED, selectedItemToSell.name, itemSellPrice);
       setSellerDialogueMessage(message);
+      setSellItemquantity(1);
     } else {
       if (sellerDialogueMessage !== MESSAGES.ITEM_SELL_SUCCESS) {
         setSellerDialogueMessage(MESSAGES.SELECT_ITEM);
+        setSellItemquantity(0);
       }
     }
 
   }, [selectedItemToSell]);
+
+  ///////////////////////////////////////////////////////////////////////////////////////
+
+  // When the user updates the quantity of something to sell.
+
+  useEffect(() => {
+
+    if (selectedItemToSell && selectedItemToSell.value) {
+
+      if (sellItemQuantity !== 1) {
+        const itemSellPrice = Math.floor(selectedItemToSell.value / 3) * sellItemQuantity;
+        const message = createItemSellPriceMessage(MESSAGES.ITEM_QUANTITY_MODIFY, selectedItemToSell.name, itemSellPrice);
+        setSellerDialogueMessage(message);
+      } else {
+        const itemSellPrice = Math.floor(selectedItemToSell.value / 3);
+        const message = createItemSellPriceMessage(MESSAGES.ITEM_SELECTED, selectedItemToSell.name, itemSellPrice);
+        setSellerDialogueMessage(message);
+      }
+
+    }
+
+  }, [sellItemQuantity]);
 
   ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -133,8 +158,7 @@ const Sell = () => {
 
       const itemPrice = Math.floor(productConfirm.value / 3);
 
-      const result = await sellProduct(playerData.email, productConfirm, itemPrice);
-
+      const result = await sellProduct(playerData.email, productConfirm, itemPrice, sellItemQuantity);
       if (result && result.success) {
         const updatedPlayerData = {
           ...playerData,
@@ -164,14 +188,14 @@ const Sell = () => {
 
   ///////////////////////////////////////////////////////////////////////////////////////
 
-  const sellProduct = async (playerEmail: string, product: ItemData, itemPrice: number) => {
+  const sellProduct = async (playerEmail: string, product: ItemData, itemPrice: number, productQuantity: number) => {
     try {
       const response = await fetch('/api/shop/confirmSell', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ playerEmail, product, productPrice: itemPrice }),
+        body: JSON.stringify({ playerEmail, product, productPrice: itemPrice, productQuantity }),
       });
 
       const result = await response.json();
@@ -258,6 +282,26 @@ const Sell = () => {
 
   ///////////////////////////////////////////////////////////
 
+  // Function to add one to the object to sell Quantity
+  const addSellItemquantity = () => {
+    if (sellItemQuantity < selectedItemToSell?.qty!) {
+      const newValue = sellItemQuantity + 1;
+      setSellItemquantity(newValue)
+    }
+  }
+
+  ///////////////////////////////////////////////////////////
+
+  // Function to rest one to the object to sell Quantity
+  const restSellItemquantity = () => {
+    if (1 < sellItemQuantity!) {
+      const newValue = sellItemQuantity - 1;
+      setSellItemquantity(newValue)
+    }
+  }
+
+  ///////////////////////////////////////////////////////////
+
   // Return loading spinner if there is charging something
   if (loading) {
     return (<Loading />);
@@ -283,13 +327,38 @@ const Sell = () => {
               setSelectedItemToSell={setSelectedItemToSell}
               setHoverItemToSell={setHoverItemToSell}
               selectedItemToSell={selectedItemToSell}
+
             />
           )}
+
+          <div className="flex flex-row justify-center items-center">
+            <div className="px-6">
+              {
+                ((selectedItemToSell?.type === "ingredient") && (sellItemQuantity > 1)) ? <button onClick={restSellItemquantity} className={`px-6 py-2 text-2xl rounded-lg text-black bg-medievalSepia to-transparent border-4 border-transparent cursor-pointer`}>DISCARD</button>
+                :(selectedItemToSell?.type === "ingredient") ? <button className={`px-6 py-2 text-2xl rounded-lg text-black bg-medievalSepia to-transparent border-4 border-transparent cursor-not-allowed opacity-50`}>DISCARD</button>
+                :<></>
+              }
+            </div>
+            <div>
+              {(selectedItemToSell?.type === "ingredient") ?
+                <h2 className="text-4xl pl-12 ">Selected quantity to sell {sellItemQuantity}</h2>
+                : <></>}
+            </div>
+            <div className="px-6">
+              {
+                ((selectedItemToSell?.type === "ingredient") && (sellItemQuantity < selectedItemToSell?.qty!)) ? <button onClick={addSellItemquantity} className={`px-6 py-2 text-2xl rounded-lg text-black bg-medievalSepia to-transparent border-4 border-transparent cursor-pointer`}>ADD MORE</button>:
+                (selectedItemToSell?.type === "ingredient") ? <button className={`px-6 py-2 text-2xl rounded-lg text-black bg-medievalSepia to-transparent border-4 border-transparent cursor-not-allowed opacity-50`}>ADD MORE</button>
+                :<></>
+              }
+            </div>
+
+          </div>
 
           <SellShopObjectDetails
             item={selectedItemToSell}
             hover={hoverItemToSell}
             setSelectedItemToSell={setSelectedItemToSell}
+            sellItemQuantity={sellItemQuantity}
           />
 
         </div>
@@ -326,6 +395,7 @@ const Sell = () => {
               marginLeft: '-500px',
             }}
           >
+
             <div className="px-6">
               <SellScreenButton
                 text="KEEP IT"

@@ -12,7 +12,7 @@ interface Player {
 import { changeProductActiveStatus } from './changeActiveService';
 
 
-export const processProductSell = async (connection: mongoose.Connection | null, playerEmail: string, product: ItemData, productPrice: number) => {
+export const processProductSell = async (connection: mongoose.Connection | null, playerEmail: string, product: ItemData, productPrice: number, productQuantity: number) => {
   if (!playerEmail || !product || !product.value || !product._id) {
     throw new Error('Player email and complete product details are required');
   }
@@ -37,13 +37,13 @@ export const processProductSell = async (connection: mongoose.Connection | null,
   let player = playerData.player as unknown as Player;
 
   // Increase player's gold by the product price
-  player.gold += productPrice;
+  player.gold += (productPrice * productQuantity);
 
   // Determine the product category (e.g., 'weapons', 'armors')
   const category = product.type + 's';
 
   // Remove the product from the player's inventory
-  const inventoryUpdateResult = removeFromInventory(player.inventory, category, product._id);
+  const inventoryUpdateResult = removeFromInventory(player.inventory, category, product._id, productQuantity);
 
   if (!inventoryUpdateResult.success) {
     return inventoryUpdateResult; // Return the failure message
@@ -57,9 +57,9 @@ export const processProductSell = async (connection: mongoose.Connection | null,
 
   const populatedPlayer = await populatePlayer(connection, playerEmail);
 
-  
 
-  if (product.isUnique) {  
+
+  if (product.isUnique) {
     await changeProductActiveStatus(connection, product, true);
   }
 
