@@ -20,7 +20,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ isOpen, setConfirmModalShow
   const buttonStyle = "bg-darkSepia text-black px-4 py-2 rounded hover:bg-medievalSepia transition text-2xl";
   
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 animate-fadeIn"
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-30 animate-fadeIn"
       onClick={() => setConfirmModalShown(false)}
     >
       <div
