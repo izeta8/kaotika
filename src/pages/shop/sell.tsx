@@ -189,6 +189,9 @@ const Sell = () => {
 
   const sellProduct = async (playerEmail: string, product: ItemData, itemPrice: number, productQuantity: number) => {
     try {
+
+      setLoading(true);
+
       const response = await fetch('/api/shop/confirmSell', {
         method: 'POST',
         headers: {
@@ -216,6 +219,8 @@ const Sell = () => {
       setSnackbarMessage('An error occurred while processing the sale.');
       setSnackbarSeverity('error');
       setSnackbarOpen(true);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -272,7 +277,7 @@ const Sell = () => {
   ///////////////////////////////////////////////////////////
 
   // Return loading spinner if there is charging something
-  if (loading) {
+  if (loading && !playerData) {
     return (<Loading />);
   }
 
@@ -286,6 +291,11 @@ const Sell = () => {
   return (
 
     <Layout>
+      
+      {loading && (
+        <Loading />
+      )}
+
       <div className="flex text-medievalSepia -mt-2 bg-cover bg-no-repeat bg-center min-h-screen" style={{ backgroundImage: 'url(/images/shop/background_sell_shop.jpg)' }}>
 
         <div className="flex-col w-1/2">
