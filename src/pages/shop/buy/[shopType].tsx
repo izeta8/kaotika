@@ -205,8 +205,8 @@ const Shop = () => {
   // ---- BUY FUNCTIONS ---- //
 
   const handleConfirmBuy = async (productConfirm: CartItem[] | ItemData) => {
- 
-    setLoading(true); 
+
+    setLoading(true);
 
     const products = [];
 
@@ -219,7 +219,7 @@ const Shop = () => {
     try {
 
       if (!playerData?.email) { throw new Error("[Client Error] Playerdata state does not have a email currently!") }
- 
+
       const result = await purchaseProduct(playerData?.email, products);
 
       ////////////////////////////////////
@@ -242,8 +242,8 @@ const Shop = () => {
       setSnackbarOpen(true);
     } catch (error) {
       console.error('Error during purchase:', error);
-    } finally { 
-      setLoading(false); 
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -418,7 +418,7 @@ const Shop = () => {
 
   return (
 
-    
+
     <Layout>
 
       {loading && (
